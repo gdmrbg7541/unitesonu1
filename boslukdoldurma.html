@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قِيَمي - تمرين ملء الفراغ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Abdo+Line&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- Temel Sayfa Stilleri --- */
@@ -14,7 +13,8 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            --font-arabic: 'Abdo-Line', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
+            /* GÜNCELLENDİ: Yazı tipi değiştirildi */
+            --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
         }
 
         body {
@@ -552,7 +552,7 @@
             { pre: "", post: "تَعْمَلُ في المُسْتَشْفى", a: ["هِيَ", "أَنْتَ"], hint: "ضَمِير" }, 
             { pre: "", post: "تَحْتَرِمُ الكِبار", a: ["أَنْتَ", "هِيَ"], hint: "ضَمِير" }, 
             { pre: "", post: "أُحِبُّ أَقارِبي", a: "أَنا", hint: "ضَمير" },
-            { pre: "", post: "تَحْتَرِمونَ الكِبار", a: "أَنْتُم", hint: "ضَمِير" },
+            { pre: "", post: "تَحْتَرِمونَ الكِبار", a: "أَنْتُم", hint: "ضَمِIR" },
 
             // Fiil Çekimleri (10)
             { pre: "هُم", post: "إِلى المَسْجِد", a: "يَذْهَبونَ", hint: "فِعْل" },
@@ -733,7 +733,7 @@
             
             const activityData = activityQueue[currentActivityIndex]; 
             
-            instructionText.textContent = "قِيَمي | اِمْلَأ الفَراغ بِالكَلِمَة المُناسِبَة";
+            instructionText.textContent = "قِيَمي | اِمْلَأ الفَراغ بِالكَلِمَة المُناسِبَة‫.‬";
             
             buildFillInTheBlank(activityData);
         }
