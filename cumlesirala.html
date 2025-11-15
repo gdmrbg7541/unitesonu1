@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قِيَمي - تمرين ترتيب الجمل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- Temel Sayfa Stilleri --- */
@@ -13,7 +13,7 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            --font-arabic: 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
+            --font-arabic: 'Markazi Text', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
         }
 
         body {
@@ -28,7 +28,7 @@
             font-weight: 400;
         }
 
-        /* --- Ana Etkinlik Alanı (16:9 ve 9:16) --- */
+        /* --- Ana Etkinlik Alanı --- */
         .activity-container {
             position: relative;
             background: #ffffff;
@@ -43,13 +43,14 @@
             max-width: calc(90vh * 16 / 9); /* 16:9 */
         }
         
-        /* --- Geri Tuşu (Header İçin) --- */
+        /* --- Header ve Düğmeler --- */
         .back-button-container {
             grid-area: back;
             display: flex;
             justify-content: flex-end; 
+            align-items: center; 
         }
-        .back-button {
+        .back-button, #fullscreen-btn {
             background: #f0f0f0;
             color: #555;
             border: 1px solid #ccc;
@@ -58,45 +59,62 @@
             width: clamp(40px, 8vmin, 55px);
             height: clamp(40px, 8vmin, 55px);
             padding: 0;
-            text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0; 
         }
-        .back-button:hover {
+        .back-button {
+            text-decoration: none;
+        }
+        #fullscreen-btn {
+             margin-left: 10px; 
+        }
+        .back-button:hover, #fullscreen-btn:hover {
             background: #e0e0e0;
         }
-        .back-button svg {
+        .back-button svg, #fullscreen-btn svg {
             width: clamp(24px, 5vmin, 30px);
             height: clamp(24px, 5vmin, 30px);
             fill: currentColor;
         }
+        
+        #fullscreen-btn .icon-open { display: block; }
+        #fullscreen-btn .icon-close { display: none; }
+        body.fullscreen #fullscreen-btn .icon-open { display: none; }
+        body.fullscreen #fullscreen-btn .icon-close { display: block; }
+
+        body.fullscreen .activity-container {
+            width: 100vw;
+            height: calc(100vw * 9 / 16); 
+            max-height: 100vh;
+            max-width: calc(100vh * 16 / 9);
+            border-radius: 0;
+            box-shadow: none;
+        }
 
 
-        /* --- Başlık ve İlerleme Çubuğu (Simetrik 3 Sütun) --- */
+        /* --- Başlık ve İlerleme --- */
         .header {
             padding: 15px 25px;
             border-bottom: 1px solid #dee2e6;
             display: grid;
-            /* 3 Sütunlu simetrik alan: Sağ(200) | Orta(1fr) | Sol(200) */
             grid-template-areas: "progress instruction back"; 
             grid-template-columns: 200px 1fr 200px;
             align-items: center;
             gap: 20px;
         }
         
-        /* h2 (قيمي) kaldırıldığı için stil bloğu silindi */
-        
-        #instruction-text { /* Yönerge (Ortada) */
+        #instruction-text { 
             grid-area: instruction;
             text-align: center; 
-            font-size: 2.2rem; /* YAZI BOYUTU BÜYÜTÜLDÜ */
+            font-size: 2.2rem; 
             font-weight: 700;
             color: #555;
-            /* Kutu stilleri kaldırıldı */
+            font-family: var(--font-arabic);
         }
         
-        .progress-container { /* İlerleme Çubuğu (Sağda) */
+        .progress-container { 
             grid-area: progress;
             display: flex;
             align-items: center;
@@ -127,7 +145,7 @@
         }
 
 
-        /* --- Asıl Etkinlik Alanı --- */
+        /* --- Etkinlik Alanı --- */
         .activity-area {
             flex-grow: 1;
             padding: 20px;
@@ -137,7 +155,7 @@
             overflow-y: auto;
         }
 
-        /* --- Soru Tipi: Sıralama (Scramble) --- */
+        /* --- Cümle Sıralama --- */
         .scramble-container {
             display: flex;
             flex-direction: column;
@@ -152,7 +170,9 @@
             background: var(--bg-light);
             display: flex;
             flex-wrap: wrap;
-            align-content: flex-start;
+            align-content: center; 
+            flex-grow: 1; 
+            transition: all 0.3s ease;
         }
         .drop-zone {
             border-style: solid;
@@ -162,8 +182,24 @@
         }
         .drag-zone {
              justify-content: center;
-             flex-grow: 1;
         }
+        
+        /* --- Kutu Efektleri --- */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .drop-zone-correct {
+            border-color: var(--success-color);
+            background-color: #f0f9f2; 
+        }
+        .drop-zone-incorrect {
+            border-color: var(--danger-color);
+            background-color: #fcf2f2; 
+            animation: shake 0.4s ease-in-out;
+        }
+        
         .word-item {
             padding: 12px 20px;
             color: white;
@@ -171,21 +207,27 @@
             font-weight: 700;
             margin: 8px;
             border-radius: 8px;
-            cursor: grab;
+            cursor: grab; 
             user-select: none;
             transition: all 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
-        .word-item:hover {
-            filter: brightness(85%);
+        .word-item[draggable="true"] {
+            cursor: grab;
         }
-        .word-item.dragging {
-            opacity: 0.5;
+        .word-item[draggable="true"]:active {
             cursor: grabbing;
         }
+        .word-item[draggable="false"] {
+            cursor: default;
+        }
         
-        #check-scramble-btn, #reset-scramble-btn {
+        
+        .word-item:hover { filter: brightness(85%); }
+        .word-item.dragging { opacity: 0.5; cursor: grabbing; }
+        
+        /* --- Kontrol Butonları --- */
+        #check-scramble-btn, #reset-scramble-btn, #next-activity-btn {
             padding: 15px 30px;
             font-size: 2rem; 
             font-family: var(--font-arabic);
@@ -195,6 +237,9 @@
             cursor: pointer;
             transition: background-color 0.2s;
             margin: 5px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
         }
         #check-scramble-btn {
             background-color: var(--success-color);
@@ -204,35 +249,27 @@
             background-color: var(--danger-color);
             color: white;
         }
+        #next-activity-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0; 
+            width: clamp(55px, 10vmin, 70px); 
+            height: clamp(55px, 10vmin, 70px);
+            border-radius: 50%; 
+        }
+        #next-activity-btn svg {
+            width: clamp(30px, 6vmin, 40px);
+            height: clamp(30px, 6vmin, 40px);
+            fill: currentColor;
+        }
+
         .scramble-controls {
             display: flex;
             justify-content: center;
             margin-top: 15px;
+            flex-shrink: 0;
+            transition: all 0.3s ease; 
         }
-
-        /* --- Geri Bildirim Ekranı (✔ / ❌) --- */
-        .feedback-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 15rem;
-            z-index: 200;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .feedback-overlay.show {
-            visibility: visible;
-            opacity: 1;
-        }
-        .feedback-overlay .correct { color: var(--success-color); }
-        .feedback-overlay .incorrect { color: var(--danger-color); }
         
         /* --- Bitiş Ekranı --- */
         #finish-screen {
@@ -244,12 +281,9 @@
             align-items: center;
             justify-content: center;
             height: 100%;
+            font-family: var(--font-arabic);
         }
-        #finish-screen p {
-            font-size: 3.5rem; 
-            margin: 10px 0;
-        }
-        
+        #finish-screen p { font-size: 3.5rem; margin: 10px 0; }
         .score-display {
             display: flex;
             gap: 30px;
@@ -257,15 +291,9 @@
             margin: 20px 0;
             direction: ltr;
         }
-        .score-item {
-            font-weight: 700;
-        }
-        .score-correct {
-            color: var(--success-color);
-        }
-        .score-incorrect {
-            color: var(--danger-color);
-        }
+        .score-item { font-weight: 700; }
+        .score-correct { color: var(--success-color); }
+        .score-incorrect { color: var(--danger-color); }
 
         #replay-button {
             font-size: 4.5rem; 
@@ -275,15 +303,11 @@
             padding: 10px;
             border-radius: 50%;
             transition: transform 0.2s ease, background-color 0.2s ease;
+            font-family: var(--font-arabic);
         }
-        #replay-button:hover {
-            transform: rotate(-90deg);
-            background-color: #f0f0f0;
-        }
+        #replay-button:hover { transform: rotate(-90deg); background-color: #f0f0f0; }
         
-        /* --- (Quiz CSS'i kaldırıldı) --- */
-
-        /* --- Mobil Düzen (Simetrik Başlık) --- */
+        /* --- Mobil Düzen --- */
         @media (orientation: portrait) {
             .activity-container {
                 width: 95vw;
@@ -293,8 +317,6 @@
             }
 
             .header {
-                /* Üst: Sağ(İlerleme) | Sol(Geri) */
-                /* Alt: Yönerge */
                 grid-template-areas: 
                     "progress back"
                     "instruction instruction";
@@ -303,46 +325,32 @@
                 padding: 10px 15px;
             }
 
-            .progress-container {
-                width: auto; 
-                justify-content: flex-start; /* İlerleme sağda */
-            }
-            
-            .back-button-container {
-                justify-content: flex-end; /* Geri tuşu solda */
-            }
-            
-            #instruction-text {
-                font-size: 1.4rem; /* Mobil için büyütüldü */
-                min-width: unset;
-                justify-self: center;
-            }
+            .progress-container { width: auto; justify-content: flex-start; }
+            .back-button-container { justify-content: flex-end; }
+            #instruction-text { font-size: 1.4rem; min-width: unset; justify-self: center; }
+            #progress-display { font-size: 1.2rem; }
 
-            #progress-display {
-                font-size: 1.2rem; 
-            }
-
-
-            /* Mobil Cümle Sıralama */
-            .scramble-container .word-item {
-                font-size: 1.8rem; 
-                padding: 8px 15px; 
-                margin: 5px;
-            }
-            .scramble-container .drop-zone {
-                font-size: 1.8rem; 
-                min-height: 80px;  
-            }
-             .scramble-container .drag-zone {
-                min-height: 100px; 
-            }
-            .scramble-container .scramble-controls {
-                margin-top: 5px; 
-            }
+            .scramble-container .word-item { font-size: 1.8rem; padding: 8px 15px; margin: 5px; }
+            .scramble-container .drop-zone { font-size: 1.8rem; min-height: 80px;  }
+            .scramble-container .drag-zone { min-height: 100px; }
+            .scramble-container .scramble-controls { margin-top: 5px; }
             .scramble-container #check-scramble-btn,
-            .scramble-container #reset-scramble-btn {
+            .scramble-container #reset-scramble-btn,
+            .scramble-container #next-activity-btn { 
                 font-size: 1.5rem; 
-                padding: 10px 20px;
+                padding: 10px 20px; 
+            }
+            .scramble-container #next-activity-btn {
+                padding: 0;
+                width: 55px;
+                height: 55px;
+            }
+            
+            body.fullscreen .activity-container {
+                width: 100vw;
+                height: calc(100vw * 16 / 9);
+                max-height: 100vh;
+                max-width: calc(100vh * 9 / 16);
             }
         }
 
@@ -363,6 +371,15 @@
             <div id="instruction-text">...</div>
 
             <div class="back-button-container">
+                <button id="fullscreen-btn">
+                    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
+                    </svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                    </svg>
+                </button>
+                
                 <a href="index.html" class="back-button">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -374,68 +391,75 @@
         <div class="activity-area" id="activity-area">
             </div>
 
-        <div class="feedback-overlay" id="feedback-overlay">
-            <span id="feedback-icon"></span>
-        </div>
-
     </div>
 
     <script>
-        // --- ETKİNLİK VERİLERİ (10. SINIF - 1. ÜNİTE: DEĞERLERİM) ---
-        // Sadece cümle sıralama (scramble)
-        
+        // --- ETKİNLİK VERİLERİ (Çoklu Varyasyonlar Eklendi) ---
         const activitiesData = [
-            // 1. Ders: Akrabalarım (أَقارِبي)
-            { s: "مَا مِهْنَتُهُمَا؟", w: ["مَا", "مِهْنَتُهُمَا؟"] },
-            { s: "مَا مِهْنَتُهُمْ؟", w: ["مَا", "مِهْنَتُهُمْ؟"] },
-            { s: "مَاذَا يَفْعَلُ؟", w: ["مَاذَا", "يَفْعَلُ؟"] },
-            { s: "أَيْنَ يَعْمَلُ؟", w: ["أَيْنَ", "يَعْمَلُ؟"] },
-            { s: "هَذَان مُهَنْدِسان", w: ["هَذَان", "مُهَنْدِسان"] },
-            { s: "هَؤُلَاء مُهَنْدِسون", w: ["هَؤُلَاء", "مُهَنْدِسون"] },
-            { s: "هُمَا يَعْمَلَان", w: ["هُمَا", "يَعْمَلَان"] },
-            { s: "وَأَنَا أَيْضًا", w: ["وَأَنَا", "أَيْضًا"] },
-            { s: "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ", w: ["رَبَّنَا", "اغْفِرْ", "لِي", "وَلِوَالِدَيَّ"] },
-
-            // 2. Ders: Güzel Davranışlarım (المُعَامَلات الحَسَنَة)
-            { s: "هُمْ يَذْهَبُونَ", w: ["هُمْ", "يَذْهَبُونَ"] },
-            { s: "هُنَّ يَذْهَبْنَ", w: ["هُنَّ", "يَذْهَبْنَ"] },
-            { s: "يَجِبُ أَنْ يَكُونَ", w: ["يَجِبُ", "أَنْ", "يَكُونَ"] },
-            { s: "يَجِبُ أَلَّا يَكُونَ", w: ["يَجِبُ", "أَلَّا", "يَكُونَ"] },
-            { s: "كُنْ صَادِqًا", w: ["كُنْ", "صَادِقًا"] },
-            { s: "لَا تَكُنْ كَاذِبًا", w: ["لَا", "تَكُنْ", "كَاذِبًا"] },
-            { s: "جَزَاك الله خَيْرًا", w: ["جَزَاك", "الله", "خَيْرًا"] },
-            { s: "بارَكَ اللهُ فِيك", w: ["بارَكَ", "اللهُ", "فِيك"] },
-            { s: "كُلُّ عَامٍ وَأَنْتُمْ بِخَيْرٍ", w: ["كُلُّ", "عَامٍ", "وَأَنْتُمْ", "بِخَيْرٍ"] },
-            { s: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ صَدَقَةٌ", w: ["تَبَسُّمُكَ", "فِي", "وَجْهِ", "أَخِيكَ", "صَدَقَةٌ"] }
+            { s: ["يَجِبُ عَلى المُسْلِم أَنْ يَكونَ صادِقًا", "عَلى المُسْلِم يَجِبُ أَنْ يَكونَ صادِقًا", "أَنْ يَكونَ صادِقًا يَجِبُ عَلى المُسْلِم"], w: ["يَجِبُ", "عَلى", "المُسْلِم", "أَنْ", "يَكونَ", "صادِقًا"] },
+            { s: ["الأَمانَة مِنْ صِفات المُؤْمِن", "مِنْ صِفات المُؤْمِن الأَمانَة"], w: ["الأَمانَة", "مِنْ", "صِفات", "المُؤْمِن"] },
+            { s: ["الإِخْلاص في العَمَل يُؤَدّي إِلى النَّجاح", "يُؤَدّi الإِخْلاص في العَمَل إِلى النَّجاح", "في العَمَل الإِخْلاص يُؤَدّي إِلى النَّجاح"], w: ["الإِخْلاص", "في", "العَمَل", "يُؤَدّي", "إِلى", "النَّجاح"] },
+            { s: ["التَّعاوُن يُقَوّي المُجْتَمَع", "يُقَوّي التَّعاوُن المُجْتَمَع"], w: ["التَّعاوُن", "يُقَوّي", "المُجْتَمَع"] },
+            { s: ["نُحِبُّ أَصْدِقاءَنا وَنَحْتَرِمُهُم"], w: ["نُحِبُّ", "أَصْدِقاءَنا", "وَنَحْتَرِمُهُم"] },
+            { s: ["يَجِبُ عَلَيْنا أَنْ نُساعِدَ الكِبار وَنَرْحَمَ الصِّغار", "عَلَيْنا يَجِبُ أَنْ نُساعِدَ الكِبار وَنَرْحَمَ الصِّغار", "أَنْ نُساعِدَ الكِبار وَنَرْحَمَ الصِّغار يَجِبُ عَلَيْنا"], w: ["يَجِبُ", "عَلَيْنا", "أَنْ", "نُساعِدَ", "الكِبار", "وَنَرْحَمَ", "الصِّغار"] },
+            { s: ["مَنْ يَشْكُرُ الله يَزْدَدْ خَيْرًا"], w: ["مَنْ", "يَشْكُرُ", "الله", "يَزْدَدْ", "خَيْرًا"] },
+            { s: ["أَعْتَذِرُ عِنْد الخَطَإ", "عِنْد الخَطَإ أَعْتَذِرُ"], w: ["أَعْتَذِرُ", "عِنْد", "الخَطَإ"] },
+            { s: ["المُسْلِم لا يَكْذِبُ وَلا يُؤْذي أَحَدًا", "لا يَكْذِبُ المُسْلِم وَلا يُؤْذي أَحَدًا"], w: ["المُسْلِم", "لا", "يَكْذِبُ", "وَلا", "يُؤْذي", "أَحَدًا"] },
+            { s: ["يَتَكَلَّمُ الطّالِب بِأَدَب مَع المُدَرِّس", "الطّالِب يَتَكَلَّمُ بِأَدَب مَع المُدَرِّس", "بِأَدَب يَتَكَلَّمُ الطّالِب مَع المُدَرِّس", "مَع المُدَرِّس يَتَكَلَّمُ الطّالِب بِأَدَب"], w: ["يَتَكَلَّمُ", "الطّالِب", "بِأَدَب", "مَع", "المُدَرِّس"] },
+            { s: ["يُسَلِّمُ الطّالِب عَلى أَصْدِقائِهِ في الصَّباح", "الطّالِب يُسَلِّمُ عَلى أَصْدِقائِهِ في الصَّباح", "في الصَّباح يُسَلِّمُ الطّالِب عَلى أَصْدِقائِهِ", "عَلى أَصْدِقائِهِ يُسَلِّمُ الطّالِب في الصَّباح"], w: ["يُسَلِّمُ", "الطّالِب", "عَلى", "أَصْدِقائِهِ", "في", "الصَّباح"] },
+            { s: ["يَبْتَسِمُ دائِمًا وَيَحْتَرِمُ الآخَرين", "دائِمًا يَبْتَسِمُ وَيَحْتَرِمُ الآخَرين"], w: ["يَبْتَسِمُ", "دائِمًا", "وَيَحْتَرِمُ", "الآخَرين"] },
+            { s: ["لا يَغْضَبُ المُؤْمِن عِنْدَ المُشْكِلَة", "المُؤْمِن لا يَغْضَبُ عِنْدَ المُشْكِلَة", "عِنْدَ المُشْكِلَة لا يَغْضَبُ المُؤْمِن"], w: ["لا", "يَغْضَبُ", "المُؤْمِن", "عِنْدَ", "المُشْكِلَة"] },
+            { s: ["الصَّبْرُ مِفْتَاحُ الْفَرَجِ", "مِفْتَاحُ الْفَرَجِ الصَّبْرُ"], w: ["الصَّبْرُ", "مِفْتَاحُ", "الْفَرَجِ"] },
+            { s: ["العَدْل أَساس المُجْتَمَع", "أَساس المُجْتَمَع العَدْل"], w: ["العَدْل", "أَساس", "المُجْتَمَع"] },
+            { s: ["الأُسْرَة السَّعيدَة تَعيشُ في حُبّ وَاحْتِرَام", "تَعيشُ الأُسْرَة السَّعيدَة في حُبّ وَاحْتِرَام", "في حُبّ وَاحْتِرَام تَعيشُ الأُسْرَة السَّعيدَة"], w: ["الأُسْرَة", "السَّعيدَة", "تَعيشُ", "في", "حُبّ", "وَاحْتِرَام"] },
+            { s: ["يُساعِدُ الوَلَدُ أَباهُ في البَيْت", "يُساعِدُ الوَلَدُ في البَيْت أَباهُ", "الوَلَدُ يُساعِدُ أَباهُ في البَيْت", "في البَيْت يُساعِدُ الوَلَدُ أَباهُ"], w: ["يُساعِدُ", "الوَلَدُ", "أَباهُ", "في", "البَيْت"] },
+            { s: ["تُعينُ البِنْت أُمَّها في المَطْبَخ", "تُعينُ البِنْت في المَطْبَخ أُمَّها", "البِنْت تُعينُ أُمَّها في المَطْبَخ", "في المَطْبَخ تُعينُ البِنْت أُمَّها"], w: ["تُعينُ", "البِنْت", "أُمَّها", "في", "المَطْبَخ"] },
+            { s: ["يُقَبِّلُ الأَبْناء يَدَ الوالِدَيْن كُلّ صَباح", "الأَبْناء يُقَبِّلُ يَدَ الوالِدَيْن كُلّ صَباح", "كُلّ صَباح يُقَبِّلُ الأَبْناء يَدَ الوالِدَيْن"], w: ["يُقَبِّلُ", "الأَبْناء", "يَدَ", "الوالِدَيْن", "كُلّ", "صَباح"] },
+            { s: ["نَزورُ الأَقارِب في نِهايَة الأُسْبوع", "في نِهايَة الأُسْبوع نَزورُ الأَقارِب"], w: ["نَزورُ", "الأَقارِب", "في", "نِهايَة", "الأُسْبوع"] },
+            { s: ["يَجْتَمِعُ أَفْراد الأُسْرَة عَلى مائِدَة الطَّعام", "أَفْراد الأُسْرَة يَجْتَمِعُ عَلى مائِدَة الطَّعام", "عَلى مائِدَة الطَّعام يَجْتَمِعُ أَفْراد الأُسْرَة"], w: ["يَجْتَمِعُ", "أَفْراد", "الأُسْرَة", "عَلى", "مائِدَة", "الطَّعام"] },
+            { s: ["يَتَحَدَّثونَ بِحُبّ وَيَضْحَكونَ مَعًا", "بِحُبّ يَتَحَدَّثونَ وَيَضْحَكونَ مَعًا"], w: ["يَتَحَدَّثونَ", "بِحُبّ", "وَيَضْحَكونَ", "مَعًا"] },
+            { s: ["يَحْتَرِمُ الأَبْناء الكِبار وَيَرْحَمونَ الصِّغار", "الأَبْناء يَحْتَرِمُ الكِبار وَيَرْحَمونَ الصِّغار"], w: ["يَحْتَرِمُ", "الأَبْناء", "الكِبار", "وَيَرْحَمونَ", "الصِّغار"] },
+            { s: ["البَيْت الَّذي فيهِ مَحَبَّة هُوَ البَيْت السَّعيد"], w: ["البَيْت", "الَّذي", "فيهِ", "مَحَبَّة", "هُوَ", "البَيْت", "السَّعيد"] },
+            { s: ["الوالِدان يَسْعَدان بِأَبْنائِهِما المُؤَدَّبين", "يَسْعَدان الوالِدان بِأَبْنائِهِما المُؤَدَّبين"], w: ["الوالِدان", "يَسْعَدان", "بِأَبْنائِهِما", "المُؤَدَّبين"] },
+            { s: ["نُساعِدُ في تَنْظيف البَيْت كُلّ يَوْم", "في تَنْظيف البَيْت نُساعِدُ كُلّ يَوْم", "كُلّ يَوْم نُساعِدُ في تَنْظيف البَيْت"], w: ["نُساعِدُ", "في", "تَنْظيف", "البَيْت", "كُلّ", "يَوْم"] },
+            { s: ["الأُسْرَة المُتَحابَّة تكون قَوِيَّة ومُتَفاهِمَة", "تكون الأُسْرَة المُتَحابَّة قَوِيَّة ومُتَفاهِمَة"], w: ["الأُسْرَة", "المُتَحابَّة", "تكون", "قَوِيَّة", "ومُتَفاهِمَة"] }
         ];
-
 
         // --- Gerekli Elementler ---
         const activityArea = document.getElementById('activity-area');
         const instructionText = document.getElementById('instruction-text');
         const progressDisplay = document.getElementById('progress-display');
         const progressBar = document.getElementById('progress-bar');
-        const feedbackOverlay = document.getElementById('feedback-overlay');
-        const feedbackIcon = document.getElementById('feedback-icon');
 
         // --- Renk Paleti ---
         const colorPalette = [
             '#007bff', '#dc3545', '#28a745', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14'
         ];
 
-        // --- Ses Değişkenleri ---
         let audioCtx = null;
-
-        // --- Durum Değişkenleri ---
         let activityQueue = [];
         let currentActivityIndex = 0;
-        let grandTotalActivities = 0;
+        let grandTotalActivities = 0; 
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
-        let currentTouchEventItem = null; // Dokunma için
+        let currentTouchEventItem = null; 
+        
+        let currentTour = 1; // YENİ: Tur sayacı
+        
+        // --- Tam Ekran ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Tam ekrana geçilemedi: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
 
-
-        // --- SES FONKSİYONLARI ---
+        // --- Ses (Sinüs Dalgası) ---
         function initAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -448,36 +472,37 @@
             const gainNode = audioCtx.createGain();
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
-            oscillator.type = 'sine';
             const now = audioCtx.currentTime;
 
-            if (type === 'touch') {
+            if (type === 'touch') { 
+                oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(200, now);
                 gainNode.gain.setValueAtTime(0.1, now);
                 gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
                 oscillator.start(now);
                 oscillator.stop(now + 0.1);
-            } else if (type === 'correct') {
+            } else if (type === 'correct') { 
+                oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(440, now);
-                oscillator.frequency.linearRampToValueAtTime(880, now + 0.2);
+                oscillator.frequency.linearRampToValueAtTime(880, now + 0.2); 
                 gainNode.gain.setValueAtTime(0.15, now);
                 gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
                 oscillator.start(now);
                 oscillator.stop(now + 0.2);
-            } else if (type === 'incorrect') {
-                oscillator.frequency.setValueAtTime(300, now);
-                oscillator.frequency.linearRampToValueAtTime(150, now + 0.3);
+            } else if (type === 'incorrect') { 
+                // YENİ: Hata sesi güncellendi
+                oscillator.type = 'square'; 
+                oscillator.frequency.setValueAtTime(164.81, now); 
                 gainNode.gain.setValueAtTime(0.15, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.2); 
                 oscillator.start(now);
-                oscillator.stop(now + 0.3);
+                oscillator.stop(now + 0.2); 
             }
         }
         
         document.body.addEventListener('click', initAudioContext, { once: true });
 
-
-        // --- Fisher-Yates Karıştırma Fonksiyonu ---
+        // --- Karıştırıcı ---
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -486,29 +511,64 @@
             return array;
         }
 
-        // --- Aktiviteleri (SADECE SCRAMBLE) hazırla ---
+        // --- YENİ: Aşamalı Zorluk (Tur) Fonksiyonu ---
         function createActivityQueue() {
-            // Veri yapısı değişti, artık doğrudan karıştırabiliriz
-            activityQueue = shuffle([...activitiesData]);
+            let sentencesForThisRound = [];
+            
+            if (currentTour == 1) {
+                // 1. Tur: 3-4 kelime
+                sentencesForThisRound = activitiesData.filter(item => item.w.length == 3 || item.w.length == 4);
+            } else if (currentTour == 2) {
+                // 2. Tur: 5-6 kelime
+                sentencesForThisRound = activitiesData.filter(item => item.w.length == 5 || item.w.length == 6);
+            } else {
+                // 3. Tur (ve sonrası): 7+ kelime
+                sentencesForThisRound = activitiesData.filter(item => item.w.length >= 7);
+                
+                // Eğer 7+ kelimelik yeterli soru yoksa (veya bittiyse),
+                // tüm listeyi al ve turu başa sar.
+                if (sentencesForThisRound.length < 5) { 
+                    sentencesForThisRound = [...activitiesData];
+                    currentTour = 0; // restartGame'de ++ olacağı için 0'a çekilir
+                }
+            }
+
+            // Seçilen zorluk grubunu karıştır ve 10 tane al
+            activityQueue = shuffle(sentencesForThisRound).slice(0, 10); 
             grandTotalActivities = activityQueue.length;
         }
 
-        // --- ETKİNLİK YÜKLEYİCİ (SADECE SCRAMBLE) ---
+        // --- Etkinlik Yükleyici ---
         function loadActivity() {
             activityArea.innerHTML = '';
             updateProgress();
             
             const activityData = activityQueue[currentActivityIndex]; 
-            
-            // Yönerge metni isteğinize göre güncellendi
-            instructionText.textContent = "قِيَمي | رَتِّب الْكَلِمات لِتَكْوين جُمْلَة‫.‬";
-            
+            // Yönerge metni güncellendi
+            instructionText.textContent = "قِيَمي | رَتِّب الكَلِمات لِتَكْوين جُمْلَة‫.‬";
             buildScramble(activityData);
         }
         
-        // --- Sıralama Arayüzünü Oluştur ---
-        function buildScramble(data) {
+        // --- Tıklayarak Kelime Taşıma ---
+        function handleWordClick(e) {
+            const wordItem = e.currentTarget; 
             
+            if (wordItem.draggable === false) return;
+
+            const dropZone = document.getElementById('drop-zone');
+            const dragZone = document.getElementById('drag-zone');
+
+            if (wordItem.parentElement === dragZone) {
+                dropZone.appendChild(wordItem);
+            } else if (wordItem.parentElement === dropZone) {
+                dragZone.appendChild(wordItem);
+            }
+            
+            playSound('touch'); 
+        }
+
+        // --- Arayüzü Oluştur ---
+        function buildScramble(data) {
             const scrambleContainer = document.createElement('div');
             scrambleContainer.className = 'scramble-container';
 
@@ -528,6 +588,9 @@
                 wordItem.id = `word-${index}`;
                 wordItem.draggable = true;
                 wordItem.style.backgroundColor = colorPalette[index % colorPalette.length];
+                
+                wordItem.addEventListener('click', handleWordClick);
+                
                 dragZone.appendChild(wordItem);
             });
 
@@ -536,7 +599,7 @@
             
             const checkButton = document.createElement('button');
             checkButton.id = 'check-scramble-btn';
-            checkButton.textContent = '✔ تَحَقَّق';
+            checkButton.textContent = '✔ تَحَقَّقْ'; // Metin güncellendi
             checkButton.onclick = () => {
                 playSound('touch');
                 checkScrambleAnswer(data.s); 
@@ -547,11 +610,21 @@
             resetButton.textContent = '🔄 إِعادَة'; 
             resetButton.onclick = () => {
                 playSound('touch');
-                loadActivity(); // Sadece mevcut etkinliği yeniden yükler
+                loadActivity(); 
+            };
+            
+            const nextButton = document.createElement('button');
+            nextButton.id = 'next-activity-btn';
+            nextButton.style.display = 'none'; 
+            nextButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h12.17l-5.59-5.59L12 4l8 8-8 8-1.41-1.41L16.17 13H4v-2z"/></svg>`; 
+            nextButton.onclick = () => {
+                playSound('touch');
+                nextActivity();
             };
 
-            controls.appendChild(resetButton);
             controls.appendChild(checkButton);
+            controls.appendChild(resetButton);
+            controls.appendChild(nextButton); 
             
             scrambleContainer.appendChild(dropZone);
             scrambleContainer.appendChild(dragZone);
@@ -560,52 +633,53 @@
 
             addDragDropListeners();
         }
+        
+        // --- Sürüklemeyi ve Tıklamayı Devre Dışı Bırak/Aktif Et ---
+        function toggleWordDrag(enable) {
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.draggable = enable;
+                item.style.cursor = enable ? 'grab' : 'default'; 
+                if (!enable) {
+                    item.classList.remove('dragging'); 
+                }
+            });
+            currentTouchEventItem = null; 
+        }
 
-        // --- Sıralama Cevap Kontrolü ---
+        // --- Cevap Kontrolü (Efektlerle) ---
         function checkScrambleAnswer(correctAnswers) {
             const dropZone = document.getElementById('drop-zone');
             const words = Array.from(dropZone.children).map(item => item.textContent);
             const userAnswer = words.join(' ');
             
-            let isCorrect = false;
-            if (Array.isArray(correctAnswers)) {
-                isCorrect = correctAnswers.includes(userAnswer);
-            } else {
-                isCorrect = (userAnswer === correctAnswers);
-            }
+            const isCorrect = correctAnswers.includes(userAnswer);
             
-            showFeedback(isCorrect);
+            dropZone.classList.remove('drop-zone-correct', 'drop-zone-incorrect');
+            
             if (isCorrect) {
                 scoreCorrect++;
-                setTimeout(nextActivity, 1200);
+                playSound('correct'); 
+                dropZone.classList.add('drop-zone-correct'); 
+                
+                document.getElementById('check-scramble-btn').style.display = 'none';
+                document.getElementById('reset-scramble-btn').style.display = 'none';
+                document.getElementById('next-activity-btn').style.display = 'flex';
+                
+                toggleWordDrag(false); 
+                
             } else {
                 scoreIncorrect++;
-            }
-        }
-
-        // --- Geri Bildirim (✔ / ❌) ---
-        function showFeedback(isCorrect) {
-            if (isCorrect) {
-                feedbackIcon.textContent = '✔';
-                feedbackIcon.className = 'correct';
-                playSound('correct');
-            } else {
-                feedbackIcon.textContent = '❌';
-                feedbackIcon.className = 'incorrect';
-                playSound('incorrect');
-            }
-            feedbackOverlay.classList.add('show');
-            
-            if (!isCorrect) {
+                playSound('incorrect'); 
+                dropZone.classList.add('drop-zone-incorrect'); 
+                
                 setTimeout(() => {
-                    feedbackOverlay.classList.remove('show');
-                }, 1200);
+                    dropZone.classList.remove('drop-zone-incorrect');
+                }, 400); 
             }
         }
 
-        // --- Sonraki Etkinliğe Geçiş ---
+        // --- Sonraki Etkinlik ---
         function nextActivity() {
-            feedbackOverlay.classList.remove('show');
             currentActivityIndex++; 
 
             if (currentActivityIndex === grandTotalActivities) {
@@ -635,39 +709,37 @@
             progressBar.style.backgroundColor = 'var(--success-color)';
         }
         
-        // --- Oyunu Yeniden Başlat Fonksiyonu ---
+        // --- Yeniden Başlat ---
         function restartGame() {
             playSound('touch');
-            
             scoreCorrect = 0;
             scoreIncorrect = 0;
-            currentActivityIndex = 0;
+            currentActivityIndex = 0; 
+            currentTour++; // YENİ: Sonraki tura geç
             
             progressBar.style.width = '0%';
             progressBar.style.backgroundColor = 'var(--accent-color)';
             
-            createActivityQueue(); 
+            createActivityQueue(); // YENİ: Bir sonraki turun sorularını yükle
             loadActivity(); 
         }
-
 
         // --- İlerleme Güncelleme ---
         function updateProgress() {
             if (grandTotalActivities === 0) {
-                 progressDisplay.textContent = `0 / 0`;
+                 progressDisplay.textContent = `0 / ${grandTotalActivities}`;
                  return;
             }
-            
             if (currentActivityIndex === grandTotalActivities) return; 
 
-            const currentTotal = currentActivityIndex + 1;
-            const percentage = (currentActivityIndex / grandTotalActivities) * 100;
+            const currentQuestionNum = currentActivityIndex + 1;
+            const progressPercent = (currentActivityIndex / grandTotalActivities) * 100;
             
-            progressDisplay.textContent = `${currentTotal} / ${grandTotalActivities}`;
-            progressBar.style.width = `${percentage}%`;
+            progressDisplay.textContent = `${currentQuestionNum} / ${grandTotalActivities}`;
+            progressBar.style.width = `${progressPercent}%`;
         }
         
-        // --- Sürükle-Bırak Fonksiyonları (Basit Sona Ekleme) ---
+        // --- Sürükle-Bırak Olayları ---
         function addDragDropListeners() {
             const draggables = document.querySelectorAll('.word-item');
             const containers = [
@@ -675,44 +747,46 @@
                 document.getElementById('drag-zone')
             ];
 
-            // 1. Fare (Mouse) Sürükleme Olayları
+            // 1. Fare Olayları
             draggables.forEach(draggable => {
                 draggable.addEventListener('dragstart', (e) => {
-                    draggable.classList.add('dragging');
-                    e.dataTransfer.setData('text/plain', draggable.id);
+                    if (!e.currentTarget.draggable) { 
+                        e.preventDefault();
+                        return;
+                    }
+                    e.currentTarget.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', e.currentTarget.id);
                 });
                 draggable.addEventListener('dragend', (e) => {
-                    draggable.classList.remove('dragging');
+                    e.currentTarget.classList.remove('dragging');
                 });
             });
 
-            // 2. Fare (Mouse) Bırakma Olayları
+            // 2. Bırakma Olayları
             containers.forEach(container => {
-                container.addEventListener('dragover', (e) => {
-                    e.preventDefault(); // Bırakmaya izin ver
-                });
-
+                container.addEventListener('dragover', (e) => { e.preventDefault(); });
                 container.addEventListener('drop', (e) => {
                     e.preventDefault();
                     const id = e.dataTransfer.getData('text/plain');
                     const draggable = document.getElementById(id);
-                    if (draggable) {
+                    if (draggable && draggable.draggable) { 
                         container.appendChild(draggable);
                         draggable.classList.remove('dragging');
                     }
                 });
             });
             
-            // 3. Dokunmatik Ekran Sürükleme Olayları
+            // 3. Dokunmatik Olayları
             draggables.forEach(draggable => {
                 draggable.addEventListener('touchstart', (e) => {
-                    currentTouchEventItem = e.target;
+                    if (!e.currentTarget.draggable) return; 
+                    currentTouchEventItem = e.currentTarget;
                     currentTouchEventItem.classList.add('dragging');
                 }, { passive: true });
             });
         }
         
-        // Global Dokunma Olayları (Tüm sayfa için)
+        // Global Dokunmatik Dinleyicileri
         function setupGlobalTouchListeners() {
              document.addEventListener('touchmove', (e) => {
                 if (!currentTouchEventItem) return;
@@ -721,49 +795,61 @@
 
             document.addEventListener('touchend', (e) => {
                 if (!currentTouchEventItem) return;
-
                 const touch = e.changedTouches[0];
                 currentTouchEventItem.style.visibility = 'hidden';
                 const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
                 currentTouchEventItem.style.visibility = 'visible';
-
                 let validDropZone = null;
                 if (dropTarget) {
-                    if (dropTarget.classList.contains('drop-zone')) {
-                        validDropZone = dropTarget;
-                    } else if (dropTarget.classList.contains('drag-zone')) {
-                        validDropZone = dropTarget;
-                    } 
-                    else if (dropTarget.closest('.drop-zone')) { 
-                        validDropZone = dropTarget.closest('.drop-zone');
-                    } else if (dropTarget.closest('.drag-zone')) {
-                        validDropZone = dropTarget.closest('.drag-zone');
-                    }
+                    if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
+                    else if (dropTarget.classList.contains('drag-zone')) validDropZone = dropTarget;
+                    else if (dropTarget.closest('.drop-zone')) validDropZone = dropTarget.closest('.drop-zone');
+                    else if (dropTarget.closest('.drag-zone')) validDropZone = dropTarget.closest('.drag-zone');
                 }
-
-                if (validDropZone) {
-                    validDropZone.appendChild(currentTouchEventItem);
-                }
-                
+                if (validDropZone) validDropZone.appendChild(currentTouchEventItem);
                 currentTouchEventItem.classList.remove('dragging');
                 currentTouchEventItem = null;
             });
         }
 
-
         // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
-             // Veri setindeki (varsa) küçük harf hatalarını düzelt
+             // Veri setini temizle
             activitiesData.forEach(round => {
-                round.w = round.w.map(word => word.replace('صَادِqًا', 'صَادِقًا'));
-                if (typeof round.s === 'string') {
-                    round.s = round.s.replace('صَادِqًا', 'صَادِقًا');
-                } else if (Array.isArray(round.s)) {
-                    round.s = round.s.map(s_item => s_item.replace('صَادِqًا', 'صَادِقًا'));
+                // (Hatalı harfleri düzelt)
+                round.w = round.w.map(word => 
+                    word.replace('يَسْعَdan', 'يَسْعَدان')
+                        .replace('الْفَرَJِ', 'الْفَرَجِ')
+                        .replace('tüinü', 'تُعينُ')
+                        .replace('المَطْبَx', 'المَطْبَخ')
+                        .replace('وَيَضْhَكونَ', 'وَيَضْحَكونَ')
+                );
+                round.s = round.s.map(s_item => 
+                    s_item.replace('يَسْعَdan', 'يَسْعَدان')
+                          .replace('الْفَرَJِ', 'الْفَرَجِ')
+                          .replace('tüinü', 'تُعينُ')
+                          .replace('المَطْبَx', 'المَطْبَخ')
+                          .replace('وَيَضْhَكونَ', 'وَيَضْحَكونَ')
+                );
+                // Noktaları kaldır
+                round.w = round.w.map(word => word.replace(/\.$/, ''));
+                round.s = round.s.map(s_item => s_item.replace(/\.$/, ''));
+            });
+            
+            // Tam Ekran
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', toggleFullScreen);
+            }
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    document.body.classList.add('fullscreen');
+                } else {
+                    document.body.classList.remove('fullscreen');
                 }
             });
             
-            createActivityQueue();
+            createActivityQueue(); // 1. Turu (kolay) yükle
             loadActivity();
             setupGlobalTouchListeners(); 
         });
