@@ -68,6 +68,7 @@
         .header-button-container {
             display: flex;
             justify-content: center; /* Butonları ortala */
+            align-items: center; /* YENİ EKLENDİ - Butonları dikeyde hizala */
         }
         .header-button-container.left { grid-area: replay; justify-content: flex-start; }
         .header-button-container.right { grid-area: back; justify-content: flex-end; }
@@ -86,6 +87,7 @@
             align-items: center;
             justify-content: center;
             font-size: 2.5rem; /* Emoji boyutu için */
+            flex-shrink: 0; /* YENİ EKLENDİ - Küçülmeyi engelle */
         }
         .icon-button:hover {
             background: #e0e0e0;
@@ -244,6 +246,48 @@
             background-color: #218838;
         }
 
+        /* --- YENİ EKLENDİ (Tam Ekran Düğmesi) --- */
+        #fullscreen-btn {
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #ccc;
+            border-radius: 1.5vmin;
+            cursor: pointer;
+            width: clamp(40px, 8vmin, 55px);
+            height: clamp(40px, 8vmin, 55px);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px; /* Diğerlerinden ayır */
+            margin-left: 10px;
+            flex-shrink: 0; /* Küçülmesini engelle */
+        }
+        #fullscreen-btn:hover {
+            background: #e0e0e0;
+        }
+        #fullscreen-btn svg {
+            width: clamp(24px, 5vmin, 30px);
+            height: clamp(24px, 5vmin, 30px);
+            fill: currentColor;
+        }
+        /* SVG Simgelerini gizle/göster */
+        #fullscreen-btn .icon-open { display: block; }
+        #fullscreen-btn .icon-close { display: none; }
+        body.fullscreen #fullscreen-btn .icon-open { display: none; }
+        body.fullscreen #fullscreen-btn .icon-close { display: block; }
+
+        /* --- Ana Konteynırın Tam Ekran Davranışı --- */
+        body.fullscreen .activity-container {
+            width: 100vw;
+            height: calc(100vw * 9 / 16); 
+            max-height: 100vh;
+            max-width: calc(100vh * 16 / 9);
+            border-radius: 0;
+            box-shadow: none;
+        }
+        /* --- / YENİ EKLENDİ --- */
+
 
         /* --- Mobil Düzen --- */
         @media (orientation: portrait) {
@@ -262,11 +306,23 @@
             #instruction-text { font-size: 1.8rem; } /* Font büyüdü */
             .icon-button { width: 45px; height: 45px; }
             
+            /* YENİ EKLENDİ (Mobil için tam ekran butonu boyutu) */
+            #fullscreen-btn { width: 45px; height: 45px; }
+            
             #game-board {
                 gap: 8px;
             }
             
             #next-level-button { font-size: 2.2rem; }
+
+            /* --- YENİ EKLENDİ (Mobil Dikey Tam Ekran Davranışı) --- */
+            body.fullscreen .activity-container {
+                width: 100vw;
+                height: calc(100vw * 16 / 9);
+                max-height: 100vh;
+                max-width: calc(100vh * 9 / 16);
+            }
+            /* --- / YENİ EKLENDİ --- */
         }
 
     </style>
@@ -283,6 +339,15 @@
             <div id="instruction-text">...</div>
             
             <div class="header-button-container right">
+                
+                <button id="fullscreen-btn">
+                    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
+                    </svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                    </svg>
+                </button>
                 <a href="index.html" class="icon-button">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -313,9 +378,9 @@
                 { id: 1, type: 'emoji', content: '👮‍♂️' },
                 { id: 2, type: 'word', content: 'المَسْجِد' },
                 { id: 2, type: 'emoji', content: '🕌' },
-                { id: 3, type: 'word', content: 'طَبِيب' },
+                { id: 3, type: 'word', content: 'طَبيب' },
                 { id: 3, type: 'emoji', content: '👨‍⚕️' },
-                { id: 4, type: 'word', content: 'سَيَّارَة' }, 
+                { id: 4, type: 'word', content: 'سَيّارَة' }, 
                 { id: 4, type: 'emoji', content: '🚗' },
                 { id: 5, type: 'word', content: 'المَدْرَسَة' },
                 { id: 5, type: 'emoji', content: '🏫' },
@@ -330,7 +395,7 @@
             [
                 { id: 9, type: 'word', content: 'قَلَم' },
                 { id: 9, type: 'emoji', content: '✏️' },
-                { id: 10, type: 'word', content: 'كِتَاب' },
+                { id: 10, type: 'word', content: 'كِتاب' },
                 { id: 10, type: 'emoji', content: '📖' },
                 { id: 11, type: 'word', content: 'بَيْت' },
                 { id: 11, type: 'emoji', content: '🏠' },
@@ -338,14 +403,14 @@
                 { id: 12, type: 'emoji', content: '🌙' },
                 { id: 13, type: 'word', content: 'شَمْس' },
                 { id: 13, type: 'emoji', content: '☀️' },
-                { id: 14, type: 'word', content: 'قِطَار' },
+                { id: 14, type: 'word', content: 'قِطار' },
                 { id: 14, type: 'emoji', content: '🚂' },
-                { id: 15, type: 'word', content: 'هَاتِف' },
+                { id: 15, type: 'word', content: 'هاتِف' },
                 { id: 15, type: 'emoji', content: '📱' },
-                { id: 16, type: 'word', content: 'مِفْتَاح' },
+                { id: 16, type: 'word', content: 'مِفْتاح' },
                 { id: 16, type: 'emoji', content: '🔑' }
             ]
-            // Seviye 3 (Türkçe) KALDIRILDI
+         
         ];
 
         // --- Gerekli Elementler ---
@@ -581,9 +646,68 @@
             setTimeout(createBoard, 500);
         }
 
+        // --- YENİ EKLENDİ (Tam Ekran Mantığı) ---
+        
+        /**
+         * Tam ekran modunu açar veya kapatır.
+         */
+        function toggleFullScreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+                // Tam ekrana gir
+                const el = document.documentElement; // Tüm sayfayı tam ekran yap
+                if (el.requestFullscreen) {
+                    el.requestFullscreen();
+                } else if (el.webkitRequestFullscreen) { // Safari
+                    el.webkitRequestFullscreen();
+                } else if (el.mozRequestFullScreen) { // Firefox
+                    el.mozRequestFullScreen();
+                } else if (el.msRequestFullscreen) { // IE/Edge
+                    el.msRequestFullscreen();
+                }
+            } else {
+                // Tam ekrandan çık
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        /**
+         * Tam ekran durum değişikliğini dinler ve body'e class ekler/kaldırır.
+         * Bu, CSS'in tam ekran stilini uygulayabilmesi için gereklidir.
+         */
+        function updateFullscreenClass() {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                document.body.classList.add('fullscreen');
+            } else {
+                document.body.classList.remove('fullscreen');
+            }
+        }
+        
+        // Tam ekran durum değişiklikleri için olay dinleyicileri
+        document.addEventListener('fullscreenchange', updateFullscreenClass);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenClass);
+        document.addEventListener('mozfullscreenchange', updateFullscreenClass);
+        document.addEventListener('MSFullscreenChange', updateFullscreenClass);
+        
+        // --- / YENİ EKLENDİ ---
+
         
         // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // YENİ EKLENDİ: Tam ekran butonunu bağla
+            const fsBtn = document.getElementById('fullscreen-btn');
+            if (fsBtn) {
+                fsBtn.addEventListener('click', toggleFullScreen);
+            }
+            
             createBoard();
         });
 
