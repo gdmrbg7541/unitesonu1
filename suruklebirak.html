@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قِيَمي - تمرين التصنيف</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- Temel Sayfa Stilleri --- */
@@ -13,7 +13,7 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            --font-arabic: 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
+            --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
         }
 
         body {
@@ -48,6 +48,7 @@
             grid-area: back;
             display: flex;
             justify-content: flex-end; 
+            align-items: center; /* Düğmeleri dikeyde hizala */
         }
         .back-button {
             background: #f0f0f0;
@@ -62,6 +63,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0; /* Küçülmesin */
         }
         .back-button:hover {
             background: #e0e0e0;
@@ -96,22 +98,23 @@
 
         /* --- Asıl Etkinlik Alanı --- */
         .activity-area {
-            flex-grow: 1;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow: hidden; /* İçerik taşmasın */
-        }
+    flex-grow: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* <-- YENİ (Dikey ortalama) */
+    align-items: center;     /* <-- YENİ (Yatay ortalama) */
+    overflow: hidden; /* İçerik taşmasın */
+    }
 
         /* --- Sınıflandırma Stilleri --- */
         .categorize-container {
-            display: flex;
-            flex-direction: row-reverse; /* RTL için sağ (bank) sola (kutu) */
-            width: 100%;
-            height: 100%;
-            gap: 15px;
-        }
+    display: flex;
+    flex-direction: row-reverse; /* RTL için sağ (bank) sola (kutu) */
+    width: 100%;  /* <-- 90%'dan DEĞİŞTİ */
+    height: 100%; /* <-- 90%'dan DEĞİŞTİ */
+    gap: 15px;
+      }
 
         /* Sol taraf (Izgara) */
         .drop-zones-container {
@@ -140,7 +143,7 @@
 
         .category-drop-zone h3 {
             margin: 0 0 10px 0;
-            font-size: 1.8rem; 
+            font-size: 2.1rem; 
             color: var(--accent-color);
             border-bottom: 2px solid #ddd;
             padding-bottom: 5px;
@@ -151,7 +154,7 @@
         
         /* Sağ taraf (Tek kutu) - 2 Sütuna ayarlandı */
         .word-bank-container {
-            flex-basis: 270px; /* 2 sütuna sığacak genişlik */
+            flex-basis: 320px; /* 2 sütuna sığacak genişlik */
             flex-shrink: 0; /* Küçülmesin */
             height: 100%; /* Tam yükseklik */
             background: #fff;
@@ -171,7 +174,7 @@
         .word-item {
             padding: 5px 8px; 
             color: white;
-            font-size: 1.6rem; 
+            font-size: 1.8rem; 
             font-weight: 700;
             border-radius: 6px; 
             cursor: grab;
@@ -307,6 +310,58 @@
                 width: 110px; 
             }
         }
+        
+        /* --- Tam Ekran Düğmesi --- */
+        #fullscreen-btn {
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #ccc;
+            border-radius: 1.5vmin;
+            cursor: pointer;
+            width: clamp(40px, 8vmin, 55px);
+            height: clamp(40px, 8vmin, 55px);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px; /* Geri tuşundan ayır (sağ) */
+            margin-left: 10px; /* Kenardan ayır (sol) */
+            flex-shrink: 0; /* Küçülmesini engelle */
+        }
+        #fullscreen-btn:hover {
+            background: #e0e0e0;
+        }
+        #fullscreen-btn svg {
+            width: clamp(24px, 5vmin, 30px);
+            height: clamp(24px, 5vmin, 30px);
+            fill: currentColor;
+        }
+        /* SVG Simgelerini gizle/göster */
+        #fullscreen-btn .icon-open { display: block; }
+        #fullscreen-btn .icon-close { display: none; }
+        body.fullscreen #fullscreen-btn .icon-open { display: none; }
+        body.fullscreen #fullscreen-btn .icon-close { display: block; }
+
+        /* --- Ana Konteynırın Tam Ekran Davranışı --- */
+        body.fullscreen .activity-container {
+            width: 100vw;
+            height: calc(100vw * 9 / 16);  
+            max-height: 100vh;
+            max-width: calc(100vh * 16 / 9);
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* --- Mobil (Dikey) Ekran Davranışı --- */
+        @media (orientation: portrait) {
+            body.fullscreen .activity-container {
+                width: 100vw;
+                height: calc(100vw * 16 / 9);
+                max-height: 100vh;
+                max-width: calc(100vh * 9 / 16);
+            }
+        }
+
 
     </style>
 </head>
@@ -317,6 +372,14 @@
         <div class="header">
             <div id="instruction-text">...</div>
             <div class="back-button-container">
+                <button id="fullscreen-btn">
+                    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
+                    </svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                    </svg>
+                </button>
                 <a href="index.html" class="back-button">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -335,7 +398,7 @@
 
     </div>
 
-    <script>
+<script>
         // --- 20 benzersiz renk ---
         const colorPalette = [
             '#007bff', '#dc3545', '#28a745', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14',
@@ -343,33 +406,38 @@
             '#ff6b6b', '#fca311', '#90be6d', '#43aa8b', '#577590', '#f94144'
         ];
 
-        // --- TEK SAYFA ETKİNLİK VERİSİ (4 Kategori) ---
-        const singleActivityData = {
-            // 4 Kategori
-            categories: ["فِعْل", "اِسْم مَكَان", "مِهْنَة", "ضَمِير"],
-            words: [
-                // Fiil
-                { w: "يَذْهَبُ", cat: "فِعْل" },
-                { w: "ذَهَبَ", cat: "فِعْل" }, /* <-- DÜZELTİLDİ */
-                { w: "يُدَرِّسُ", cat: "فِعْل" },
-                { w: "عَمِلَ", cat: "فِعْل" },
-                // Mekan
-                { w: "المَسْجِد", cat: "اِسْم مَكَان" },
-                { w: "المُسْتَشْفَى", cat: "اِسْم مَكَان" }, /* <-- DÜZELTİLDİ */
-                { w: "المَصْنَع", cat: "اِسْم مَكَان" },
-                { w: "المَدْرَسَة", cat: "اِسْم مَكَان" },
-                // Meslek (Yeni)
-                { w: "طَبِيب", cat: "مِهْنَة" },
-                { w: "مُهَنْدِس", cat: "مِهْنَة" },
-                { w: "سَائِق", cat: "مِهْنَة" },
-                { w: "مُعَلِّم", cat: "مِهْنَة" },
-                // Zamir
-                { w: "هُوَ", cat: "ضَمِير" },
-                { w: "أَنَا", cat: "ضَمِير" },
-                { w: "هِيَ", cat: "ضَمِير" },
-                { w: "هُمْ", cat: "ضَمِير" }
-            ]
-        };
+        // --- YENİ: ETKİNLİK VERİ BANKASI (Birden fazla seviye) ---
+        const activityDataBank = [
+            // --- Seviye 1: قِيَمي (Değerler) ---
+            {
+                title: "قِيَمي | صَنِّف الْكَلِمات",
+                categories: ["المُعامَلات الحَسَنَة", "أَعْضاء الأُسْرَة", "أَماكِن", "مِهَن"],
+                words: [
+                    // İyi Davranışlar
+                    { w: "صِدْق", cat: "المُعامَلات الحَسَنَة" },
+                    { w: "أَمانَة", cat: "المُعامَلات الحَسَنَة" },
+                    { w: "تَعاوُن", cat: "المُعامَلات الحَسَنَة" },
+                    { w: "اِحْتِرام", cat: "المُعامَلات الحَسَنَة" },
+                    // Aile Bireyleri
+                    { w: "أَب", cat: "أَعْضاء الأُسْرَة" },
+                    { w: "أُمّ", cat: "أَعْضاء الأُسْرَة" },
+                    { w: "أَخ", cat: "أَعْضاء الأُسْرَة" },
+                    { w: "أُخْت", cat: "أَعْضاء الأُسْرَة" },
+                    // Mekanlar
+                    { w: "مَسْجِد", cat: "أَماكِن" },
+                    { w: "مُسْتَشْفى", cat: "أَماكِن" },
+                    { w: "مَصْنَع", cat: "أَماكِن" },
+                    { w: "مَدْرَسَة", cat: "أَماكِن" },
+                    // Meslekler
+                    { w: "طَبيب", cat: "مِهَن" },
+                    { w: "مُهَنْدِس", cat: "مِهَن" },
+                    { w: "سائِق", cat: "مِهَن" },
+                    { w: "مُعَلِّم", cat: "مِهَن" }
+                ]
+            },
+            
+           
+        ];
 
 
         // --- Gerekli Elementler ---
@@ -381,7 +449,8 @@
         // --- Ses Değişkenleri ---
         let audioCtx = null;
 
-        // --- Durum Değişkenleri (Basitleştirildi) ---
+        // --- Durum Değişkenleri ---
+        let currentActivityIndex = 0; // YENİ: Mevcut seviyeyi takip eder
         let totalWordsRemaining = 0;
         let currentTouchEventItem = null;
         let touchOffsetX = 0;
@@ -417,7 +486,6 @@
                 oscillator.start(now);
                 oscillator.stop(now + 0.2);
             } else if (type === 'incorrect') {
-                // HATA SESİ KODU BURADA
                 oscillator.frequency.setValueAtTime(300, now);
                 oscillator.frequency.linearRampToValueAtTime(150, now + 0.3);
                 gainNode.gain.setValueAtTime(0.15, now);
@@ -439,14 +507,18 @@
             return array;
         }
 
-        // --- ETKİNLİK YÜKLEYİCİ (Basitleştirildi) ---
+        // --- ETKİNLİK YÜKLEYİCİ (GÜNCELLENDİ) ---
         function loadActivity() {
             activityArea.innerHTML = '';
-            instructionText.textContent = "قِيَمي | صَنِّف الْكَلِمَات";
+            
+            // Mevcut indekse göre veriyi al
+            const data = activityDataBank[currentActivityIndex];
+            
+            instructionText.textContent = data.title; // Başlığı veriden al
             
             feedbackOverlay.classList.remove('show', 'game-finished');
             
-            buildCategorize(singleActivityData); // Tek veriyi yükle
+            buildCategorize(data); // Seçilen veriyi yükle
         }
         
         // --- Sınıflandırma Arayüzünü Oluştur ---
@@ -498,7 +570,7 @@
             addDragDropListeners();
         }
 
-        // --- Sürükle-Bırak ve Dokunmatik Dinleyicileri (Düzeltmeler dahil) ---
+        // --- Sürükle-Bırak ve Dokunmatik Dinleyicileri ---
         function addDragDropListeners() {
             const draggables = document.querySelectorAll('.word-item');
             const containers = document.querySelectorAll('.category-drop-zone, .word-bank-container');
@@ -595,7 +667,7 @@
             });
         }
         
-        // --- Kategori Kontrol Fonksiyonu ---
+        // --- Kategori Kontrol Fonksiyonu (GÜNCELLENDİ) ---
         function checkCategoryDrop(wordElement, dropZone) {
             const zoneCategory = dropZone.dataset.category;
             const wordCategory = wordElement.dataset.wordCat;
@@ -611,13 +683,18 @@
                 
                 if (totalWordsRemaining === 0) {
                     instructionText.textContent = "أَحْسَنْت! لَقَد أَكْمَلْتَ";
-                    
                     feedbackOverlay.classList.add('game-finished');
+                    
+                    // --- YENİ: Bir sonraki seviyeye geç ---
+                    currentActivityIndex++;
+                    // Eğer son seviyeyi bitirdiyse başa dön
+                    if (currentActivityIndex >= activityDataBank.length) {
+                        currentActivityIndex = 0; 
+                    }
                     
                     showFeedback(true); 
                 }
             } else {
-                // HATA SESİ BURADA ÇALIŞIYOR
                 playSound('incorrect');
                 wordElement.classList.remove('mouse-dragging', 'touch-dragging');
                 document.getElementById('word-bank-container').appendChild(wordElement);
@@ -635,22 +712,73 @@
             }
         }
         
-        // --- Oyunu Yeniden Başlat Fonksiyonu ---
+        // --- Oyunu Yeniden Başlat Fonksiyonu (GÜNCELLENDİ) ---
         function restartGame() {
             playSound('touch');
             
+            // Overlay'i gizle
             feedbackOverlay.classList.remove('show', 'game-finished'); 
             
+            // Bir sonraki (veya güncel) aktiviteyi yükle
             loadActivity(); 
         }
         
         
+        // --- Tam Ekran Fonksiyonları ---
+        function setupFullscreen() {
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const body = document.body;
+
+            if (!fullscreenBtn) return; 
+
+            const docEl = document.documentElement;
+            const requestFs = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
+            const exitFs = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+
+            function getFullscreenElement() {
+                return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+            }
+
+            function toggleFullScreen() {
+                if (!getFullscreenElement()) {
+                    if(requestFs) {
+                        requestFs.call(docEl).catch(err => {
+                            console.error(`Tam ekrana geçilemedi: ${err.message} (${err.name})`);
+                        });
+                    }
+                } else {
+                    if(exitFs) {
+                        exitFs.call(document).catch(err => {
+                            console.error(`Tam ekrandan çıkılamadı: ${err.message} (${err.name})`);
+                        });
+                    }
+                }
+            }
+
+            function syncFullscreenState() {
+                if (getFullscreenElement()) {
+                    body.classList.add('fullscreen');
+                } else {
+                    body.classList.remove('fullscreen');
+                }
+            }
+
+            fullscreenBtn.addEventListener('click', toggleFullScreen);
+            
+            document.addEventListener('fullscreenchange', syncFullscreenState);
+            document.addEventListener('mozfullscreenchange', syncFullscreenState);
+            document.addEventListener('webkitfullscreenchange', syncFullscreenState);
+            document.addEventListener('msfullscreenchange', syncFullscreenState);
+        }
+
+        
         // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
-            loadActivity(); // Sadece tek aktiviteyi yükle
+            loadActivity(); // İlk aktiviteyi (indeks 0) yükle
             setupGlobalTouchListeners();
+            setupFullscreen(); 
         });
 
-    </script>
+    </script>   
 </body>
 </html>
