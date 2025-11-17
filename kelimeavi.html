@@ -605,6 +605,9 @@
         }
 
         function renderGrid() {
+            // Önceki ızgarayı temizle
+            gridContainer.innerHTML = ''; 
+            
             for (let r = 0; r < gridSizeRows; r++) {
                 for (let c = 0; c < gridSizeCols; c++) {
                     const cell = document.createElement('div');
@@ -613,38 +616,40 @@
                     cell.dataset.row = r;
                     cell.dataset.col = c;
                     
-                    // Olay dinleyicileri artık doğrudan hücrelere değil,
-                    // 'gridContainer'a toplu olarak eklenecek.
-                    
                     gridContainer.appendChild(cell);
                     gridCells[r][c] = cell; 
                 }
             }
 
             // --- BİRLEŞTİRİLMİŞ FARE VE DOKUNMATİK OLAY YÖNETİCİLERİ ---
-
+            // Not: Eskiden kalan olay dinleyicileri (mouseup, touchend) varsa temizlenmeli.
+            // Ancak initializeGame() içinde gridContainer.innerHTML = '' yapıldığı için
+            // eski dinleyiciler otomatik olarak temizleniyor. Sadece document'e eklenenler kalır.
+            
             // Fare Olayları
             gridContainer.addEventListener('mousedown', (e) => {
-                e.preventDefault(); // Metin seçmeyi/sürüklemeyi engelle
-                handleSelectionStart(e); // Normal MouseEvent gönder
+                e.preventDefault(); 
+                handleSelectionStart(e); 
             });
             gridContainer.addEventListener('mousemove', (e) => {
-                // Sadece seçim yapılırken hareketi işle
-                handleSelectionMove(e); // Normal MouseEvent gönder
+                handleSelectionMove(e); 
             });
-            // Seçimi bırakma (mouseup) ekranın herhangi bir yerinde olabilir
-            document.addEventListener('mouseup', handleSelectionEnd);
-
+            
             // Dokunmatik Olayları
             gridContainer.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Sayfa kaydırmayı engelle
-                handleSelectionStart(e.touches[0]); // Sadece ilk dokunma bilgisini (Touch objesi) gönder
+                e.preventDefault(); 
+                handleSelectionStart(e.touches[0]); 
             }, { passive: false });
             gridContainer.addEventListener('touchmove', (e) => {
-                e.preventDefault(); // Sayfa kaydırmayı engelle
-                handleSelectionMove(e.touches[0]); // Sadece ilk dokunma bilgisini (Touch objesi) gönder
+                e.preventDefault(); 
+                handleSelectionMove(e.touches[0]); 
             }, { passive: false });
-            // Seçimi bırakma (touchend) ekranın herhangi bir yerinde olabilir
+            
+            // Bırakma olayları document üzerinde olmalı ki ızgara dışında bıraksa da çalışsın
+            document.removeEventListener('mouseup', handleSelectionEnd); // Öncekini temizle
+            document.addEventListener('mouseup', handleSelectionEnd);
+            
+            document.removeEventListener('touchend', handleSelectionEnd); // Öncekini temizle
             document.addEventListener('touchend', handleSelectionEnd);
         }
 
@@ -654,19 +659,18 @@
              if (e.target && e.target.classList.contains('grid-cell')) {
                 return e.target;
             }
-             // 'e' artık bir MouseEvent veya Touch objesi olabilir
-             // Her ikisi de clientX/clientY özelliklerine sahip
             if (e.clientX && e.clientY) {
-                return document.elementFromPoint(e.clientX, e.clientY);
+                // elementFromPoint, ızgaranın dışındaki bir elementi de döndürebilir.
+                const element = document.elementFromPoint(e.clientX, e.clientY);
+                if (element && element.classList.contains('grid-cell')) {
+                    return element;
+                }
             }
             return null;
         }
 
         function handleSelectionStart(e) {
-            // e.preventDefault(); // <-- Buradan kaldırıldı!
-            
             const cell = getCellFromEvent(e);
-            // Hücre bulunamazsa (ızgara dışına tıklanırsa) işlemi durdur
             if (!cell || !cell.dataset) return;
 
             isSelecting = true;
@@ -678,11 +682,14 @@
 
         function handleSelectionMove(e) {
             if (!isSelecting) return;
-            // e.preventDefault(); // <-- Buradan kaldırıldı!
             
             const cell = getCellFromEvent(e);
-            // Hücre bulunamazsa (ızgara dışına çıkılırsa) işlemi durdur
             if (!cell || !cell.dataset) return;
+
+            // Eğer hala aynı hücredeysek (özellikle dokunmatikte) tekrar çizme
+            if (currentSelection.length > 0 && currentSelection[currentSelection.length - 1] === cell) {
+                return;
+            }
 
             currentSelection.forEach(c => c.classList.remove('selecting'));
             
@@ -704,37 +711,34 @@
             selectionStart = null;
         }
         
+        // DÜZELTİLMİŞ "AFFEDİCİ" FONKSİYON
         function getCellsInLine(start, end) {
             const line = [];
             
-            // Başlangıç ve bitiş arasındaki farkları bul
             const diff_r = end.row - start.row;
             const diff_c = end.col - start.col;
             
-            // Mutlak farkları bul (hangi yönde daha çok hareket edilmiş?)
             const abs_r = Math.abs(diff_r);
             const abs_c = Math.abs(diff_c);
 
-            let dir_r, dir_c; // Yön vektörleri (adım başına +1, -1 veya 0)
+            let dir_r, dir_c; 
 
             if (abs_c > abs_r) { 
-                // YATAY hareket baskın
+                // YATAY baskın
                 dir_r = 0;
                 dir_c = Math.sign(diff_c);
             } else if (abs_r > abs_c) { 
-                // DİKEY hareket baskın
+                // DİKEY baskın
                 dir_r = Math.sign(diff_r);
                 dir_c = 0;
             } else { 
-                // ÇAPRAZ hareket (veya hiç hareket yok)
+                // ÇAPRAZ
                 dir_r = Math.sign(diff_r);
                 dir_c = Math.sign(diff_c);
             }
             
-            // Gidilecek toplam adım sayısı (baskın olan yöndeki adım sayısıdır)
             const steps = Math.max(abs_r, abs_c);
             
-            // Başlangıçtan sona kadar, "düzeltilmiş" yönde ilerle
             for (let i = 0; i <= steps; i++) {
                 let r = start.row + i * dir_r;
                 let c = start.col + i * dir_c;
@@ -742,7 +746,6 @@
                 if (gridCells[r] && gridCells[r][c]) {
                     line.push(gridCells[r][c]);
                 } else {
-                    // Izgara dışına çıkarsak döngüyü kır
                     break; 
                 }
             }
@@ -849,7 +852,6 @@
                 if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
                     document.body.classList.add('fullscreen');
                 } else {
-                    // DÜZELTME: Tam ekrandan çıkıldığında 'fullscreen' sınıfını KALDIR
                     document.body.classList.remove('fullscreen');
                 }
             }
