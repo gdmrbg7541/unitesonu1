@@ -15,6 +15,7 @@
             --bg-light: #f8f9fa;
             --font-arabic: 'Markazi Text', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
             
+            /* GÜNCELLEME: Varsayılan (Masaüstü) boyutlar. JS bunları mobil için ezecek. */
             --grid-size-cols: 10;
             --grid-size-rows: 8;
         }
@@ -145,7 +146,10 @@
             flex-grow: 1;
             height: 100%;
             max-height: 100%; 
-            aspect-ratio: 10 / 8; 
+            
+            /* GÜNCELLEME: En/boy oranı artık CSS değişkenlerinden dinamik olarak geliyor */
+            aspect-ratio: var(--grid-size-cols) / var(--grid-size-rows); 
+            
             display: grid;
             grid-template-columns: repeat(var(--grid-size-cols), 1fr);
             grid-template-rows: repeat(var(--grid-size-rows), 1fr);
@@ -328,12 +332,14 @@
                 flex-grow: 1; 
                 width: 100%;
                 height: auto;
-                aspect-ratio: 10 / 8;
+                /* GÜNCELLEME: En/boy oranı artık CSS değişkenlerinden dinamik olarak geliyor */
+                aspect-ratio: var(--grid-size-cols) / var(--grid-size-rows);
                 max-height: none; 
             }
             
             .grid-cell {
-                 font-size: 6.5vmin; 
+                 /* GÜNCELLEME: Yazı tipi boyutu ızgara boyutuna daha iyi uyması için ayarlandı */
+                 font-size: 7.5vmin; 
             }
             
             /* --- Mobil (Dikey) Ekran Davranışı --- */
@@ -360,7 +366,7 @@
 
             <div class="header-button-container right">
                 <button id="fullscreen-btn">
-                    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <svg class="icon-open" xmlns="http://www.w.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
                     </svg>
                     <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -396,12 +402,13 @@
     </div>
 
 <script>
-        // --- Kelime Verisi (Çoklu Seviye) ---
+        // --- Kelime Verisi ---
         const colors = ['#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#0d6efd', '#6f42c1', '#e83e8c'];
         
-        // DEĞİŞİKLİK: Kelime listesi 3 harf altı/eşit olanlar, 'يقبل' ve 2'den fazla fiil olmayacak şekilde yeniden düzenlendi.
-        const allLevels = [
-            // Set 1 (2 Fiil)
+        // GÜNCELLEME: Seviyeler 'Masaüstü' ve 'Mobil' olarak ikiye ayrıldı
+        
+        // MASAÜSTÜ SEVİYELERİ (Orijinal 10x8 Izgara için)
+        const desktopLevels = [
             [
                 { word: 'امانة', color: colors[0], emoji: '🤝' },
                 { word: 'إخلاص', color: colors[1], emoji: '💖' },
@@ -410,7 +417,6 @@
                 { word: 'يساعد', color: colors[4], emoji: '🧑‍🤝‍🧑' },
                 { word: 'يحب', color: colors[5], emoji: '❤️' }
             ],
-            // Set 2 (2 Fiil)
             [
                 { word: 'محبة', color: colors[0], emoji: '❤️' },
                 { word: 'اعتذار', color: colors[1], emoji: '😥' },
@@ -419,7 +425,6 @@
                 { word: 'يشكر', color: colors[4], emoji: '🙏' },
                 { word: 'يعتذر', color: colors[5], emoji: '😥' }
             ],
-            // Set 3 (2 Fiil)
             [
                 { word: 'طاعة', color: colors[0], emoji: '🧑‍' },
                 { word: 'تراحم', color: colors[1], emoji: '🤗' },
@@ -428,7 +433,6 @@
                 { word: 'يسلم', color: colors[4], emoji: '👋' },
                 { word: 'يبتسم', color: colors[5], emoji: '😊' }
             ],
-            // Set 4 (1 Fiil)
             [
                 { word: 'خالة', color: colors[0], emoji: '👩‍🦱' },
                 { word: 'أقارب', color: colors[1], emoji: '👨‍👩‍👧‍👦' },
@@ -438,10 +442,58 @@
             ]
         ];
         
+        // MOBİL SEVİYELER (4 Kelimelik 6 Seviye - 8x8 Izgara için)
+        const mobileLevels = [
+            [
+                { word: 'امانة', color: colors[0], emoji: '🤝' },
+                { word: 'إخلاص', color: colors[1], emoji: '💖' },
+                { word: 'تعاون', color: colors[2], emoji: '🤲' },
+                { word: 'احترام', color: colors[3], emoji: '👍' }
+            ],
+            [
+                { word: 'يساعد', color: colors[4], emoji: '🧑‍🤝‍🧑' },
+                { word: 'يحب', color: colors[5], emoji: '❤️' },
+                { word: 'محبة', color: colors[0], emoji: '❤️' },
+                { word: 'اعتذar', color: colors[1], emoji: '😥' }
+            ],
+            [
+                { word: 'رحمة', color: colors[2], emoji: '🥰' },
+                { word: 'تواضع', color: colors[3], emoji: '😌' },
+                { word: 'يشكر', color: colors[4], emoji: '🙏' },
+                { word: 'يعتذر', color: colors[5], emoji: '😥' }
+            ],
+            [
+                { word: 'طاعة', color: colors[0], emoji: '🧑‍' },
+                { word: 'تراحم', color: colors[1], emoji: '🤗' },
+                { word: 'أسرة', color: colors[2], emoji: '👨‍👩‍👧‍👦' },
+                { word: 'جدة', color: colors[3], emoji: '👵' }
+            ],
+            [
+                { word: 'يسلم', color: colors[4], emoji: '👋' },
+                { word: 'يبتsem', color: colors[5], emoji: '😊' },
+                { word: 'خالة', color: colors[0], emoji: '👩‍🦱' },
+                { word: 'أقارب', color: colors[1], emoji: '👨‍👩‍👧‍👦' }
+            ],
+            [
+                { word: 'أبناء', color: colors[2], emoji: '👦' },
+                { word: 'بنات', color: colors[3], emoji: '👧' },
+                { word: 'يصبر', color: colors[4], emoji: '⏳' },
+                { word: 'امانة', color: colors[0], emoji: '🤝' }
+            ]
+        ];
+
+        
         const arabicLetters = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
         
-        const gridSizeCols = 10;
-        const gridSizeRows = 8;
+        // GÜNCELLEME: Izgara boyutları dinamik olarak ayarlanacak
+        const desktopGridCols = 10;
+        const desktopGridRows = 8;
+        const mobileGridCols = 8;
+        const mobileGridRows = 8;
+        
+        let activeGridCols;
+        let activeGridRows;
+        let activeLevelSet;
 
         // --- Gerekli Elementler ---
         const gridContainer = document.getElementById('puzzle-grid-container');
@@ -456,15 +508,18 @@
         // --- Durum Değişkenleri ---
         let grid = []; 
         let gridCells = [];
-        
         let currentLevel = 0; 
         let wordData = [];
         let wordsToFind = [];
         let foundWords = [];
-        
         let isSelecting = false;
         let selectionStart = null;
         let currentSelection = [];
+        
+        // Mobil cihaz algılama fonksiyonu
+        function isMobileDevice() {
+            return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
 
         // --- SES FONKSİYONLARI ---
         function initAudioContext() {
@@ -513,7 +568,7 @@
         // --- OYUN KURULUMU ---
 
         function initializeGame() {
-            wordData = allLevels[currentLevel];
+            wordData = activeLevelSet[currentLevel];
             wordsToFind = wordData.map(data => data.word);
 
             foundWords = [];
@@ -527,10 +582,11 @@
 
             renderWordList();
             
-            for (let r = 0; r < gridSizeRows; r++) {
+            // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
+            for (let r = 0; r < activeGridRows; r++) {
                 grid[r] = [];
                 gridCells[r] = [];
-                for (let c = 0; c < gridSizeCols; c++) {
+                for (let c = 0; c < activeGridCols; c++) {
                     grid[r][c] = null;
                 }
             }
@@ -565,8 +621,9 @@
                 while (!placed && attempts < 100) {
                     attempts++;
                     const dir = directions[Math.floor(Math.random() * directions.length)];
-                    const r = Math.floor(Math.random() * gridSizeRows);
-                    const c = Math.floor(Math.random() * gridSizeCols);
+                    // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
+                    const r = Math.floor(Math.random() * activeGridRows);
+                    const c = Math.floor(Math.random() * activeGridCols);
 
                     if (canPlaceWord(word, r, c, dir)) {
                         for (let i = 0; i < word.length; i++) {
@@ -583,7 +640,8 @@
                 const newRow = r + i * dir.dr;
                 const newCol = c + i * dir.dc;
 
-                if (newRow >= gridSizeRows || newCol >= gridSizeCols || newRow < 0 || newCol < 0) {
+                // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
+                if (newRow >= activeGridRows || newCol >= activeGridCols || newRow < 0 || newCol < 0) {
                     return false;
                 }
                 const cell = grid[newRow][newCol];
@@ -595,8 +653,9 @@
         }
 
         function fillEmptyCells() {
-            for (let r = 0; r < gridSizeRows; r++) {
-                for (let c = 0; c < gridSizeCols; c++) {
+            // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
+            for (let r = 0; r < activeGridRows; r++) {
+                for (let c = 0; c < activeGridCols; c++) {
                     if (grid[r][c] === null) {
                         grid[r][c] = arabicLetters[Math.floor(Math.random() * arabicLetters.length)];
                     }
@@ -605,11 +664,11 @@
         }
 
         function renderGrid() {
-            // Önceki ızgarayı temizle
             gridContainer.innerHTML = ''; 
             
-            for (let r = 0; r < gridSizeRows; r++) {
-                for (let c = 0; c < gridSizeCols; c++) {
+            // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
+            for (let r = 0; r < activeGridRows; r++) {
+                for (let c = 0; c < activeGridCols; c++) {
                     const cell = document.createElement('div');
                     cell.className = 'grid-cell';
                     cell.textContent = grid[r][c];
@@ -622,11 +681,7 @@
             }
 
             // --- BİRLEŞTİRİLMİŞ FARE VE DOKUNMATİK OLAY YÖNETİCİLERİ ---
-            // Not: Eskiden kalan olay dinleyicileri (mouseup, touchend) varsa temizlenmeli.
-            // Ancak initializeGame() içinde gridContainer.innerHTML = '' yapıldığı için
-            // eski dinleyiciler otomatik olarak temizleniyor. Sadece document'e eklenenler kalır.
             
-            // Fare Olayları
             gridContainer.addEventListener('mousedown', (e) => {
                 e.preventDefault(); 
                 handleSelectionStart(e); 
@@ -635,7 +690,6 @@
                 handleSelectionMove(e); 
             });
             
-            // Dokunmatik Olayları
             gridContainer.addEventListener('touchstart', (e) => {
                 e.preventDefault(); 
                 handleSelectionStart(e.touches[0]); 
@@ -645,38 +699,27 @@
                 handleSelectionMove(e.touches[0]); 
             }, { passive: false });
             
-            // Bırakma olayları document üzerinde olmalı ki ızgara dışında bıraksa da çalışsın
-            document.removeEventListener('mouseup', handleSelectionEnd); // Öncekini temizle
+            document.removeEventListener('mouseup', handleSelectionEnd);
             document.addEventListener('mouseup', handleSelectionEnd);
             
-            document.removeEventListener('touchend', handleSelectionEnd); // Öncekini temizle
+            document.removeEventListener('touchend', handleSelectionEnd);
             document.addEventListener('touchend', handleSelectionEnd);
         }
 
         // --- SEÇİM MANTIĞI ---
         
+        // DÜZELTME: Dokunmatik kaydırmada doğru harfi bulması için
         function getCellFromEvent(e) {
-            // 'e' artık bir MouseEvent (fare) veya Touch (dokunma) objesi olabilir.
-            // Her ikisi de 'clientX' ve 'clientY' koordinatlarına sahiptir.
-            
-            // ÖNCELİKLE: Her zaman koordinatları kullanarak o anki harfi bul.
-            // Bu, 'touchmove' olayının doğru çalışması için kritiktir.
             if (e.clientX && e.clientY) {
                 const element = document.elementFromPoint(e.clientX, e.clientY);
-                
-                // Bulduğumuz elementin bir harf hücresi olduğundan emin olalım.
                 if (element && element.classList.contains('grid-cell')) {
                     return element;
                 }
             }
-            
-            // Yedek olarak (genellikle 'mousedown' gibi olaylar için):
-            // Eğer koordinat çalışmazsa 'e.target'ı kullanmayı dene.
              if (e.target && e.target.classList.contains('grid-cell')) {
                 return e.target;
             }
-
-            return null; // Hiçbir şey bulunamadı
+            return null;
         }
 
         function handleSelectionStart(e) {
@@ -696,7 +739,6 @@
             const cell = getCellFromEvent(e);
             if (!cell || !cell.dataset) return;
 
-            // Eğer hala aynı hücredeysek (özellikle dokunmatikte) tekrar çizme
             if (currentSelection.length > 0 && currentSelection[currentSelection.length - 1] === cell) {
                 return;
             }
@@ -721,28 +763,22 @@
             selectionStart = null;
         }
         
-        // DÜZELTİLMİŞ "AFFEDİCİ" FONKSİYON
+        // DÜZELTME: "Titreyen" parmaklar için "affedici" kaydırma
         function getCellsInLine(start, end) {
             const line = [];
-            
             const diff_r = end.row - start.row;
             const diff_c = end.col - start.col;
-            
             const abs_r = Math.abs(diff_r);
             const abs_c = Math.abs(diff_c);
-
             let dir_r, dir_c; 
 
             if (abs_c > abs_r) { 
-                // YATAY baskın
                 dir_r = 0;
                 dir_c = Math.sign(diff_c);
             } else if (abs_r > abs_c) { 
-                // DİKEY baskın
                 dir_r = Math.sign(diff_r);
                 dir_c = 0;
             } else { 
-                // ÇAPRAZ
                 dir_r = Math.sign(diff_r);
                 dir_c = Math.sign(diff_c);
             }
@@ -752,14 +788,12 @@
             for (let i = 0; i <= steps; i++) {
                 let r = start.row + i * dir_r;
                 let c = start.col + i * dir_c;
-                
                 if (gridCells[r] && gridCells[r][c]) {
                     line.push(gridCells[r][c]);
                 } else {
                     break; 
                 }
             }
-            
             return line;
         }
         
@@ -812,7 +846,8 @@
         // --- Bitiş Ekranı ve Yeniden Başlatma ---
         function showWinScreen() {
             currentLevel++;
-            if (currentLevel >= allLevels.length) {
+            // GÜNCELLEME: Dinamik seviye setinin uzunluğunu kontrol et
+            if (currentLevel >= activeLevelSet.length) {
                 currentLevel = 0; 
             }
             
@@ -838,21 +873,21 @@
                     const el = document.documentElement;
                     if (el.requestFullscreen) {
                         el.requestFullscreen();
-                    } else if (el.mozRequestFullScreen) { // Firefox
+                    } else if (el.mozRequestFullScreen) {
                         el.mozRequestFullScreen();
-                    } else if (el.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                    } else if (el.webkitRequestFullscreen) {
                         el.webkitRequestFullscreen();
-                    } else if (el.msRequestFullscreen) { // IE/Edge
+                    } else if (el.msRequestFullscreen) {
                         el.msRequestFullscreen();
                     }
                 } else {
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
-                    } else if (document.mozCancelFullScreen) { // Firefox
+                    } else if (document.mozCancelFullScreen) {
                         document.mozCancelFullScreen();
-                    } else if (document.webkitExitFullscreen) { // Chrome, Safari, Opera
+                    } else if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) { // IE/Edge
+                    } else if (document.msExitFullscreen) {
                         document.msExitFullscreen();
                     }
                 }
@@ -874,6 +909,24 @@
         
         // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // GÜNCELLEME: Cihaza göre ayarları yükle
+            if (isMobileDevice()) {
+                activeLevelSet = mobileLevels;
+                activeGridCols = mobileGridCols;
+                activeGridRows = mobileGridRows;
+            } else {
+                activeLevelSet = desktopLevels;
+                activeGridCols = desktopGridCols;
+                activeGridRows = desktopGridRows;
+            }
+            
+            // GÜNCELLEME: CSS değişkenlerini dinamik olarak ayarla
+            const rootStyle = document.documentElement.style;
+            rootStyle.setProperty('--grid-size-cols', activeGridCols);
+            rootStyle.setProperty('--grid-size-rows', activeGridRows);
+
+            // Oyunu başlat
             initializeGame();
             setupFullscreen(); 
         });
