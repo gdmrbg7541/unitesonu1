@@ -656,17 +656,27 @@
         // --- SEÇİM MANTIĞI ---
         
         function getCellFromEvent(e) {
-             if (e.target && e.target.classList.contains('grid-cell')) {
-                return e.target;
-            }
+            // 'e' artık bir MouseEvent (fare) veya Touch (dokunma) objesi olabilir.
+            // Her ikisi de 'clientX' ve 'clientY' koordinatlarına sahiptir.
+            
+            // ÖNCELİKLE: Her zaman koordinatları kullanarak o anki harfi bul.
+            // Bu, 'touchmove' olayının doğru çalışması için kritiktir.
             if (e.clientX && e.clientY) {
-                // elementFromPoint, ızgaranın dışındaki bir elementi de döndürebilir.
                 const element = document.elementFromPoint(e.clientX, e.clientY);
+                
+                // Bulduğumuz elementin bir harf hücresi olduğundan emin olalım.
                 if (element && element.classList.contains('grid-cell')) {
                     return element;
                 }
             }
-            return null;
+            
+            // Yedek olarak (genellikle 'mousedown' gibi olaylar için):
+            // Eğer koordinat çalışmazsa 'e.target'ı kullanmayı dene.
+             if (e.target && e.target.classList.contains('grid-cell')) {
+                return e.target;
+            }
+
+            return null; // Hiçbir şey bulunamadı
         }
 
         function handleSelectionStart(e) {
