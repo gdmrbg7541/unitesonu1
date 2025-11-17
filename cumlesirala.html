@@ -226,11 +226,13 @@
         .word-item:hover { filter: brightness(85%); }
         .word-item.dragging { opacity: 0.5; cursor: grabbing; }
         .word-item.dragging { 
-            opacity: 0.8; /* Hafif şeffaflık iyidir */
-            transform: scale(1.05); /* Biraz büyüt */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Yükselme efekti */
-            /* Not: JS artık 'position: fixed' ekliyor, bu yüzden 'opacity: 0.5' 
-               olan eski kuralı güncelleyebilirsiniz. */
+            opacity: 0.85; /* Sadece hafif bir şeffaflık */
+            cursor: grabbing;
+            
+            /* SİHİRLİ SATIR: 
+               Tarayıcıya "Bu öğenin transform'u değişecek, GPU'yu hazırla" der.
+               Bu, 'kasma'yı önlemekte çok etkilidir. */
+            will-change: transform; 
         }
         
         /* --- Kontrol Butonları --- */
@@ -825,22 +827,22 @@
                     currentTouchEventItem.style.position = 'fixed';
                     currentTouchEventItem.style.zIndex = '1000';
                     currentTouchEventItem.style.pointerEvents = 'none'; 
-                    
-                    // YENİ: '0,0' yerine, dokunduğumuz anki konuma sabitle
-                    // Bu, "atlama" sorununu çözer.
                     currentTouchEventItem.style.left = `${initialX}px`;
                     currentTouchEventItem.style.top = `${initialY}px`;
+                    
+                    // YENİ: Büyütme efektini (scale) burada, 
+                    // 'translate' başlamadan HEMEN ÖNCE uygula
+                    currentTouchEventItem.style.transform = 'scale(1.05)'; 
                 }
 
                 const touch = e.touches[0];
                 
-                // YENİ: Hareketi, başladığımız 'initial' konuma GÖRE hesapla
-                // (Mevcut parmak konumu) - (Kelimenin sabitlendiği yer) - (Parmağın kelime  içindeki ofseti)
                 let newX = touch.clientX - initialX - offsetX;
                 let newY = touch.clientY - initialY - offsetY;
                 
-                // 'transform' ile kelimeyi kaydır
-                currentTouchEventItem.style.transform = `translate(${newX}px, ${newY}px)`;
+                // YENİ: 'scale' ve 'translate'i BİRLEŞTİR
+                // Bu, performans için kritik öneme sahiptir.
+                currentTouchEventItem.style.transform = `scale(1.05) translate(${newX}px, ${newY}px)`;
                 
                 e.preventDefault(); 
             }, { passive: false }); 
@@ -859,9 +861,9 @@
                     currentTouchEventItem.style.top = '';
                     currentTouchEventItem.style.zIndex = '';
                     currentTouchEventItem.style.pointerEvents = '';
-                    currentTouchEventItem.style.transform = ''; // Transform'u sıfırla
+                    currentTouchEventItem.style.transform = ''; // Bu, hem 'scale'i hem de 'translate'i sıfırlar
 
-                    // ... (validDropZone bulma ve ekleme kodu aynı kalır) ...
+                    // ... (dropZone bulma ve ekleme kodu aynı) ...
                     let validDropZone = null;
                     if (dropTarget) {
                         if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
@@ -875,13 +877,14 @@
                 }
 
                 // Sınıfı ve değişkenleri her zaman sıfırla
-                currentTouchEventItem.classList.remove('dragging');
+                // .dragging sınıfı ve 'will-change' buradan kalkar
+                currentTouchEventItem.classList.remove('dragging'); 
                 currentTouchEventItem = null;
                 isDragging = false;
                 offsetX = 0;
                 offsetY = 0;
-                initialX = 0; // YENİ: Sıfırla
-                initialY = 0; // YENİ: Sıfırla
+                initialX = 0; 
+                initialY = 0; 
             });
         }
 
