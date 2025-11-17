@@ -820,10 +820,14 @@
                 if (!isDragging) {
                     isDragging = true;
                     // Öğeyi "havaya kaldır"
-                    currentTouchEventItem.style.position = 'fixed'; // Veya 'absolute'
+                    currentTouchEventItem.style.position = 'fixed'; 
                     currentTouchEventItem.style.zIndex = '1000';
-                    // elementFromPoint'in çalışması için geçici olarak devre dışı bırak
                     currentTouchEventItem.style.pointerEvents = 'none'; 
+                    
+                    // YENİ: 'transform' kullanacağımız için 'left' ve 'top'u sıfırla.
+                    // Bu, transform'un (0,0) noktasından başlamasını sağlar.
+                    currentTouchEventItem.style.left = '0px';
+                    currentTouchEventItem.style.top = '0px';
                 }
 
                 const touch = e.touches[0];
@@ -832,12 +836,13 @@
                 let newX = touch.clientX - offsetX;
                 let newY = touch.clientY - offsetY;
                 
-                currentTouchEventItem.style.left = `${newX}px`;
-                currentTouchEventItem.style.top = `${newY}px`;
+                // YENİ: PERFORMANS İÇİN 'transform' KULLAN
+                // 'left' ve 'top' yerine bu yöntemi kullanmak KASMA'yı engeller.
+                currentTouchEventItem.style.transform = `translate(${newX}px, ${newY}px)`;
                 
                 // Sürüklerken sayfanın kaymasını engelle
                 e.preventDefault(); 
-            }, { passive: false }); // preventDefault çağrıldığı için 'false' olmalı
+            }, { passive: false }); 
 
             document.addEventListener('touchend', (e) => {
                 if (!currentTouchEventItem) return;
@@ -851,10 +856,11 @@
                     
                     // Öğenin stillerini sıfırla (DOM'a geri eklemeden önce)
                     currentTouchEventItem.style.position = '';
-                    currentTouchEventItem.style.left = '';
-                    currentTouchEventItem.style.top = '';
+                    currentTouchEventItem.style.left = ''; // 'left'i sıfırla
+                    currentTouchEventItem.style.top = '';  // 'top'u sıfırla
                     currentTouchEventItem.style.zIndex = '';
                     currentTouchEventItem.style.pointerEvents = '';
+                    currentTouchEventItem.style.transform = ''; // YENİ: 'transform'u sıfırla
 
                     let validDropZone = null;
                     if (dropTarget) {
@@ -868,9 +874,6 @@
                     if (validDropZone) {
                         validDropZone.appendChild(currentTouchEventItem);
                     }
-                    // Not: Eğer geçerli bir alana bırakılmazsa, öğe eski yerine "dönmez",
-                    // çünkü biz onu 'fixed' yaparak DOM akışından çıkarmıştık.
-                    // Mevcut mantığınızda da geri dönme yoktu, bu yüzden bu kabul edilebilirdir.
                 }
 
                 // Sınıfı ve değişkenleri her zaman sıfırla
