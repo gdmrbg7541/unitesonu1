@@ -225,6 +225,13 @@
         
         .word-item:hover { filter: brightness(85%); }
         .word-item.dragging { opacity: 0.5; cursor: grabbing; }
+        .word-item.dragging { 
+            opacity: 0.8; /* Hafif şeffaflık iyidir */
+            transform: scale(1.05); /* Biraz büyüt */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Yükselme efekti */
+            /* Not: JS artık 'position: fixed' ekliyor, bu yüzden 'opacity: 0.5' 
+               olan eski kuralı güncelleyebilirsiniz. */
+        }
         
         /* --- Kontrol Butonları --- */
         #check-scramble-btn, #reset-scramble-btn, #next-activity-btn {
@@ -443,6 +450,9 @@
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
         let currentTouchEventItem = null; 
+        let isDragging = false; // YENİ: Sürükleme durumunu takip et
+        let offsetX = 0;        // YENİ: Parmağın kelime içindeki X konumu
+        let offsetY = 0;        // YENİ: Parmağın kelime içindeki Y konumu
         
         let currentTour = 1; // YENİ: Tur sayacı
         
@@ -551,6 +561,7 @@
         
         // --- Tıklayarak Kelime Taşıma ---
         function handleWordClick(e) {
+            if (isDragging) return; // YENİ: Eğer bir sürükleme işlemiyse, tıklamayı yoksay
             const wordItem = e.currentTarget; 
             
             if (wordItem.draggable === false) return;
@@ -739,7 +750,7 @@
             progressBar.style.width = `${progressPercent}%`;
         }
         
-        // --- Sürükle-Bırak Olayları ---
+       // --- Sürükle-Bırak Olayları ---
         function addDragDropListeners() {
             const draggables = document.querySelectorAll('.word-item');
             const containers = [
@@ -747,7 +758,7 @@
                 document.getElementById('drag-zone')
             ];
 
-            // 1. Fare Olayları
+            // 1. Fare Olayları (Aynı kalabilir)
             draggables.forEach(draggable => {
                 draggable.addEventListener('dragstart', (e) => {
                     if (!e.currentTarget.draggable) { 
@@ -762,7 +773,7 @@
                 });
             });
 
-            // 2. Bırakma Olayları
+            // 2. Bırakma Olayları (Aynı kalabilir)
             containers.forEach(container => {
                 container.addEventListener('dragover', (e) => { e.preventDefault(); });
                 container.addEventListener('drop', (e) => {
@@ -776,13 +787,27 @@
                 });
             });
             
-            // 3. Dokunmatik Olayları
+            // 3. YENİ Dokunmatik Olayları (touchstart güncellendi)
             draggables.forEach(draggable => {
                 draggable.addEventListener('touchstart', (e) => {
                     if (!e.currentTarget.draggable) return; 
+
                     currentTouchEventItem = e.currentTarget;
+                    const touch = e.touches[0];
+                    const rect = currentTouchEventItem.getBoundingClientRect();
+
+                    // Parmağın kelimenin sol üst köşesine göre ofsetini hesapla
+                    offsetX = touch.clientX - rect.left;
+                    offsetY = touch.clientY - rect.top;
+
+                    // Sürükleme başladığında 'dragging' sınıfını ekle
                     currentTouchEventItem.classList.add('dragging');
-                }, { passive: true });
+                    
+                    // Not: isDragging = true; henüz ayarlanmadı.
+                    // Bu, 'touchmove' olayı gerçekleşene kadar bekler.
+                    // Bu sayede, sürüklemesiz kısa dokunuşlar 'click' olarak çalışabilir.
+
+                }, { passive: true }); // passive:true performansı artırır
             });
         }
         
@@ -790,25 +815,70 @@
         function setupGlobalTouchListeners() {
              document.addEventListener('touchmove', (e) => {
                 if (!currentTouchEventItem) return;
+
+                // İlk hareket algılandığında sürüklemeyi başlat
+                if (!isDragging) {
+                    isDragging = true;
+                    // Öğeyi "havaya kaldır"
+                    currentTouchEventItem.style.position = 'fixed'; // Veya 'absolute'
+                    currentTouchEventItem.style.zIndex = '1000';
+                    // elementFromPoint'in çalışması için geçici olarak devre dışı bırak
+                    currentTouchEventItem.style.pointerEvents = 'none'; 
+                }
+
+                const touch = e.touches[0];
+                
+                // Ofseti kullanarak öğeyi parmağın altına konumlandır
+                let newX = touch.clientX - offsetX;
+                let newY = touch.clientY - offsetY;
+                
+                currentTouchEventItem.style.left = `${newX}px`;
+                currentTouchEventItem.style.top = `${newY}px`;
+                
+                // Sürüklerken sayfanın kaymasını engelle
                 e.preventDefault(); 
-            }, { passive: false });
+            }, { passive: false }); // preventDefault çağrıldığı için 'false' olmalı
 
             document.addEventListener('touchend', (e) => {
                 if (!currentTouchEventItem) return;
-                const touch = e.changedTouches[0];
-                currentTouchEventItem.style.visibility = 'hidden';
-                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-                currentTouchEventItem.style.visibility = 'visible';
-                let validDropZone = null;
-                if (dropTarget) {
-                    if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
-                    else if (dropTarget.classList.contains('drag-zone')) validDropZone = dropTarget;
-                    else if (dropTarget.closest('.drop-zone')) validDropZone = dropTarget.closest('.drop-zone');
-                    else if (dropTarget.closest('.drag-zone')) validDropZone = dropTarget.closest('.drag-zone');
+
+                // Eğer bir sürükleme işlemi gerçekleştiyse
+                if (isDragging) {
+                    const touch = e.changedTouches[0];
+                    
+                    // Parmağın altındaki öğeyi bul
+                    const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+                    
+                    // Öğenin stillerini sıfırla (DOM'a geri eklemeden önce)
+                    currentTouchEventItem.style.position = '';
+                    currentTouchEventItem.style.left = '';
+                    currentTouchEventItem.style.top = '';
+                    currentTouchEventItem.style.zIndex = '';
+                    currentTouchEventItem.style.pointerEvents = '';
+
+                    let validDropZone = null;
+                    if (dropTarget) {
+                        if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
+                        else if (dropTarget.classList.contains('drag-zone')) validDropZone = dropTarget;
+                        else if (dropTarget.closest('.drop-zone')) validDropZone = dropTarget.closest('.drop-zone');
+                        else if (dropTarget.closest('.drag-zone')) validDropZone = dropTarget.closest('.drag-zone');
+                    }
+                    
+                    // Geçerli bir alana bırakıldıysa oraya ekle
+                    if (validDropZone) {
+                        validDropZone.appendChild(currentTouchEventItem);
+                    }
+                    // Not: Eğer geçerli bir alana bırakılmazsa, öğe eski yerine "dönmez",
+                    // çünkü biz onu 'fixed' yaparak DOM akışından çıkarmıştık.
+                    // Mevcut mantığınızda da geri dönme yoktu, bu yüzden bu kabul edilebilirdir.
                 }
-                if (validDropZone) validDropZone.appendChild(currentTouchEventItem);
+
+                // Sınıfı ve değişkenleri her zaman sıfırla
                 currentTouchEventItem.classList.remove('dragging');
                 currentTouchEventItem = null;
+                isDragging = false;
+                offsetX = 0;
+                offsetY = 0;
             });
         }
 
