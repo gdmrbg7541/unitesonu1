@@ -224,14 +224,11 @@
         
         
         .word-item:hover { filter: brightness(85%); }
-        .word-item.dragging { opacity: 0.5; cursor: grabbing; }
+        
+        /* 'dragging' sınıfı hem fare hem de kütüphane tarafından kullanılır */
         .word-item.dragging { 
-            opacity: 0.85; /* Sadece hafif bir şeffaflık */
+            opacity: 0.5; /* Önceki dosyadaki gibi 0.5'e döndü */
             cursor: grabbing;
-            
-            /* SİHİRLİ SATIR: 
-               Tarayıcıya "Bu öğenin transform'u değişecek, GPU'yu hazırla" der.
-               Bu, 'kasma'yı önlemekte çok etkilidir. */
             will-change: transform; 
         }
         
@@ -451,12 +448,11 @@
         let grandTotalActivities = 0; 
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
-        let currentTouchEventItem = null; 
-        let isDragging = false; // YENİ: Sürükleme durumunu takip et
-        let offsetX = 0;        // YENİ: Parmağın kelime içindeki X konumu
-        let offsetY = 0;        // YENİ: Parmağın kelime içindeki Y konumu
         
-        let currentTour = 1; // YENİ: Tur sayacı
+        // --- SİLİNDİ: Manuel Dokunmatik Değişkenleri ---
+        // currentTouchEventItem, isDragging, offsetX, offsetY kaldırıldı.
+        
+        let currentTour = 1; 
         
         // --- Tam Ekran ---
         function toggleFullScreen() {
@@ -502,7 +498,6 @@
                 oscillator.start(now);
                 oscillator.stop(now + 0.2);
             } else if (type === 'incorrect') { 
-                // YENİ: Hata sesi güncellendi
                 oscillator.type = 'square'; 
                 oscillator.frequency.setValueAtTime(164.81, now); 
                 gainNode.gain.setValueAtTime(0.15, now);
@@ -523,29 +518,21 @@
             return array;
         }
 
-        // --- YENİ: Aşamalı Zorluk (Tur) Fonksiyonu ---
+        // --- Aşamalı Zorluk (Tur) Fonksiyonu ---
         function createActivityQueue() {
             let sentencesForThisRound = [];
             
             if (currentTour == 1) {
-                // 1. Tur: 3-4 kelime
                 sentencesForThisRound = activitiesData.filter(item => item.w.length == 3 || item.w.length == 4);
             } else if (currentTour == 2) {
-                // 2. Tur: 5-6 kelime
                 sentencesForThisRound = activitiesData.filter(item => item.w.length == 5 || item.w.length == 6);
             } else {
-                // 3. Tur (ve sonrası): 7+ kelime
                 sentencesForThisRound = activitiesData.filter(item => item.w.length >= 7);
-                
-                // Eğer 7+ kelimelik yeterli soru yoksa (veya bittiyse),
-                // tüm listeyi al ve turu başa sar.
                 if (sentencesForThisRound.length < 5) { 
                     sentencesForThisRound = [...activitiesData];
-                    currentTour = 0; // restartGame'de ++ olacağı için 0'a çekilir
+                    currentTour = 0; 
                 }
             }
-
-            // Seçilen zorluk grubunu karıştır ve 10 tane al
             activityQueue = shuffle(sentencesForThisRound).slice(0, 10); 
             grandTotalActivities = activityQueue.length;
         }
@@ -556,7 +543,6 @@
             updateProgress();
             
             const activityData = activityQueue[currentActivityIndex]; 
-            // Yönerge metni güncellendi
             instructionText.textContent = "قِيَمي | رَتِّب الكَلِمات لِتَكْوين جُمْلَة‫.‬";
             buildScramble(activityData);
         }
@@ -564,9 +550,8 @@
         // --- Tıklayarak Kelime Taşıma ---
         function handleWordClick(e) {
            
-            if (isDragging) return; // YENİ: Eğer bir sürükleme işlemiyse, tıklamayı yoksay
+            // SİLİNDİ: if (isDragging) return;
             const wordItem = e.currentTarget; 
-            
             if (wordItem.draggable === false) return;
 
             const dropZone = document.getElementById('drop-zone');
@@ -577,7 +562,6 @@
             } else if (wordItem.parentElement === dropZone) {
                 dragZone.appendChild(wordItem);
             }
-            
             playSound('touch'); 
         }
 
@@ -613,7 +597,7 @@
             
             const checkButton = document.createElement('button');
             checkButton.id = 'check-scramble-btn';
-            checkButton.textContent = '✔ تَحَقَّقْ'; // Metin güncellendi
+            checkButton.textContent = '✔ تَحَقَّقْ';
             checkButton.onclick = () => {
                 playSound('touch');
                 checkScrambleAnswer(data.s); 
@@ -657,7 +641,7 @@
                     item.classList.remove('dragging'); 
                 }
             });
-            currentTouchEventItem = null; 
+            // SİLİNDİ: currentTouchEventItem = null; 
         }
 
         // --- Cevap Kontrolü (Efektlerle) ---
@@ -729,12 +713,12 @@
             scoreCorrect = 0;
             scoreIncorrect = 0;
             currentActivityIndex = 0; 
-            currentTour++; // YENİ: Sonraki tura geç
+            currentTour++; 
             
             progressBar.style.width = '0%';
             progressBar.style.backgroundColor = 'var(--accent-color)';
             
-            createActivityQueue(); // YENİ: Bir sonraki turun sorularını yükle
+            createActivityQueue(); 
             loadActivity(); 
         }
 
@@ -753,7 +737,7 @@
             progressBar.style.width = `${progressPercent}%`;
         }
         
-       // --- Sürükle-Bırak Olayları ---
+       // --- Sürükle-Bırak Olayları (BASİTLEŞTİRİLDİ) ---
         function addDragDropListeners() {
             const draggables = document.querySelectorAll('.word-item');
             const containers = [
@@ -761,7 +745,7 @@
                 document.getElementById('drag-zone')
             ];
 
-            // 1. Fare Olayları (Aynı kalabilir)
+            // 1. Fare Olayları (Bunlar artık kütüphane sayesinde dokunmatik olarak da çalışacak)
             draggables.forEach(draggable => {
                 draggable.addEventListener('dragstart', (e) => {
                     if (!e.currentTarget.draggable) { 
@@ -770,13 +754,14 @@
                     }
                     e.currentTarget.classList.add('dragging');
                     e.dataTransfer.setData('text/plain', e.currentTarget.id);
+                    // playSound('touch'); // Sürüklerken ses istenirse eklenebilir
                 });
                 draggable.addEventListener('dragend', (e) => {
                     e.currentTarget.classList.remove('dragging');
                 });
             });
 
-            // 2. Bırakma Olayları (Aynı kalabilir)
+            // 2. Bırakma Olayları (Bunlar artık kütüphane sayesinde dokunmatik olarak da çalışacak)
             containers.forEach(container => {
                 container.addEventListener('dragover', (e) => { e.preventDefault(); });
                 container.addEventListener('drop', (e) => {
@@ -790,115 +775,38 @@
                 });
             });
             
-            // 3. YENİ Dokunmatik Olayları (touchstart güncellendi)
-            draggables.forEach(draggable => {
-                draggable.addEventListener('touchstart', (e) => {
-                    if (!e.currentTarget.draggable) return; 
-
-                    currentTouchEventItem = e.currentTarget;
-                    const touch = e.touches[0];
-                    const rect = currentTouchEventItem.getBoundingClientRect();
-
-                    // Parmağın kelime içindeki ofsetini hesapla
-                    offsetX = touch.clientX - rect.left;
-                    offsetY = touch.clientY - rect.top;
-
-                    // YENİ: Kelimenin o anki ekran konumunu sakla
-                    // 'touchmove' içinde bu değerleri kullanacağız.
-                    initialX = rect.left;
-                    initialY = rect.top;
-
-                    // Sürükleme başladığında 'dragging' sınıfını ekle
-                    currentTouchEventItem.classList.add('dragging');
-
-                }, { passive: true });
-            });
+            // 3. SİLİNDİ: Manuel Dokunmatik Olayları
+            // 'touchstart' bloğu kaldırıldı.
         }
         
-           // Global Dokunmatik Dinleyicileri
-        function setupGlobalTouchListeners() {
-             document.addEventListener('touchmove', (e) => {
-                // Eğer bir öğe sürüklenmiyorsa veya sürükleme başlamadıysa hiçbir şey yapma
-                if (!currentTouchEventItem || !isDragging) return;
+        // SİLİNDİ: Global Dokunmatik Dinleyicileri
+        // setupGlobalTouchListeners() fonksiyonunun tamamı kaldırıldı.
 
-                // Sayfanın kaymasını her zaman engelle
-                e.preventDefault(); 
-                
-                const touch = e.touches[0];
-                
-                // Hareketi, başladığımız 'initial' konuma GÖRE hesapla
-                let newX = touch.clientX - initialX - offsetX;
-                let newY = touch.clientY - initialY - offsetY;
-                
-                // GECİKMEYİ KALDIRMAK İÇİN: 'transform'u rAF olmadan, DOĞRUDAN GÜNCELLE
-                currentTouchEventItem.style.transform = `scale(1.05) translate(${newX}px, ${newY}px)`;
-                
-            }, { passive: false }); 
-
-            document.addEventListener('touchend', (e) => {
-                if (!currentTouchEventItem) return;
-
-                // Eğer bir sürükleme işlemi gerçekleştiyse
-                if (isDragging) {
-                    const touch = e.changedTouches[0];
-                    const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-                    
-                    // Öğenin stillerini sıfırla
-                    currentTouchEventItem.style.position = '';
-                    currentTouchEventItem.style.left = '';
-                    currentTouchEventItem.style.top = '';
-                    currentTouchEventItem.style.zIndex = '';
-                    currentTouchEventItem.style.pointerEvents = '';
-                    currentTouchEventItem.style.transform = ''; // 'scale' ve 'translate'i sıfırlar
-
-                    // ... (validDropZone bulma ve ekleme kodu aynı kalır) ...
-                    let validDropZone = null;
-                    if (dropTarget) {
-                        if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
-                        else if (dropTarget.classList.contains('drag-zone')) validDropZone = dropTarget;
-                        else if (dropTarget.closest('.drop-zone')) validDropZone = dropTarget.closest('.drop-zone');
-                        else if (dropTarget.closest('.drag-zone')) validDropZone = dropTarget.closest('.drag-zone');
-                    }
-                    if (validDropZone) {
-                        validDropZone.appendChild(currentTouchEventItem);
-                    }
-                }
-
-                // Sınıfı ve değişkenleri her zaman sıfırla
-                currentTouchEventItem.classList.remove('dragging');
-                currentTouchEventItem = null;
-                isDragging = false;
-                offsetX = 0;
-                offsetY = 0;
-                initialX = 0; 
-                initialY = 0; 
-            });
-            
-            // 'updatePosition' fonksiyonu artık gerekli değil, onu da silebilirsiniz.
-        }
-
+        
         // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
-             // Veri setini temizle
+             // Veri setini temizle (Hatalı harfleri düzelt)
             activitiesData.forEach(round => {
-                // (Hatalı harfleri düzelt)
                 round.w = round.w.map(word => 
-                    word.replace('يَسْعَدان', 'يَسْعَدان')
-                        .replace('الْفَرَج', 'الْفَرَج')
+                    word.replace('يَسْعَdan', 'يَسْعَدان')
+                        .replace('الْفَرَج', 'الْفَرَJِ') // Düzeltme: J -> G
                         .replace('تُعينُ', 'تُعينُ')
                         .replace('المَطْبَخ', 'المَطْبَخ')
                         .replace('وَيَضْحَكونَ', 'وَيَضْحَكونَ')
+                        .replace('الصِّغAR', 'الصِّغار')
+                        .replace('الأُSْرَة', 'الأُسْرَة')
+                        .replace(/\.$/, '')
                 );
                 round.s = round.s.map(s_item => 
                     s_item.replace('يَسْعَdan', 'يَسْعَدان')
-                          .replace('الفَرَج', 'الفَرَجِ')
+                          .replace('الفَرَج', 'الْفَرَJِ') // Düzeltme: J -> G
                           .replace('تُعينُ', 'تُعينُ')
                           .replace('المَطْبَخ', 'المَطْبَخ')
                           .replace('وَيَضْحَكونَ', 'وَيَضْحَكونَ')
+                          .replace('الصِّغAR', 'الصِّغار')
+                          .replace('الأُSْرَة', 'الأُسْرَة')
+                          .replace(/\.$/, '')
                 );
-                // Noktaları kaldır
-                round.w = round.w.map(word => word.replace(/\.$/, ''));
-                round.s = round.s.map(s_item => s_item.replace(/\.$/, ''));
             });
             
             // Tam Ekran
@@ -916,9 +824,10 @@
             
             createActivityQueue(); // 1. Turu (kolay) yükle
             loadActivity();
-            setupGlobalTouchListeners(); 
+            // SİLİNDİ: setupGlobalTouchListeners(); 
         });
-      <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
-    </script>
+      
+    </script> <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+
 </body>
 </html>
