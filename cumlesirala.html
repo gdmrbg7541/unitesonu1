@@ -815,36 +815,24 @@
             });
         }
         
-            // Global Dokunmatik Dinleyicileri
+           // Global Dokunmatik Dinleyicileri
         function setupGlobalTouchListeners() {
              document.addEventListener('touchmove', (e) => {
-                if (!currentTouchEventItem) return;
+                // Eğer bir öğe sürüklenmiyorsa veya sürükleme başlamadıysa hiçbir şey yapma
+                if (!currentTouchEventItem || !isDragging) return;
 
-                // İlk hareket algılandığında sürüklemeyi başlat
-                if (!isDragging) {
-                    isDragging = true;
-                    // Öğeyi "havaya kaldır"
-                    currentTouchEventItem.style.position = 'fixed';
-                    currentTouchEventItem.style.zIndex = '1000';
-                    currentTouchEventItem.style.pointerEvents = 'none'; 
-                    currentTouchEventItem.style.left = `${initialX}px`;
-                    currentTouchEventItem.style.top = `${initialY}px`;
-                    
-                    // YENİ: Büyütme efektini (scale) burada, 
-                    // 'translate' başlamadan HEMEN ÖNCE uygula
-                    currentTouchEventItem.style.transform = 'scale(1.05)'; 
-                }
-
+                // Sayfanın kaymasını her zaman engelle
+                e.preventDefault(); 
+                
                 const touch = e.touches[0];
                 
+                // Hareketi, başladığımız 'initial' konuma GÖRE hesapla
                 let newX = touch.clientX - initialX - offsetX;
                 let newY = touch.clientY - initialY - offsetY;
                 
-                // YENİ: 'scale' ve 'translate'i BİRLEŞTİR
-                // Bu, performans için kritik öneme sahiptir.
+                // GECİKMEYİ KALDIRMAK İÇİN: 'transform'u rAF olmadan, DOĞRUDAN GÜNCELLE
                 currentTouchEventItem.style.transform = `scale(1.05) translate(${newX}px, ${newY}px)`;
                 
-                e.preventDefault(); 
             }, { passive: false }); 
 
             document.addEventListener('touchend', (e) => {
@@ -861,9 +849,9 @@
                     currentTouchEventItem.style.top = '';
                     currentTouchEventItem.style.zIndex = '';
                     currentTouchEventItem.style.pointerEvents = '';
-                    currentTouchEventItem.style.transform = ''; // Bu, hem 'scale'i hem de 'translate'i sıfırlar
+                    currentTouchEventItem.style.transform = ''; // 'scale' ve 'translate'i sıfırlar
 
-                    // ... (dropZone bulma ve ekleme kodu aynı) ...
+                    // ... (validDropZone bulma ve ekleme kodu aynı kalır) ...
                     let validDropZone = null;
                     if (dropTarget) {
                         if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
@@ -877,8 +865,7 @@
                 }
 
                 // Sınıfı ve değişkenleri her zaman sıfırla
-                // .dragging sınıfı ve 'will-change' buradan kalkar
-                currentTouchEventItem.classList.remove('dragging'); 
+                currentTouchEventItem.classList.remove('dragging');
                 currentTouchEventItem = null;
                 isDragging = false;
                 offsetX = 0;
@@ -886,6 +873,8 @@
                 initialX = 0; 
                 initialY = 0; 
             });
+            
+            // 'updatePosition' fonksiyonu artık gerekli değil, onu da silebilirsiniz.
         }
 
         // --- Başlangıç ---
