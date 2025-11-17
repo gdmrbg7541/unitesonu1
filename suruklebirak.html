@@ -196,14 +196,7 @@
             opacity: 0.5;
         }
         
-        /* 2. Sadece dokunmatik sürükleme için (pozisyon) */
-        .word-item.touch-dragging {
-            opacity: 0.5;
-            cursor: grabbing;
-            position: fixed; 
-            z-index: 1000;
-            pointer-events: none;
-        }
+        
         
         .word-item.correct {
             cursor: default;
@@ -364,6 +357,7 @@
 
 
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
 </head>
 <body>
 
@@ -450,11 +444,11 @@
         let audioCtx = null;
 
         // --- Durum Değişkenleri ---
-        let currentActivityIndex = 0; // YENİ: Mevcut seviyeyi takip eder
+        let currentActivityIndex = 0; 
         let totalWordsRemaining = 0;
-        let currentTouchEventItem = null;
-        let touchOffsetX = 0;
-        let touchOffsetY = 0;
+        
+        // --- SİLİNEN DOKUNMATİK DEĞİŞKENLERİ ---
+        // currentTouchEventItem, touchOffsetX, touchOffsetY kaldırıldı.
 
         // --- SES FONKSİYONLARI ---
         function initAudioContext() {
@@ -507,18 +501,13 @@
             return array;
         }
 
-        // --- ETKİNLİK YÜKLEYİCİ (GÜNCELLENDİ) ---
+        // --- ETKİNLİK YÜKLEYİCİ ---
         function loadActivity() {
             activityArea.innerHTML = '';
-            
-            // Mevcut indekse göre veriyi al
             const data = activityDataBank[currentActivityIndex];
-            
-            instructionText.textContent = data.title; // Başlığı veriden al
-            
+            instructionText.textContent = data.title; 
             feedbackOverlay.classList.remove('show', 'game-finished');
-            
-            buildCategorize(data); // Seçilen veriyi yükle
+            buildCategorize(data); 
         }
         
         // --- Sınıflandırma Arayüzünü Oluştur ---
@@ -570,12 +559,13 @@
             addDragDropListeners();
         }
 
-        // --- Sürükle-Bırak ve Dokunmatik Dinleyicileri ---
+        // --- Sürükle-Bırak Dinleyicileri (BASİTLEŞTİRİLDİ) ---
         function addDragDropListeners() {
             const draggables = document.querySelectorAll('.word-item');
             const containers = document.querySelectorAll('.category-drop-zone, .word-bank-container');
 
             // 1. Fare (Mouse) Olayları
+            // (Bu kod artık eklediğimiz kütüphane sayesinde dokunmatik olarak da çalışacak)
             draggables.forEach(draggable => {
                 draggable.addEventListener('dragstart', (e) => {
                     draggable.classList.add('mouse-dragging'); 
@@ -604,70 +594,14 @@
                 });
             });
 
-            // 2. Dokunmatik (Touch) Başlangıç Olayları
-            draggables.forEach(draggable => {
-                draggable.addEventListener('touchstart', (e) => {
-                    if (currentTouchEventItem || e.target.classList.contains('correct')) return;
-                    e.preventDefault(); // Kaydırmayı engelle
-
-                    currentTouchEventItem = e.target;
-                    playSound('touch');
-                    
-                    const touch = e.touches[0];
-                    const rect = currentTouchEventItem.getBoundingClientRect();
-                    touchOffsetX = touch.clientX - rect.left;
-                    touchOffsetY = touch.clientY - rect.top;
-
-                    currentTouchEventItem.classList.add('touch-dragging'); 
-                    currentTouchEventItem.style.left = `${touch.clientX - touchOffsetX}px`;
-                    currentTouchEventItem.style.top = `${touch.clientY - touchOffsetY}px`;
-
-                }, { passive: false }); // passive: false GEREKLİ
-            });
+            // 2. Dokunmatik (Touch) Olayları
+            // --- TÜM BLOK SİLİNDİ ---
         }
         
-        // --- Global Dokunmatik Dinleyiciler ---
-        function setupGlobalTouchListeners() {
-            document.addEventListener('touchmove', (e) => {
-                if (!currentTouchEventItem) return;
-                e.preventDefault(); 
-                
-                const touch = e.touches[0];
-                currentTouchEventItem.style.left = `${touch.clientX - touchOffsetX}px`;
-                currentTouchEventItem.style.top = `${touch.clientY - touchOffsetY}px`;
-
-            }, { passive: false }); // passive: false GEREKLİ
-
-            document.addEventListener('touchend', (e) => {
-                if (!currentTouchEventItem) return;
-
-                const touch = e.changedTouches[0];
-                
-                currentTouchEventItem.style.visibility = 'hidden';
-                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-                currentTouchEventItem.style.visibility = 'visible';
-                
-                currentTouchEventItem.classList.remove('touch-dragging');
-                currentTouchEventItem.style.position = ''; 
-                currentTouchEventItem.style.left = 'auto';
-                currentTouchEventItem.style.top = 'auto';
-
-                const dropZone = dropTarget ? dropTarget.closest('.category-drop-zone') : null;
-                const wordBank = dropTarget ? dropTarget.closest('.word-bank-container') : null;
-
-                if (dropZone) {
-                    checkCategoryDrop(currentTouchEventItem, dropZone);
-                } else if (wordBank) {
-                    wordBank.appendChild(currentTouchEventItem);
-                } else {
-                    document.getElementById('word-bank-container').appendChild(currentTouchEventItem);
-                }
-                
-                currentTouchEventItem = null; // Sürüklemeyi bitir
-            });
-        }
+        // --- SİLİNEN FONKSİYON ---
+        // setupGlobalTouchListeners() fonksiyonunun tamamı kaldırıldı.
         
-        // --- Kategori Kontrol Fonksiyonu (GÜNCELLENDİ) ---
+        // --- Kategori Kontrol Fonksiyonu ---
         function checkCategoryDrop(wordElement, dropZone) {
             const zoneCategory = dropZone.dataset.category;
             const wordCategory = wordElement.dataset.wordCat;
@@ -677,7 +611,7 @@
                 dropZone.appendChild(wordElement); 
                 wordElement.draggable = false;
                 wordElement.classList.add('correct'); 
-                wordElement.classList.remove('mouse-dragging', 'touch-dragging');
+                wordElement.classList.remove('mouse-dragging'); // touch-dragging kaldırıldı
                 
                 totalWordsRemaining--; 
                 
@@ -685,9 +619,7 @@
                     instructionText.textContent = "أَحْسَنْت! لَقَد أَكْمَلْتَ";
                     feedbackOverlay.classList.add('game-finished');
                     
-                    // --- YENİ: Bir sonraki seviyeye geç ---
                     currentActivityIndex++;
-                    // Eğer son seviyeyi bitirdiyse başa dön
                     if (currentActivityIndex >= activityDataBank.length) {
                         currentActivityIndex = 0; 
                     }
@@ -696,7 +628,7 @@
                 }
             } else {
                 playSound('incorrect');
-                wordElement.classList.remove('mouse-dragging', 'touch-dragging');
+                wordElement.classList.remove('mouse-dragging'); // touch-dragging kaldırıldı
                 document.getElementById('word-bank-container').appendChild(wordElement);
             }
         }
@@ -712,14 +644,10 @@
             }
         }
         
-        // --- Oyunu Yeniden Başlat Fonksiyonu (GÜNCELLENDİ) ---
+        // --- Oyunu Yeniden Başlat Fonksiyonu ---
         function restartGame() {
             playSound('touch');
-            
-            // Overlay'i gizle
             feedbackOverlay.classList.remove('show', 'game-finished'); 
-            
-            // Bir sonraki (veya güncel) aktiviteyi yükle
             loadActivity(); 
         }
         
@@ -772,13 +700,13 @@
         }
 
         
-        // --- Başlangıç ---
+        // --- Başlangıç (BASİTLEŞTİRİLDİ) ---
         document.addEventListener('DOMContentLoaded', () => {
             loadActivity(); // İlk aktiviteyi (indeks 0) yükle
-            setupGlobalTouchListeners();
             setupFullscreen(); 
+            // setupGlobalTouchListeners(); <-- SİLİNDİ
         });
 
-    </script>   
+    </script>
 </body>
 </html>
