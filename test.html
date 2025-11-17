@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قيمي - تمرين الاختبار (5 شقوق)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- Temel Sayfa Stilleri --- */
@@ -13,7 +13,8 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            --font-arabic: 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
+            /* GÜNCELLENDİ: Yazı tipi Markazi Text olarak değiştirildi */
+            --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
         }
 
         body {
@@ -30,7 +31,7 @@
 
         /* --- Ana Etkinlik Alanı (16:9 ve 9:16) --- */
         .activity-container {
-            position: relative; 
+            position: relative;
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -48,7 +49,7 @@
             grid-area: back;
             display: flex;
             /* RTL'de en sola (flex-end) hizalar */
-            justify-content: flex-end; 
+            justify-content: flex-end;
         }
         .back-button {
             /* (Absolute stilleri kaldırıldı) */
@@ -80,8 +81,9 @@
             padding: 15px 25px;
             border-bottom: 1px solid #dee2e6;
             display: grid;
-            /* 3 Sütunlu simetrik alan: Sağ(200) | Orta(1fr) | Sol(200) */
-            grid-template-areas: "progress instruction back"; 
+            /* 3 Sütunlu simetrik alan: Sağ(200) | Orta(1fr) |
+ Sol(200) */
+            grid-template-areas: "progress instruction back";
             grid-template-columns: 200px 1fr 200px;
             align-items: center;
             gap: 20px;
@@ -103,7 +105,7 @@
             gap: 15px;
             justify-content: flex-start;
             width: 200px;
-            direction: ltr; 
+            direction: ltr;
         }
         #progress-display {
             font-size: 1.5rem;
@@ -142,7 +144,7 @@
             width: 100%;
         }
         .question {
-            font-size: 3.8rem;
+            font-size: 4.2rem; /* GÜNCELLENDİ (Masaüstü büyütüldü) */
             font-weight: 700;
             text-align: center;
             margin-bottom: 30px;
@@ -159,8 +161,8 @@
             width: 500px;
             max-width: 100%;
             box-sizing: border-box;
-            padding: 2px;
-            font-size: 2.5rem; 
+            padding: 8px 5px; /* GÜNCELLENDİ (Dikey boşluk arttı) */
+            font-size: 2.8rem; /* GÜNCELLENDİ (Masaüstü büyütüldü) */
             font-family: var(--font-arabic);
             background-color: var(--bg-light);
             border: 2px solid #ced4da;
@@ -255,7 +257,8 @@
             }
 
             .header {
-                /* Üst: Sağ(İlerleme) | Sol(Geri) */
+                /* Üst: Sağ(İlerleme) |
+ Sol(Geri) */
                 /* Alt: Yönerge */
                 grid-template-areas: 
                     "progress back"
@@ -266,7 +269,7 @@
             }
 
             .progress-container {
-                width: auto; 
+                width: auto;
                 justify-content: flex-start; /* İlerleme sağda */
             }
             
@@ -281,19 +284,19 @@
             }
 
             #progress-display {
-                font-size: 1.2rem; 
+                font-size: 1.2rem;
             }
 
             /* Mobil: Test Şıkları */
             .options {
-                gap: 5px; 
+                gap: 5px;
             }
             .option {
-                font-size: 1.5rem; 
+                font-size: 1.5rem;
                 padding: 8px;
             }
             .question {
-                font-size: 2rem; 
+                font-size: 2rem;
                 margin-bottom: 15px;
             }
         }
@@ -307,13 +310,13 @@
         <div class="header">
             
             <div class="progress-container">
-                <div id="progress-display">...</div> 
+                <div id="progress-display">........</div> 
                 <div class="progress-bar-container">
                     <div id="progress-bar"></div>
                 </div>
             </div>
             
-            <div id="instruction-text">...</div>
+            <div id="instruction-text">........</div>
             
             <div class="back-button-container">
                 <a href="index.html" class="back-button">
@@ -340,20 +343,47 @@
         const activitiesData = [
             { 
                 quiz: [
-                    { q: "مَا مِهْنَةُ وَالِدِك؟", o: ["هُوَ مُهَنْدِس", "هِيَ تَكْتُبُ", "هُمَا يَزُورَان", "أَنَا أُحِبُّ", "هَذَان طَالِبَان"], a: 0 },
-                    { q: "أَيْنَ يَعْمَلُ الطَّبِيب؟", o: ["يَعْمَلُ فِي المُسْتَشْفَى", "يَعْمَلُ فِي المَصْنَع", "يَعْمَلُ فِي المَدْرَسَة", "هُوَ يَسُوقُ", "أَنَا مُشْتَاق"], a: 0 },
-                    { q: "هَذَان ...", o: ["مُهَنْدِسان", "مُهَنْدِس", "مُهَنْدِسون", "مُهَنْدِسَة", "مُهَنْدِسَات"], a: 0 },
-                    { q: "هَؤُلَاءِ ...", o: ["مُدَرِّسون", "مُدَرِّس", "مُدَرِّسان", "مُدَرِّسَة", "هُوَ مُدَرِّس"], a: 0 },
-                    { q: "هُمَا ... فِي المَصْنَع", o: ["يَعْمَلَان", "يَعْمَلُ", "تَعْمَلُ", "يَعْمَلُونَ", "تَعْمَلْنَ"], a: 0 }
+                    /* GÜNCELLENDİ: Bunlar cümle olduğu için nokta kaldı */
+                    { q: "ما مِهْنَة والِدِك؟", o: ["هُو مُهَنْدِس.", "هِي تَكْتُب.", "هُما يَزوران.", "أَنا أُحِبُّ.", "هَذان طالِبان."], a: 0 },
+                    /* GÜNCELLENDİ: Bunlar cümle olduğu için nokta kaldı */
+                    { q: "أَيْن يَعْمَلُ الطَّبيب؟", o: ["يَعْمَلُ في المُسْتَشْفى.", "يَعْمَلُ في المَصْنَع.", "يَعْمَلُ في المَدْرَسَة.", "هُو يَسوق.", "أَنا مُشْتاق."], a: 0 },
+                    
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "هَذان ........ .", o: ["مُهَنْدِسان", "مُهَنْدِس", "مُهَنْدِسون", "مُهَنْدِسَة", "مُهَنْدِسَات"], a: 0 },
+                    /* GÜNCELLENDİ: Tek kelimelerden nokta kaldırıldı, "هُو مُدَرِّس." cümlesinde kaldı */
+                    { q: "هَؤُلاءِ ........ .", o: ["مُدَرِّسون", "مُدَرِّس", "مُدَرِّسان", "مُدَرِّسَة", "هُو مُدَرِّس."], a: 0 },
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "هُما ........ في المَصْنَع‫.‬", o: ["يَعْمَلانِ", "يَعْمَلُ", "تَعْمَلُ", "يَعْمَلونَ", "تَعْمَلْنَ"], a: 0 }
                 ]
             },
             { 
                 quiz: [
-                    { q: "هُمْ ... إِلَى المَسْجِد", o: ["يَذْهَبُونَ", "يَذْهَبْنَ", "يَذْهَبُ", "تَذْهَبَان", "أَذْهَبُ"], a: 0 },
-                    { q: "هُنَّ ... الضُّيُوف", o: ["يُكْرِمْنَ", "يُكْرِمُ", "يُكْرِمُونَ", "تُكْرِمُ", "نُكْرِمُ"], a: 0 },
-                    { q: "يَجِبُ أَنْ ... صَادِقًا", o: ["تَكُونَ", "تَكُونُ", "تَكُونِ", "يَكُنْ", "أَكُونُ"], a: 0 },
-                    { q: "لَا تَكُنْ ...", o: ["كَاذِبًا", "صَادِقًا", "مَبْسُوطًا", "مُبْتَسِمًا", "صَبُورًا"], a: 0 },
-                    { q: "كُنْ ...", o: ["صَبُورًا", "عَجُولًا", "غَضْبَانًا", "حَزِينًا", "كَاذِبًا"], a: 0 }
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "هُم ........ إِلى المَسْجِد‫.‬", o: ["يَذْهَبونَ", "يَذْهَبْنَ", "يَذْهَبُ", "تَذْهَبان", "أَذْهَبُ"], a: 0 },
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "هُنَّ ........ الضُّيوف‫.‬", o: ["يُكْرِمْنَ", "يُكْرِمُ", "يُكْرِمونَ", "تُكْرِمُ", "نُكْرِمُ"], a: 0 },
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "يَجِبُ أَنْ ........ صادِقًا‫.‬", o: ["تَكونَ", "تَكونُ", "تَكونِ", "يَكُنْ", "أَكونُ"], a: 0 },
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "لا تَكُنْ ........ .", o: ["كاذِبًا", "صادِقًا", "مَبْسوطًا", "مُبْتَسِمًا", "صَبورًا"], a: 0 },
+                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
+                    { q: "كُنْ ........ .", o: ["صَبورًا", "عَجولًا", "غَضْبانًا", "حَزينًا", "كاذِبًا"], a: 0 }
+
+                ]
+            },
+{ 
+                quiz: [
+                    // --- 10. Sınıf 1. Ünite 1. Ders Kelimelerinden Yeni Sorular ---
+                    { q: "........ أَساس المُجْتَمَع.", o: ["العَدْل", "الصِّدْق", "الأَمانَة", "الصَّبْر", "الشُّكْر"], a: 0 },
+                    { q: "الصَّبْرُ مِفْتَاحُ ........ .", o: ["الْفَرَجِ", "البَيْت", "المُجْتَمَع", "النَّجاح", "الخَطَإ"], a: 0 },
+                    { q: "يَجِبُ عَلَيْنا أَنْ ........ الكِبار وَنَرْحَمَ الصِّغار.", o: ["نُساعِدَ", "نَكْذِبَ", "نَغْضَبَ", "نُؤْذي", "نَزورُ"], a: 0 },
+                    { q: "المُسْلِم لا ........ وَلا يُؤْذي أَحَدًا.", o: ["يَكْذِبُ", "يُساعِدُ", "يَشْكُرُ", "يَبْتَسِمُ", "يَحْتَرِمُ"], a: 0 },
+                    { q: "أَعْتَذِرُ عِنْدَ ........ .", o: ["الخَطَإ", "النَّجاح", "الصَّباح", "الطَّعام", "المُشْكِلَة"], a: 0 },
+                    { q: "........ هُوَ أَخو الأَب.", o: ["العَمّ", "الخال", "الجَدّ", "الأَخ", "الأَب"], a: 0 },
+                    { q: "........ هِيَ أُخْتُ الأُمّ.", o: ["الخالَة", "العَمَّة", "الجَدَّة", "الأُخْت", "الأُمّ"], a: 0 },
+                    { q: "نَزورُ ........ فِي نِهايَة الأُسْبُوع.", o: ["الأَقارِب", "المُدَرِّس", "الأَصْدِقاء", "المَطْبَخ", "الكِبار"], a: 0 },
+                    { q: "يُقَبِّلُ الأَبْناء ........ الوالِدَيْن.", o: ["يَدَ", "البَيْت", "الطَّعام", "الأَقارِب", "الأُسْرَة"], a: 0 },
+                    { q: "البَيْت الَّذِي فِيهِ ........ هُوَ البَيْت السَّعيد.", o: ["مَحَبَّة", "عَدْل", "صَبْر", "صِدْق", "تَعاوُن"], a: 0 }
                 ]
             }
         ];
@@ -366,17 +396,14 @@
         const progressBar = document.getElementById('progress-bar');
         const feedbackOverlay = document.getElementById('feedback-overlay');
         const feedbackIcon = document.getElementById('feedback-icon');
-
         // --- Ses Değişkenleri ---
         let audioCtx = null;
-
         // --- Durum Değişkenleri ---
         let activityQueue = [];
         let currentActivityIndex = 0;
         let grandTotalActivities = 0;
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
-
         // --- SES FONKSİYONLARI ---
         function initAudioContext() {
             if (!audioCtx) {
@@ -385,14 +412,13 @@
         }
         
         function playSound(type) {
-            if (!audioCtx) return; 
+            if (!audioCtx) return;
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             oscillator.type = 'sine';
             const now = audioCtx.currentTime;
-
             if (type === 'touch') {
                 oscillator.frequency.setValueAtTime(200, now);
                 gainNode.gain.setValueAtTime(0.1, now);
@@ -417,8 +443,6 @@
         }
         
         document.body.addEventListener('click', initAudioContext, { once: true });
-
-
         // --- Fisher-Yates Karıştırma Fonksiyonu ---
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -431,13 +455,11 @@
         // --- (SADECE TEST) Aktiviteleri hazırla ---
         function createActivityQueue() {
             const allQuizQuestions = [];
-
             activitiesData.forEach(round => {
                 round.quiz.forEach(quizData => {
                     allQuizQuestions.push(quizData); 
                 });
             });
-            
             activityQueue = shuffle(allQuizQuestions);
             grandTotalActivities = activityQueue.length;
         }
@@ -450,7 +472,7 @@
             const activityData = activityQueue[currentActivityIndex]; 
 
             instructionText.textContent = "قيمي | اِخْتَر الْجَواب الصَّحيح‫.‬";
-            buildQuiz(activityData); 
+            buildQuiz(activityData);
         }
 
         // --- Test Arayüzünü Oluştur ---
@@ -472,7 +494,6 @@
                     isCorrect: (index === data.a)
                 };
             });
-
             const shuffledOptions = shuffle(optionsToShuffle);
             
             shuffledOptions.forEach(option => {
@@ -480,12 +501,12 @@
                 optionButton.className = 'option';
                 optionButton.textContent = option.text;
                 optionButton.onclick = () => {
+                   
                     playSound('touch');
                     checkQuizAnswer(option.isCorrect); 
                 };
                 optionsContainer.appendChild(optionButton);
             });
-
             quizContainer.appendChild(optionsContainer);
             activityArea.appendChild(quizContainer);
         }
@@ -513,7 +534,6 @@
                 playSound('incorrect');
             }
             feedbackOverlay.classList.add('show');
-            
             if (!isCorrect) {
                 setTimeout(() => {
                     feedbackOverlay.classList.remove('show');
@@ -556,7 +576,6 @@
         // --- Oyunu Yeniden Başlat Fonksiyonu ---
         function restartGame() {
             playSound('touch');
-            
             scoreCorrect = 0;
             scoreIncorrect = 0;
             currentActivityIndex = 0;
@@ -565,7 +584,7 @@
             progressBar.style.backgroundColor = 'var(--accent-color)';
             
             createActivityQueue(); 
-            loadActivity(); 
+            loadActivity();
         }
 
 
@@ -573,11 +592,10 @@
         function updateProgress() {
             if (grandTotalActivities === 0) {
                  progressDisplay.textContent = `0 / 0`;
-                 return;
+                return;
             }
             
-            if (currentActivityIndex === grandTotalActivities) return; 
-
+            if (currentActivityIndex === grandTotalActivities) return;
             const currentTotal = currentActivityIndex + 1;
             const percentage = (currentActivityIndex / grandTotalActivities) * 100;
             
@@ -591,16 +609,20 @@
             // Veri setindeki (varsa) son küçük harf hatalarını düzelt
             activitiesData.forEach(round => {
                 round.quiz.forEach(q => {
-                    q.o = q.o.map(opt => opt.replace('tEktUb', 'تَكْتُبُ')
+               
+                     q.o = q.o.map(opt => opt.replace('tEktUb', 'تَكْتُبُ')
                                               .replace('tEkOni', 'تَكُونِ')
-                                              .replace('yEzhEbu', 'يَذْهَبُ')
+                                           
+                                   .replace('yEzhEbu', 'يَذْهَبُ')
                                               .replace('tEzhEbAn', 'تَذْهَبَان')
-                                              .replace('ElmustEşfA', 'المُسْتَشْفَى')
-                                      );
+                                              .replace('ElmustEşfA', 'المُsْتَشْفَى')
+                                              .replace('müderrisan', 'مُدَرِّسان') // (Bu artık veri setinde düzeltildi)
+                                             );
                 });
             });
             
             createActivityQueue();
+            
             loadActivity();
         });
 
