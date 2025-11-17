@@ -395,7 +395,7 @@
 
     </div>
 
-    <script>
+<script>
         // --- Kelime Verisi (Çoklu Seviye) ---
         const colors = ['#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997', '#0d6efd', '#6f42c1', '#e83e8c'];
         
@@ -613,18 +613,39 @@
                     cell.dataset.row = r;
                     cell.dataset.col = c;
                     
-                    cell.addEventListener('mousedown', handleSelectionStart);
-                    cell.addEventListener('mouseover', handleSelectionMove);
+                    // Olay dinleyicileri artık doğrudan hücrelere değil,
+                    // 'gridContainer'a toplu olarak eklenecek.
                     
                     gridContainer.appendChild(cell);
                     gridCells[r][c] = cell; 
                 }
             }
+
+            // --- BİRLEŞTİRİLMİŞ FARE VE DOKUNMATİK OLAY YÖNETİCİLERİ ---
+
+            // Fare Olayları
+            gridContainer.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // Metin seçmeyi/sürüklemeyi engelle
+                handleSelectionStart(e); // Normal MouseEvent gönder
+            });
+            gridContainer.addEventListener('mousemove', (e) => {
+                // Sadece seçim yapılırken hareketi işle
+                handleSelectionMove(e); // Normal MouseEvent gönder
+            });
+            // Seçimi bırakma (mouseup) ekranın herhangi bir yerinde olabilir
             document.addEventListener('mouseup', handleSelectionEnd);
-            
-            gridContainer.addEventListener('touchstart', (e) => handleSelectionStart(e.touches[0]), { passive: false });
-            gridContainer.addEventListener('touchmove', (e) => handleSelectionMove(e.touches[0]), { passive: false });
-            gridContainer.addEventListener('touchend', handleSelectionEnd);
+
+            // Dokunmatik Olayları
+            gridContainer.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Sayfa kaydırmayı engelle
+                handleSelectionStart(e.touches[0]); // Sadece ilk dokunma bilgisini (Touch objesi) gönder
+            }, { passive: false });
+            gridContainer.addEventListener('touchmove', (e) => {
+                e.preventDefault(); // Sayfa kaydırmayı engelle
+                handleSelectionMove(e.touches[0]); // Sadece ilk dokunma bilgisini (Touch objesi) gönder
+            }, { passive: false });
+            // Seçimi bırakma (touchend) ekranın herhangi bir yerinde olabilir
+            document.addEventListener('touchend', handleSelectionEnd);
         }
 
         // --- SEÇİM MANTIĞI ---
@@ -633,6 +654,8 @@
              if (e.target && e.target.classList.contains('grid-cell')) {
                 return e.target;
             }
+             // 'e' artık bir MouseEvent veya Touch objesi olabilir
+             // Her ikisi de clientX/clientY özelliklerine sahip
             if (e.clientX && e.clientY) {
                 return document.elementFromPoint(e.clientX, e.clientY);
             }
@@ -640,8 +663,10 @@
         }
 
         function handleSelectionStart(e) {
-            e.preventDefault();
+            // e.preventDefault(); // <-- Buradan kaldırıldı!
+            
             const cell = getCellFromEvent(e);
+            // Hücre bulunamazsa (ızgara dışına tıklanırsa) işlemi durdur
             if (!cell || !cell.dataset) return;
 
             isSelecting = true;
@@ -653,9 +678,10 @@
 
         function handleSelectionMove(e) {
             if (!isSelecting) return;
-            e.preventDefault();
+            // e.preventDefault(); // <-- Buradan kaldırıldı!
             
             const cell = getCellFromEvent(e);
+            // Hücre bulunamazsa (ızgara dışına çıkılırsa) işlemi durdur
             if (!cell || !cell.dataset) return;
 
             currentSelection.forEach(c => c.classList.remove('selecting'));
@@ -801,6 +827,7 @@
                 if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
                     document.body.classList.add('fullscreen');
                 } else {
+                    // DÜZELTME: Tam ekrandan çıkıldığında 'fullscreen' sınıfını KALDIR
                     document.body.classList.remove('fullscreen');
                 }
             }
@@ -817,6 +844,7 @@
             setupFullscreen(); 
         });
 
-    </script>
+    </script>   
+
 </body>
 </html>
