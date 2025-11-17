@@ -561,6 +561,7 @@
         
         // --- Tıklayarak Kelime Taşıma ---
         function handleWordClick(e) {
+           
             if (isDragging) return; // YENİ: Eğer bir sürükleme işlemiyse, tıklamayı yoksay
             const wordItem = e.currentTarget; 
             
@@ -796,22 +797,23 @@
                     const touch = e.touches[0];
                     const rect = currentTouchEventItem.getBoundingClientRect();
 
-                    // Parmağın kelimenin sol üst köşesine göre ofsetini hesapla
+                    // Parmağın kelime içindeki ofsetini hesapla
                     offsetX = touch.clientX - rect.left;
                     offsetY = touch.clientY - rect.top;
 
+                    // YENİ: Kelimenin o anki ekran konumunu sakla
+                    // 'touchmove' içinde bu değerleri kullanacağız.
+                    initialX = rect.left;
+                    initialY = rect.top;
+
                     // Sürükleme başladığında 'dragging' sınıfını ekle
                     currentTouchEventItem.classList.add('dragging');
-                    
-                    // Not: isDragging = true; henüz ayarlanmadı.
-                    // Bu, 'touchmove' olayı gerçekleşene kadar bekler.
-                    // Bu sayede, sürüklemesiz kısa dokunuşlar 'click' olarak çalışabilir.
 
-                }, { passive: true }); // passive:true performansı artırır
+                }, { passive: true });
             });
         }
         
-        // Global Dokunmatik Dinleyicileri
+            // Global Dokunmatik Dinleyicileri
         function setupGlobalTouchListeners() {
              document.addEventListener('touchmove', (e) => {
                 if (!currentTouchEventItem) return;
@@ -820,27 +822,26 @@
                 if (!isDragging) {
                     isDragging = true;
                     // Öğeyi "havaya kaldır"
-                    currentTouchEventItem.style.position = 'fixed'; 
+                    currentTouchEventItem.style.position = 'fixed';
                     currentTouchEventItem.style.zIndex = '1000';
                     currentTouchEventItem.style.pointerEvents = 'none'; 
                     
-                    // YENİ: 'transform' kullanacağımız için 'left' ve 'top'u sıfırla.
-                    // Bu, transform'un (0,0) noktasından başlamasını sağlar.
-                    currentTouchEventItem.style.left = '0px';
-                    currentTouchEventItem.style.top = '0px';
+                    // YENİ: '0,0' yerine, dokunduğumuz anki konuma sabitle
+                    // Bu, "atlama" sorununu çözer.
+                    currentTouchEventItem.style.left = `${initialX}px`;
+                    currentTouchEventItem.style.top = `${initialY}px`;
                 }
 
                 const touch = e.touches[0];
                 
-                // Ofseti kullanarak öğeyi parmağın altına konumlandır
-                let newX = touch.clientX - offsetX;
-                let newY = touch.clientY - offsetY;
+                // YENİ: Hareketi, başladığımız 'initial' konuma GÖRE hesapla
+                // (Mevcut parmak konumu) - (Kelimenin sabitlendiği yer) - (Parmağın kelime  içindeki ofseti)
+                let newX = touch.clientX - initialX - offsetX;
+                let newY = touch.clientY - initialY - offsetY;
                 
-                // YENİ: PERFORMANS İÇİN 'transform' KULLAN
-                // 'left' ve 'top' yerine bu yöntemi kullanmak KASMA'yı engeller.
+                // 'transform' ile kelimeyi kaydır
                 currentTouchEventItem.style.transform = `translate(${newX}px, ${newY}px)`;
                 
-                // Sürüklerken sayfanın kaymasını engelle
                 e.preventDefault(); 
             }, { passive: false }); 
 
@@ -850,18 +851,17 @@
                 // Eğer bir sürükleme işlemi gerçekleştiyse
                 if (isDragging) {
                     const touch = e.changedTouches[0];
-                    
-                    // Parmağın altındaki öğeyi bul
                     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
                     
-                    // Öğenin stillerini sıfırla (DOM'a geri eklemeden önce)
+                    // Öğenin stillerini sıfırla
                     currentTouchEventItem.style.position = '';
-                    currentTouchEventItem.style.left = ''; // 'left'i sıfırla
-                    currentTouchEventItem.style.top = '';  // 'top'u sıfırla
+                    currentTouchEventItem.style.left = '';
+                    currentTouchEventItem.style.top = '';
                     currentTouchEventItem.style.zIndex = '';
                     currentTouchEventItem.style.pointerEvents = '';
-                    currentTouchEventItem.style.transform = ''; // YENİ: 'transform'u sıfırla
+                    currentTouchEventItem.style.transform = ''; // Transform'u sıfırla
 
+                    // ... (validDropZone bulma ve ekleme kodu aynı kalır) ...
                     let validDropZone = null;
                     if (dropTarget) {
                         if (dropTarget.classList.contains('drop-zone')) validDropZone = dropTarget;
@@ -869,8 +869,6 @@
                         else if (dropTarget.closest('.drop-zone')) validDropZone = dropTarget.closest('.drop-zone');
                         else if (dropTarget.closest('.drag-zone')) validDropZone = dropTarget.closest('.drag-zone');
                     }
-                    
-                    // Geçerli bir alana bırakıldıysa oraya ekle
                     if (validDropZone) {
                         validDropZone.appendChild(currentTouchEventItem);
                     }
@@ -882,6 +880,8 @@
                 isDragging = false;
                 offsetX = 0;
                 offsetY = 0;
+                initialX = 0; // YENİ: Sıfırla
+                initialY = 0; // YENİ: Sıfırla
             });
         }
 
@@ -891,18 +891,18 @@
             activitiesData.forEach(round => {
                 // (Hatalı harfleri düzelt)
                 round.w = round.w.map(word => 
-                    word.replace('يَسْعَdan', 'يَسْعَدان')
-                        .replace('الْفَرَJِ', 'الْفَرَجِ')
-                        .replace('tüinü', 'تُعينُ')
-                        .replace('المَطْبَx', 'المَطْبَخ')
-                        .replace('وَيَضْhَكونَ', 'وَيَضْحَكونَ')
+                    word.replace('يَسْعَدان', 'يَسْعَدان')
+                        .replace('الْفَرَج', 'الْفَرَج')
+                        .replace('تُعينُ', 'تُعينُ')
+                        .replace('المَطْبَخ', 'المَطْبَخ')
+                        .replace('وَيَضْحَكونَ', 'وَيَضْحَكونَ')
                 );
                 round.s = round.s.map(s_item => 
                     s_item.replace('يَسْعَdan', 'يَسْعَدان')
-                          .replace('الْفَرَJِ', 'الْفَرَجِ')
-                          .replace('tüinü', 'تُعينُ')
-                          .replace('المَطْبَx', 'المَطْبَخ')
-                          .replace('وَيَضْhَكونَ', 'وَيَضْحَكونَ')
+                          .replace('الفَرَج', 'الفَرَجِ')
+                          .replace('تُعينُ', 'تُعينُ')
+                          .replace('المَطْبَخ', 'المَطْبَخ')
+                          .replace('وَيَضْحَكونَ', 'وَيَضْحَكونَ')
                 );
                 // Noktaları kaldır
                 round.w = round.w.map(word => word.replace(/\.$/, ''));
