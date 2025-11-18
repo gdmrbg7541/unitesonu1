@@ -401,9 +401,11 @@
         // --- Durum Değişkenleri ---
         let activityQueue = [];
         let currentActivityIndex = 0;
-        let grandTotalActivities = 0;
+        
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
+        let allRounds = []; // Tüm raundları (soru gruplarını) burada tutacağız
+        let currentRoundIndex = 0; // Hangi raundda olduğumuzu takip edeceğiz
         // --- SES FONKSİYONLARI ---
         function initAudioContext() {
             if (!audioCtx) {
@@ -453,16 +455,33 @@
         }
 
         // --- (SADECE TEST) Aktiviteleri hazırla ---
-        function createActivityQueue() {
-            const allQuizQuestions = [];
-            activitiesData.forEach(round => {
-                round.quiz.forEach(quizData => {
-                    allQuizQuestions.push(quizData); 
-                });
-            });
-            activityQueue = shuffle(allQuizQuestions);
-            grandTotalActivities = activityQueue.length;
-        }
+       // --- (YENİ) Raundları (10+10) Hazırla ---
+function prepareRounds() {
+    // 1. Raund: activitiesData[0] (5 soru) ve activitiesData[1]'i (5 soru) birleştir
+    const round1 = activitiesData[0].quiz.concat(activitiesData[1].quiz);
+
+    // 2. Raund: activitiesData[2]'yi (10 soru) al
+    const round2 = activitiesData[2].quiz;
+
+    // Raundları ana dizide sakla
+    allRounds = [round1, round2];
+    currentRoundIndex = 0; // 0. raunddan başla (yani round1)
+}
+
+// --- (YENİ) Mevcut Raundu Yükle ---
+function loadCurrentRound() {
+    // Mevcut raundun sorularını al
+    const currentRoundQuestions = allRounds[currentRoundIndex];
+
+    // Soruları karıştır ve global kuyruğa ata
+    activityQueue = shuffle([...currentRoundQuestions]); // Orijinali bozmamak için kopyasını karıştır
+
+    // Bu raunddaki toplam soru sayısını ayarla
+    grandTotalActivities = activityQueue.length;
+
+    // Bu raund için soru sayacını sıfırla
+    currentActivityIndex = 0;
+}
 
         // --- (SADECE TEST) ETKİNLİK YÜKLEYİCİ ---
         function loadActivity() {
@@ -471,7 +490,8 @@
             
             const activityData = activityQueue[currentActivityIndex]; 
 
-            instructionText.textContent = "قيمي | اِخْتَر الْجَواب الصَّحيح‫.‬";
+          // Raund numarasını (Grup 1, Grup 2) başlığa ekle
+        instructionText.textContent = "قِيَمي | اِخْتَر الْجَواب الصَّحيح‫.‬";
             buildQuiz(activityData);
         }
 
@@ -541,17 +561,33 @@
             }
         }
 
-        // --- Sonraki Etkinliğe Geçiş ---
-        function nextActivity() {
-            feedbackOverlay.classList.remove('show');
-            currentActivityIndex++; 
+       // --- Sonraki Etkinliğe Geçiş (Raund Kontrollü) ---
+// --- Sonraki Etkinliğe Geçiş (Raund Kontrollü) ---
+function nextActivity() {
+    feedbackOverlay.classList.remove('show');
+    currentActivityIndex++; 
 
-            if (currentActivityIndex === grandTotalActivities) {
-                showFinishScreen();
-            } else {
-                loadActivity();
-            }
-        }
+    if (currentActivityIndex === grandTotalActivities) {
+        // ---- RAUND BİTTİ ----
+        currentRoundIndex++; // Bir sonraki raunda geç
+        
+        if (currentRoundIndex < allRounds.length) {
+            // ---- BİR SONRAKİ RAUND VAR ----
+            loadCurrentRound(); // Yeni raundun sorularını hazırla
+            
+            // YENİ: Raund bittiğinde ilerleme çubuğunu sıfırla
+            progressBar.style.width = '0%'; 
+            
+            loadActivity();     // Yeni raundun ilk sorusunu yükle
+        } else {
+            // ---- TÜM RAUNDLAR BİTTİ ----
+            showFinishScreen();
+        }
+    } else {
+        // ---- RAUND DEVAM EDİYOR ----
+        loadActivity();
+    }
+}
 
         // --- Bitiş Ekranı ---
         function showFinishScreen() {
@@ -574,18 +610,21 @@
         }
         
         // --- Oyunu Yeniden Başlat Fonksiyonu ---
-        function restartGame() {
-            playSound('touch');
-            scoreCorrect = 0;
-            scoreIncorrect = 0;
-            currentActivityIndex = 0;
-            
-            progressBar.style.width = '0%';
-            progressBar.style.backgroundColor = 'var(--accent-color)';
-            
-            createActivityQueue(); 
-            loadActivity();
-        }
+function restartGame() {
+    playSound('touch');
+    scoreCorrect = 0;
+    scoreIncorrect = 0;
+    
+    // YENİ: Oyunu 0. raunda (Grup 1) geri ayarla
+    currentRoundIndex = 0; 
+    
+    progressBar.style.width = '0%';
+    progressBar.style.backgroundColor = 'var(--accent-color)';
+    
+    // createActivityQueue() yerine yeni fonksiyonları çağır
+    loadCurrentRound(); // 0. Raundu (ilk 10 soru) yükle
+    loadActivity();     // İlk soruyu göster
+}
 
 
         // --- İlerleme Güncelleme ---
@@ -615,15 +654,15 @@
                                            
                                    .replace('yEzhEbu', 'يَذْهَبُ')
                                               .replace('tEzhEbAn', 'تَذْهَبَان')
-                                              .replace('ElmustEşfA', 'المُsْتَشْفَى')
+                                              .replace('ElmustEşfA', 'المُسْتَشْفَى')
                                               .replace('müderrisan', 'مُدَرِّسان') // (Bu artık veri setinde düzeltildi)
                                              );
                 });
             });
             
-            createActivityQueue();
-            
-            loadActivity();
+            prepareRounds();    // Raundları (10+10) grupla
+loadCurrentRound(); // İlk raundu (0) yükle
+loadActivity();     // İlk raundun ilk sorusunu yükle
         });
 
     </script>
