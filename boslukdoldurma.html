@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قِيَمي - تمرين ملء الفراغ</title>
+    <title> تمرين ملء الفراغ</title>
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -200,21 +200,26 @@
             text-align: center;
         }
         .answer-input {
-            font-size: clamp(2rem, 3.5vw, 4.5rem);
-            font-weight: 700;
-            font-family: var(--font-arabic);
-            border: 2px solid var(--accent-color);
-            border-radius: 8px;
-            padding: 5px 15px;
-            width: 300px;
-            max-width: 80%;
-            text-align: center;
-            margin: 0 15px;
-            min-height: clamp(50px, 8vh, 90px);
-            background: #f8f9fa;
-            direction: rtl; 
-            color: #333;
-        }
+    font-size: inherit; /* Bu sayede üstündeki cümlenin boyutunu aynen alır */
+    font-weight: 700;
+    font-family: var(--font-arabic);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 0 15px; /* Dikey paddingi azalttım, kutu çok şişmesin diye */
+    width: 300px;
+    max-width: 80%;
+    text-align: center;
+    margin: 0 15px;
+    /* Yüksekliği yazıya göre esnek bırakmak için min-height ayarını biraz artırabiliriz */
+    min-height: clamp(60px, 10vh, 100px); 
+    background: #f8f9fa;
+    direction: rtl; 
+    color: #333;
+    /* Yazının kutunun ortasına tam oturması için: */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
         
         /* --- Sanal Klavye --- */
         .keyboard-container {
@@ -733,7 +738,7 @@
             
             const activityData = activityQueue[currentActivityIndex]; 
             
-            instructionText.textContent = "قِيَمي | اِمْلَأ الفَراغ بِالكَلِمَة المُناسِبَة‫.‬";
+            instructionText.textContent = " اِمْلَأ الفَراغ بِالكَلِمَة المُناسِبَة‫.";
             
             buildFillInTheBlank(activityData);
         }

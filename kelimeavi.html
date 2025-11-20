@@ -408,77 +408,81 @@
         // GÜNCELLEME: Seviyeler 'Masaüstü' ve 'Mobil' olarak ikiye ayrıldı
         
         // MASAÜSTÜ SEVİYELERİ (Orijinal 10x8 Izgara için)
+        // MASAÜSTÜ SEVİYELERİ (Her biri 6 Kelime)
+        // Dosya 1 (Meslekler/Akrabalar) ve Dosya 2 (Güzel Davranışlar) içeriğine göre düzenlenmiştir.
         const desktopLevels = [
-            [
-                { word: 'امانة', color: colors[0], emoji: '🤝' },
-                { word: 'إخلاص', color: colors[1], emoji: '💖' },
-                { word: 'تعاون', color: colors[2], emoji: '🤲' },
-                { word: 'احترام', color: colors[3], emoji: '👍' },
-                { word: 'يساعد', color: colors[4], emoji: '🧑‍🤝‍🧑' },
-                { word: 'يحب', color: colors[5], emoji: '❤️' }
+            [   // 1. Seviye: Meslekler ve Çalışma (Dosya 1)
+                { word: 'مدرس', color: colors[0], emoji: '🧑🏻‍🏫' }, // Öğretmen
+                { word: 'طبيب', color: colors[1], emoji: '🧑🏻‍⚕️' }, // Doktor
+                { word: 'شرطي', color: colors[2], emoji: '👮' },   // Polis
+                { word: 'سائق', color: colors[3], emoji: '🚕' },   // Şoför
+                { word: 'ممرضة', color: colors[4], emoji: '👩‍⚕️' }, // Hemşire
+                { word: 'مهندس', color: colors[5], emoji: '👷' }   // Mühendis
             ],
-            [
-                { word: 'محبة', color: colors[0], emoji: '❤️' },
-                { word: 'اعتذار', color: colors[1], emoji: '😥' },
-                { word: 'رحمة', color: colors[2], emoji: '🥰' },
-                { word: 'تواضع', color: colors[3], emoji: '😌' },
-                { word: 'يشكر', color: colors[4], emoji: '🙏' },
-                { word: 'يعتذر', color: colors[5], emoji: '😥' }
+            [   // 2. Seviye: Aile ve Sosyal Çevre (Dosya 1 & 2)
+                { word: 'أقارب', color: colors[0], emoji: '👨‍👩‍👧‍👦' }, // Akrabalar
+                { word: 'جدة', color: colors[1], emoji: '👵' },     // Büyükanne
+                { word: 'جيران', color: colors[2], emoji: '🏘️' },   // Komşular
+                { word: 'ضيوف', color: colors[3], emoji: '☕' },    // Misafirler
+                { word: 'كبار', color: colors[4], emoji: '👴' },    // Büyükler/Yaşlılar
+                { word: 'صغار', color: colors[5], emoji: '👶' }     // Küçükler
             ],
-            [
-                { word: 'طاعة', color: colors[0], emoji: '🧑‍' },
-                { word: 'تراحم', color: colors[1], emoji: '🤗' },
-                { word: 'أسرة', color: colors[2], emoji: '👨‍👩‍👧‍👦' },
-                { word: 'جدة', color: colors[3], emoji: '👵' },
-                { word: 'يسلم', color: colors[4], emoji: '👋' },
-                { word: 'يبتسم', color: colors[5], emoji: '😊' }
+            [   // 3. Seviye: Güzel Davranışlar ve Fiiller (Dosya 2)
+                { word: 'يساعد', color: colors[0], emoji: '🤝' },   // Yardım ediyor
+                { word: 'يحترم', color: colors[1], emoji: '🫡' },   // Saygı duyuyor
+                { word: 'يزور', color: colors[2], emoji: '🔔' },    // Ziyaret ediyor
+                { word: 'يصلي', color: colors[3], emoji: '🤲' },    // Dua ediyor/Namaz kılıyor
+                { word: 'يحب', color: colors[4], emoji: '❤️' },     // Seviyor
+                { word: 'يكرم', color: colors[5], emoji: '🍽️' }    // İkram ediyor
             ],
-            [
-                { word: 'خالة', color: colors[0], emoji: '👩‍🦱' },
-                { word: 'أقارب', color: colors[1], emoji: '👨‍👩‍👧‍👦' },
-                { word: 'أبناء', color: colors[2], emoji: '👦' },
-                { word: 'بنات', color: colors[3], emoji: '👧' },
-                { word: 'يصبر', color: colors[4], emoji: '⏳' }
+            [   // 4. Seviye: Sıfatlar ve Durumlar (Dosya 1 & 2)
+                { word: 'صبور', color: colors[0], emoji: '😌' },    // Sabırlı
+                { word: 'مجتهد', color: colors[1], emoji: '📚' },   // Çalışkan
+                { word: 'صادق', color: colors[2], emoji: '✅' },    // Dürüst/Doğru
+                { word: 'مبتسم', color: colors[3], emoji: '😊' },   // Güler yüzlü
+                { word: 'مسلم', color: colors[4], emoji: '🕌' },    // Müslüman
+                { word: 'نشيط', color: colors[5], emoji: '🏃' }     // Dinamik/Aktif
             ]
         ];
         
         // MOBİL SEVİYELER (4 Kelimelik 6 Seviye - 8x8 Izgara için)
+        // Mobil kullanıcılar için kelimeler daha küçük gruplara bölünmüştür.
         const mobileLevels = [
-            [
-                { word: 'امانة', color: colors[0], emoji: '🤝' },
-                { word: 'إخلاص', color: colors[1], emoji: '💖' },
-                { word: 'تعاون', color: colors[2], emoji: '🤲' },
-                { word: 'احترام', color: colors[3], emoji: '👍' }
+            [   // Mobil 1: Temel Meslekler
+                { word: 'مدرس', color: colors[0], emoji: '🧑🏻‍🏫' },
+                { word: 'طبيب', color: colors[1], emoji: '🧑🏻‍⚕️' },
+                { word: 'مهندس', color: colors[2], emoji: '👷' },
+                { word: 'ممرضة', color: colors[3], emoji: '👩‍⚕️' }
             ],
-            [
-                { word: 'يساعد', color: colors[4], emoji: '🧑‍🤝‍🧑' },
-                { word: 'يحب', color: colors[5], emoji: '❤️' },
-                { word: 'محبة', color: colors[0], emoji: '❤️' },
-                { word: 'اعتذar', color: colors[1], emoji: '😥' }
+            [   // Mobil 2: Diğer Meslekler ve Yerler
+                { word: 'شرطي', color: colors[4], emoji: '👮' },
+                { word: 'سائق', color: colors[5], emoji: '🚕' },
+                { word: 'مصنع', color: colors[0], emoji: '🏭' }, // Fabrika (Metinde geçiyor)
+                { word: 'مستشفى', color: colors[1], emoji: '🏥' } // Hastane (Metinde geçiyor)
             ],
-            [
-                { word: 'رحمة', color: colors[2], emoji: '🥰' },
-                { word: 'تواضع', color: colors[3], emoji: '😌' },
-                { word: 'يشكر', color: colors[4], emoji: '🙏' },
-                { word: 'يعتذر', color: colors[5], emoji: '😥' }
+            [   // Mobil 3: Sosyal İlişkiler
+                { word: 'جيران', color: colors[2], emoji: '🏘️' },
+                { word: 'ضيوف', color: colors[3], emoji: '☕' },
+                { word: 'أقارب', color: colors[4], emoji: '👨‍👩‍👧‍👦' },
+                { word: 'جدة', color: colors[5], emoji: '👵' }
             ],
-            [
-                { word: 'طاعة', color: colors[0], emoji: '🧑‍' },
-                { word: 'تراحم', color: colors[1], emoji: '🤗' },
-                { word: 'أسرة', color: colors[2], emoji: '👨‍👩‍👧‍👦' },
-                { word: 'جدة', color: colors[3], emoji: '👵' }
+            [   // Mobil 4: İyi Davranış Fiilleri
+                { word: 'يساعد', color: colors[0], emoji: '🤝' },
+                { word: 'يحترم', color: colors[1], emoji: '🫡' },
+                { word: 'يزور', color: colors[2], emoji: '🔔' },
+                { word: 'يعتذر', color: colors[3], emoji: '😥' }
             ],
-            [
-                { word: 'يسلم', color: colors[4], emoji: '👋' },
-                { word: 'يبتsem', color: colors[5], emoji: '😊' },
-                { word: 'خالة', color: colors[0], emoji: '👩‍🦱' },
-                { word: 'أقارب', color: colors[1], emoji: '👨‍👩‍👧‍👦' }
+            [   // Mobil 5: Kişisel Özellikler (Sıfatlar)
+                { word: 'صبور', color: colors[4], emoji: '😌' },
+                { word: 'صادق', color: colors[5], emoji: '✅' },
+                { word: 'مبتسم', color: colors[0], emoji: '😊' },
+                { word: 'مجتهد', color: colors[1], emoji: '📚' }
             ],
-            [
-                { word: 'أبناء', color: colors[2], emoji: '👦' },
-                { word: 'بنات', color: colors[3], emoji: '👧' },
-                { word: 'يصبر', color: colors[4], emoji: '⏳' },
-                { word: 'امانة', color: colors[0], emoji: '🤝' }
+            [   // Mobil 6: Duygular ve Eylemler
+                { word: 'يحب', color: colors[2], emoji: '❤️' },
+                { word: 'يصلي', color: colors[3], emoji: '🤲' },
+                { word: 'كبار', color: colors[4], emoji: '👴' },
+                { word: 'صغار', color: colors[0], emoji: '👶' }
             ]
         ];
 

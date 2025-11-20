@@ -13,7 +13,6 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            /* GÜNCELLENDİ: Yazı tipi Markazi Text olarak değiştirildi */
             --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
         }
 
@@ -44,15 +43,13 @@
             max-width: calc(90vh * 16 / 9); /* 16:9 */
         }
         
-        /* --- Geri Tuşu (Header İçin Yeniden Düzenlendi) --- */
+        /* --- Geri Tuşu --- */
         .back-button-container {
             grid-area: back;
             display: flex;
-            /* RTL'de en sola (flex-end) hizalar */
             justify-content: flex-end;
         }
         .back-button {
-            /* (Absolute stilleri kaldırıldı) */
             background: #f0f0f0;
             color: #555;
             border: 1px solid #ccc;
@@ -75,30 +72,26 @@
             fill: currentColor;
         }
 
-
-        /* --- Başlık ve İlerleme Çubuğu (Simetrik 3 Sütun) --- */
+        /* --- Başlık ve İlerleme Çubuğu --- */
         .header {
             padding: 15px 25px;
             border-bottom: 1px solid #dee2e6;
             display: grid;
-            /* 3 Sütunlu simetrik alan: Sağ(200) | Orta(1fr) |
- Sol(200) */
             grid-template-areas: "progress instruction back";
             grid-template-columns: 200px 1fr 200px;
             align-items: center;
             gap: 20px;
-            /* padding-left kaldırıldı, artık grid yönetiyor */
         }
         
-        #instruction-text { /* Yönerge (Ortada) */
+        #instruction-text { 
             grid-area: instruction;
             text-align: center; 
-            font-size: 2.2rem; /* YAZI BOYUTU BÜYÜTÜLDÜ */
+            font-size: 2.2rem;
             font-weight: 700;
             color: #555;
         }
         
-        .progress-container { /* İlerleme Çubuğu (Sağda) */
+        .progress-container { 
             grid-area: progress;
             display: flex;
             align-items: center;
@@ -128,7 +121,6 @@
             transition: width 0.4s ease, background-color 0.4s ease;
         }
 
-
         /* --- Asıl Etkinlik Alanı --- */
         .activity-area {
             flex-grow: 1;
@@ -144,7 +136,7 @@
             width: 100%;
         }
         .question {
-            font-size: 4.2rem; /* GÜNCELLENDİ (Masaüstü büyütüldü) */
+            font-size: 4.2rem;
             font-weight: 700;
             text-align: center;
             margin-bottom: 30px;
@@ -161,8 +153,8 @@
             width: 500px;
             max-width: 100%;
             box-sizing: border-box;
-            padding: 8px 5px; /* GÜNCELLENDİ (Dikey boşluk arttı) */
-            font-size: 2.8rem; /* GÜNCELLENDİ (Masaüstü büyütüldü) */
+            padding: 8px 5px;
+            font-size: 2.8rem;
             font-family: var(--font-arabic);
             background-color: var(--bg-light);
             border: 2px solid #ced4da;
@@ -247,7 +239,7 @@
             background-color: #f0f0f0;
         }
 
-        /* --- Mobil Düzen (Simetrik Başlık) --- */
+        /* --- Mobil Düzen --- */
         @media (orientation: portrait) {
             .activity-container {
                 width: 95vw;
@@ -257,9 +249,6 @@
             }
 
             .header {
-                /* Üst: Sağ(İlerleme) |
- Sol(Geri) */
-                /* Alt: Yönerge */
                 grid-template-areas: 
                     "progress back"
                     "instruction instruction";
@@ -270,15 +259,15 @@
 
             .progress-container {
                 width: auto;
-                justify-content: flex-start; /* İlerleme sağda */
+                justify-content: flex-start;
             }
             
             .back-button-container {
-                justify-content: flex-end; /* Geri tuşu solda */
+                justify-content: flex-end;
             }
             
             #instruction-text {
-                font-size: 1.4rem; /* Mobil için büyütüldü (1.1'den) */
+                font-size: 1.4rem;
                 min-width: unset;
                 justify-self: center;
             }
@@ -287,7 +276,6 @@
                 font-size: 1.2rem;
             }
 
-            /* Mobil: Test Şıkları */
             .options {
                 gap: 5px;
             }
@@ -300,24 +288,19 @@
                 margin-bottom: 15px;
             }
         }
-
     </style>
 </head>
 <body>
 
     <div class="activity-container">
-        
         <div class="header">
-            
             <div class="progress-container">
                 <div id="progress-display">........</div> 
                 <div class="progress-bar-container">
                     <div id="progress-bar"></div>
                 </div>
             </div>
-            
             <div id="instruction-text">........</div>
-            
             <div class="back-button-container">
                 <a href="index.html" class="back-button">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -327,64 +310,47 @@
             </div>
         </div>
 
-        <div class="activity-area" id="activity-area">
-            </div>
+        <div class="activity-area" id="activity-area"></div>
 
         <div class="feedback-overlay" id="feedback-overlay">
             <span id="feedback-icon"></span>
         </div>
-
     </div>
 
     <script>
         // --- ETKİNLİK VERİLERİ (10. SINIF - 1. ÜNİTE: DEĞERLERİM) ---
-        // (Veri setindeki hatalar düzeltildi)
-        
         const activitiesData = [
-            { 
+            /* Index 0: Ünite 1 (20 Soru) */
+            {
+                title: "Ünite 1: Akrabalar ve İyi Davranışlar",
                 quiz: [
-                    /* GÜNCELLENDİ: Bunlar cümle olduğu için nokta kaldı */
-                    { q: "ما مِهْنَة والِدِك؟", o: ["هُو مُهَنْدِس.", "هِي تَكْتُب.", "هُما يَزوران.", "أَنا أُحِبُّ.", "هَذان طالِبان."], a: 0 },
-                    /* GÜNCELLENDİ: Bunlar cümle olduğu için nokta kaldı */
-                    { q: "أَيْن يَعْمَلُ الطَّبيب؟", o: ["يَعْمَلُ في المُسْتَشْفى.", "يَعْمَلُ في المَصْنَع.", "يَعْمَلُ في المَدْرَسَة.", "هُو يَسوق.", "أَنا مُشْتاق."], a: 0 },
-                    
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "هَذان ........ .", o: ["مُهَنْدِسان", "مُهَنْدِس", "مُهَنْدِسون", "مُهَنْدِسَة", "مُهَنْدِسَات"], a: 0 },
-                    /* GÜNCELLENDİ: Tek kelimelerden nokta kaldırıldı, "هُو مُدَرِّس." cümlesinde kaldı */
-                    { q: "هَؤُلاءِ ........ .", o: ["مُدَرِّسون", "مُدَرِّس", "مُدَرِّسان", "مُدَرِّسَة", "هُو مُدَرِّس."], a: 0 },
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "هُما ........ في المَصْنَع‫.‬", o: ["يَعْمَلانِ", "يَعْمَلُ", "تَعْمَلُ", "يَعْمَلونَ", "تَعْمَلْنَ"], a: 0 }
+                    /* 1 */ { q: "أَيْن يَعْمَلُ العامِل؟", o: ["يَعْمَلُ في المَصْنَع.", "يَعْمَلُ في المَدْرَسَة.", "يَعْمَلُ في المُسْتَشْفى.", "هُو لا يَعْمَلُ.", "أَنا طَبيب."], a: 0 },
+                    /* 2 */ { q: "أَيْن تَعْمَلُ المُمَرِّضَة؟", o: ["تَعْمَلُ في المُسْتَشْفى.", "تَعْمَلُ في المَصْنَع.", "تَعْمَلُ في الحَقْل.", "هِي رَبَّة بَيْت.", "أَنا مُهَنْدِس."], a: 0 },
+                    /* 3 */ { q: "هَل يَعْمَلُ المُتَقاعِدان؟", o: ["لا، المُتَقاعِدان لا يَعْمَلان.", "لا، هُما يَعْمَلان.", "هُو يَعْمَلُ.", "نَحْنُ نَعْمَلُ.", "أَنْتُما تَعْمَلان."], a: 0 },
+                    /* 4 */ { q: "السّائِق ........ .", o: ["يَسوقُ سَيّارَة", "يُدَرِّسُ الدُّروس", "يَفْحَصُ المَرْضى", "يَبْني البُيوت", "يَكْتُبُ الواجِب"], a: 0 },
+                    /* 5 */ { q: "ماذا يَفْعَلُ المُدَرِّس؟", o: ["يُدَرِّسُ الدُّروس.", "يَسوقُ سَيّارَة.", "يُعالِجُ المَرْضى.", "يَعْمَلُ في المَصْنَع.", "هُو شُرْطِيّ."], a: 0 },
+                    /* 6 */ { q: "أُمّي تَعْمَلُ في البَيْت، هِي ........ .", o: ["رَبَّة بَيْت", "طَبيبَة", "مُهَنْدِسَة", "مُديرَة", "شُرْطِيَّة"], a: 0 },
+                    /* 7 */ { q: "........ مُهَنْدِسان.", o: ["هَذانِ", "هَذا", "هَذِهِ", "هَؤُلاءِ", "تِلْك"], a: 0 },
+                    /* 8 */ { q: "........ مُعَلِّمون.", o: ["هَؤُلاءِ", "هَذانِ", "هَذا", "هَذِهِ", "أَنْتَ"], a: 0 },
+                    /* 9 */ { q: "أَخو الأَب هُو ........ .", o: ["العَمّ", "الخال", "الجَدّ", "الأَخ", "الاِبْن"], a: 0 },
+                    /* 10 */ { q: "هَل الشُّرْطِيّ يُدَرِّس الدُّروس؟", o: ["لا، الشُّرْطِيّ لا يُدَرِّس.", "نَعَم، هُو يُدَرِّس.", "هُو يَعْمَلُ في المَدْرَسَة.", "أَنا مُدَرِّس.", "نَحْنُ طُلّاب."], a: 0 },
+                    /* 11 */ { q: "المُسْلِمونَ يُساعِدونَ ........ .", o: ["جيرانَهُم", "أَنْفُسَهُم", "بُيوتَهُم", "أَمْوالَهُم", "سَيّاراتِهِم"], a: 0 },
+                    /* 12 */ { q: "المُسْلِمُ ........ الضَّيْف.", o: ["يُكْرِمُ", "يَطْرُدُ", "لا يُحِبُّ", "لا يَعْرِفُ", "يَضْرِبُ"], a: 0 },
+                    /* 13 */ { q: "نَحْنُ نَحْتَرِمُ ........ .", o: ["الكِبار", "الصِّغار", "الأَطِبّاء", "المُهَنْدِسين", "الأَغْنِياء"], a: 0 },
+                    /* 14 */ { q: "نَحْنُ نَرْحَمُ ........ .", o: ["الصِّغار", "الكِبار", "الضُّيوف", "الجيران", "الأَقارِب"], a: 0 },
+                    /* 15 */ { q: "يَجِبُ أَنْ نُساعِدَ ........ .", o: ["المُحْتاج", "الغَنِيّ", "الكَذّاب", "الكَسول", "النّائِم"], a: 0 },
+                    /* 16 */ { q: "يَجِبُ أَنْ يَكونَ المُسْلِم ........ .", o: ["صَبورًا", "غَضْبان", "حَزينًا", "كَسولًا", "عَبوسًا"], a: 0 },
+                    /* 17 */ { q: "المُسْلِمُ لَيْسَ كاذِبًا، هُوَ ........ .", o: ["صادِق", "غَضْبان", "مَريض", "بَعيد", "صَغير"], a: 0 },
+                    /* 18 */ { q: "أَنا لَسْتُ عَبوسًا، أَنا ........ .", o: ["مُبْتَسِم", "حَزين", "غَضْبان", "مَريض", "خائِف"], a: 0 },
+                    /* 19 */ { q: "الطّالِبُ النّاجِح ........ .", o: ["مُجْتَهِد", "كَسول", "نائِم", "مُتَقاعِد", "مَريض"], a: 0 },
+                    /* 20 */ { q: "المُسْلِمُ ........ أَقارِبَهُ.", o: ["يزورُ", "يَنْسى", "يَتْرُكُ", "لا يَعْرِفُ", "يَكْرَهُ"], a: 0 }
                 ]
             },
-            { 
-                quiz: [
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "هُم ........ إِلى المَسْجِد‫.‬", o: ["يَذْهَبونَ", "يَذْهَبْنَ", "يَذْهَبُ", "تَذْهَبان", "أَذْهَبُ"], a: 0 },
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "هُنَّ ........ الضُّيوف‫.‬", o: ["يُكْرِمْنَ", "يُكْرِمُ", "يُكْرِمونَ", "تُكْرِمُ", "نُكْرِمُ"], a: 0 },
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "يَجِبُ أَنْ ........ صادِقًا‫.‬", o: ["تَكونَ", "تَكونُ", "تَكونِ", "يَكُنْ", "أَكونُ"], a: 0 },
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "لا تَكُنْ ........ .", o: ["كاذِبًا", "صادِقًا", "مَبْسوطًا", "مُبْتَسِمًا", "صَبورًا"], a: 0 },
-                    /* GÜNCELLENDİ: Bunlar tek kelime olduğu için noktalar kaldırıldı */
-                    { q: "كُنْ ........ .", o: ["صَبورًا", "عَجولًا", "غَضْبانًا", "حَزينًا", "كاذِبًا"], a: 0 }
-
-                ]
-            },
-{ 
-                quiz: [
-                    // --- 10. Sınıf 1. Ünite 1. Ders Kelimelerinden Yeni Sorular ---
-                    { q: "........ أَساس المُجْتَمَع.", o: ["العَدْل", "الصِّدْق", "الأَمانَة", "الصَّبْر", "الشُّكْر"], a: 0 },
-                    { q: "الصَّبْرُ مِفْتَاحُ ........ .", o: ["الْفَرَجِ", "البَيْت", "المُجْتَمَع", "النَّجاح", "الخَطَإ"], a: 0 },
-                    { q: "يَجِبُ عَلَيْنا أَنْ ........ الكِبار وَنَرْحَمَ الصِّغار.", o: ["نُساعِدَ", "نَكْذِبَ", "نَغْضَبَ", "نُؤْذي", "نَزورُ"], a: 0 },
-                    { q: "المُسْلِم لا ........ وَلا يُؤْذي أَحَدًا.", o: ["يَكْذِبُ", "يُساعِدُ", "يَشْكُرُ", "يَبْتَسِمُ", "يَحْتَرِمُ"], a: 0 },
-                    { q: "أَعْتَذِرُ عِنْدَ ........ .", o: ["الخَطَإ", "النَّجاح", "الصَّباح", "الطَّعام", "المُشْكِلَة"], a: 0 },
-                    { q: "........ هُوَ أَخو الأَب.", o: ["العَمّ", "الخال", "الجَدّ", "الأَخ", "الأَب"], a: 0 },
-                    { q: "........ هِيَ أُخْتُ الأُمّ.", o: ["الخالَة", "العَمَّة", "الجَدَّة", "الأُخْت", "الأُمّ"], a: 0 },
-                    { q: "نَزورُ ........ فِي نِهايَة الأُسْبُوع.", o: ["الأَقارِب", "المُدَرِّس", "الأَصْدِقاء", "المَطْبَخ", "الكِبار"], a: 0 },
-                    { q: "يُقَبِّلُ الأَبْناء ........ الوالِدَيْن.", o: ["يَدَ", "البَيْت", "الطَّعام", "الأَقارِب", "الأُسْرَة"], a: 0 },
-                    { q: "البَيْت الَّذِي فِيهِ ........ هُوَ البَيْت السَّعيد.", o: ["مَحَبَّة", "عَدْل", "صَبْر", "صِدْق", "تَعاوُن"], a: 0 }
-                ]
+            
+            /* Index 1: Placeholder */
+            {
+                title: "Ünite 2",
+                quiz: []
             }
         ];
 
@@ -396,16 +362,20 @@
         const progressBar = document.getElementById('progress-bar');
         const feedbackOverlay = document.getElementById('feedback-overlay');
         const feedbackIcon = document.getElementById('feedback-icon');
+        
         // --- Ses Değişkenleri ---
         let audioCtx = null;
+        
         // --- Durum Değişkenleri ---
         let activityQueue = [];
         let currentActivityIndex = 0;
+        let grandTotalActivities = 0;
         
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
-        let allRounds = []; // Tüm raundları (soru gruplarını) burada tutacağız
-        let currentRoundIndex = 0; // Hangi raundda olduğumuzu takip edeceğiz
+        let allRounds = []; 
+        let currentRoundIndex = 0; 
+
         // --- SES FONKSİYONLARI ---
         function initAudioContext() {
             if (!audioCtx) {
@@ -445,6 +415,7 @@
         }
         
         document.body.addEventListener('click', initAudioContext, { once: true });
+        
         // --- Fisher-Yates Karıştırma Fonksiyonu ---
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -454,44 +425,49 @@
             return array;
         }
 
-        // --- (SADECE TEST) Aktiviteleri hazırla ---
-       // --- (YENİ) Raundları (10+10) Hazırla ---
-function prepareRounds() {
-    // 1. Raund: activitiesData[0] (5 soru) ve activitiesData[1]'i (5 soru) birleştir
-    const round1 = activitiesData[0].quiz.concat(activitiesData[1].quiz);
+        // --- Raundları Hazırla ---
+        function prepareRounds() {
+            // Hata düzeltildi: Veriler Index 0'da toplu halde duruyor.
+            // 20 soruyu ikiye bölüyoruz (10 + 10)
+            const allQuestions = activitiesData[0].quiz;
 
-    // 2. Raund: activitiesData[2]'yi (10 soru) al
-    const round2 = activitiesData[2].quiz;
+            // 1. Raund: İlk 10 soru
+            const round1 = allQuestions.slice(0, 10);
+            
+            // 2. Raund: Sonraki 10 soru (veya kalanı)
+            const round2 = allQuestions.slice(10);
 
-    // Raundları ana dizide sakla
-    allRounds = [round1, round2];
-    currentRoundIndex = 0; // 0. raunddan başla (yani round1)
-}
+            // Raundları ana dizide sakla
+            allRounds = [round1, round2];
+            currentRoundIndex = 0;
+        }
 
-// --- (YENİ) Mevcut Raundu Yükle ---
-function loadCurrentRound() {
-    // Mevcut raundun sorularını al
-    const currentRoundQuestions = allRounds[currentRoundIndex];
+        // --- Mevcut Raundu Yükle ---
+        function loadCurrentRound() {
+            // Mevcut raundun sorularını al
+            if (currentRoundIndex >= allRounds.length) return;
 
-    // Soruları karıştır ve global kuyruğa ata
-    activityQueue = shuffle([...currentRoundQuestions]); // Orijinali bozmamak için kopyasını karıştır
+            const currentRoundQuestions = allRounds[currentRoundIndex];
 
-    // Bu raunddaki toplam soru sayısını ayarla
-    grandTotalActivities = activityQueue.length;
+            // Soruları karıştır ve global kuyruğa ata
+            activityQueue = shuffle([...currentRoundQuestions]); 
 
-    // Bu raund için soru sayacını sıfırla
-    currentActivityIndex = 0;
-}
+            // Bu raunddaki toplam soru sayısını ayarla
+            grandTotalActivities = activityQueue.length;
 
-        // --- (SADECE TEST) ETKİNLİK YÜKLEYİCİ ---
+            // Bu raund için soru sayacını sıfırla
+            currentActivityIndex = 0;
+        }
+
+        // --- ETKİNLİK YÜKLEYİCİ ---
         function loadActivity() {
             activityArea.innerHTML = '';
             updateProgress();
             
             const activityData = activityQueue[currentActivityIndex]; 
 
-          // Raund numarasını (Grup 1, Grup 2) başlığa ekle
-        instructionText.textContent = "قِيَمي | اِخْتَر الْجَواب الصَّحيح‫.‬";
+            // Raund numarasını başlığa ekle
+            instructionText.textContent = " اِخْتَر الْجَواب الصَّحيح‫.";
             buildQuiz(activityData);
         }
 
@@ -521,7 +497,6 @@ function loadCurrentRound() {
                 optionButton.className = 'option';
                 optionButton.textContent = option.text;
                 optionButton.onclick = () => {
-                   
                     playSound('touch');
                     checkQuizAnswer(option.isCorrect); 
                 };
@@ -561,33 +536,32 @@ function loadCurrentRound() {
             }
         }
 
-       // --- Sonraki Etkinliğe Geçiş (Raund Kontrollü) ---
-// --- Sonraki Etkinliğe Geçiş (Raund Kontrollü) ---
-function nextActivity() {
-    feedbackOverlay.classList.remove('show');
-    currentActivityIndex++; 
+        // --- Sonraki Etkinliğe Geçiş (Raund Kontrollü) ---
+        function nextActivity() {
+            feedbackOverlay.classList.remove('show');
+            currentActivityIndex++; 
 
-    if (currentActivityIndex === grandTotalActivities) {
-        // ---- RAUND BİTTİ ----
-        currentRoundIndex++; // Bir sonraki raunda geç
-        
-        if (currentRoundIndex < allRounds.length) {
-            // ---- BİR SONRAKİ RAUND VAR ----
-            loadCurrentRound(); // Yeni raundun sorularını hazırla
-            
-            // YENİ: Raund bittiğinde ilerleme çubuğunu sıfırla
-            progressBar.style.width = '0%'; 
-            
-            loadActivity();     // Yeni raundun ilk sorusunu yükle
-        } else {
-            // ---- TÜM RAUNDLAR BİTTİ ----
-            showFinishScreen();
-        }
-    } else {
-        // ---- RAUND DEVAM EDİYOR ----
-        loadActivity();
-    }
-}
+            if (currentActivityIndex === grandTotalActivities) {
+                // ---- RAUND BİTTİ ----
+                currentRoundIndex++; // Bir sonraki raunda geç
+                
+                if (currentRoundIndex < allRounds.length) {
+                    // ---- BİR SONRAKİ RAUND VAR ----
+                    loadCurrentRound(); // Yeni raundun sorularını hazırla
+                    
+                    // Raund bittiğinde ilerleme çubuğunu sıfırla
+                    progressBar.style.width = '0%'; 
+                    
+                    loadActivity();     // Yeni raundun ilk sorusunu yükle
+                } else {
+                    // ---- TÜM RAUNDLAR BİTTİ ----
+                    showFinishScreen();
+                }
+            } else {
+                // ---- RAUND DEVAM EDİYOR ----
+                loadActivity();
+            }
+        }
 
         // --- Bitiş Ekranı ---
         function showFinishScreen() {
@@ -610,22 +584,20 @@ function nextActivity() {
         }
         
         // --- Oyunu Yeniden Başlat Fonksiyonu ---
-function restartGame() {
-    playSound('touch');
-    scoreCorrect = 0;
-    scoreIncorrect = 0;
-    
-    // YENİ: Oyunu 0. raunda (Grup 1) geri ayarla
-    currentRoundIndex = 0; 
-    
-    progressBar.style.width = '0%';
-    progressBar.style.backgroundColor = 'var(--accent-color)';
-    
-    // createActivityQueue() yerine yeni fonksiyonları çağır
-    loadCurrentRound(); // 0. Raundu (ilk 10 soru) yükle
-    loadActivity();     // İlk soruyu göster
-}
-
+        function restartGame() {
+            playSound('touch');
+            scoreCorrect = 0;
+            scoreIncorrect = 0;
+            
+            // Oyunu 0. raunda geri ayarla
+            currentRoundIndex = 0; 
+            
+            progressBar.style.width = '0%';
+            progressBar.style.backgroundColor = 'var(--accent-color)';
+            
+            loadCurrentRound(); // 0. Raundu yükle
+            loadActivity();     // İlk soruyu göster
+        }
 
         // --- İlerleme Güncelleme ---
         function updateProgress() {
@@ -642,27 +614,28 @@ function restartGame() {
             progressBar.style.width = `${percentage}%`;
         }
         
-
         // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Veri setindeki (varsa) son küçük harf hatalarını düzelt
-            activitiesData.forEach(round => {
-                round.quiz.forEach(q => {
-               
-                     q.o = q.o.map(opt => opt.replace('tEktUb', 'تَكْتُبُ')
-                                              .replace('tEkOni', 'تَكُونِ')
-                                           
-                                   .replace('yEzhEbu', 'يَذْهَبُ')
-                                              .replace('tEzhEbAn', 'تَذْهَبَان')
-                                              .replace('ElmustEşfA', 'المُسْتَشْفَى')
-                                              .replace('müderrisan', 'مُدَرِّسان') // (Bu artık veri setinde düzeltildi)
-                                             );
+            // Veri düzeltmeleri (varsa)
+            if(activitiesData && activitiesData.length > 0) {
+                activitiesData.forEach(round => {
+                    if(round.quiz) {
+                        round.quiz.forEach(q => {
+                            q.o = q.o.map(opt => opt.replace('tEktUb', 'تَكْتُبُ')
+                                                    .replace('tEkOni', 'تَكُونِ')
+                                                    .replace('yEzhEbu', 'يَذْهَبُ')
+                                                    .replace('tEzhEbAn', 'تَذْهَبَان')
+                                                    .replace('ElmustEşfA', 'المُسْتَشْفَى')
+                                                    .replace('müderrisan', 'مُدَرِّسان')
+                                                    );
+                        });
+                    }
                 });
-            });
+            }
             
             prepareRounds();    // Raundları (10+10) grupla
-loadCurrentRound(); // İlk raundu (0) yükle
-loadActivity();     // İlk raundun ilk sorusunu yükle
+            loadCurrentRound(); // İlk raundu (0) yükle
+            loadActivity();     // İlk raundun ilk sorusunu yükle
         });
 
     </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قِيَمي - لعبة الذاكرة</title>
+    <title> لعبة الذاكرة</title>
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
@@ -376,20 +376,20 @@
             [
                 { id: 1, type: 'word', content: 'شُرْطِيّ' },
                 { id: 1, type: 'emoji', content: '👮‍♂️' },
-                { id: 2, type: 'word', content: 'المَسْجِد' },
+                { id: 2, type: 'word', content: 'مَسْجِد' },
                 { id: 2, type: 'emoji', content: '🕌' },
                 { id: 3, type: 'word', content: 'طَبيب' },
                 { id: 3, type: 'emoji', content: '👨‍⚕️' },
                 { id: 4, type: 'word', content: 'سَيّارَة' }, 
                 { id: 4, type: 'emoji', content: '🚗' },
-                { id: 5, type: 'word', content: 'المَدْرَسَة' },
-                { id: 5, type: 'emoji', content: '🏫' },
+                { id: 5, type: 'word', content: 'طَبّاخَة' },
+                { id: 5, type: 'emoji', content: '👩‍🍳' },
                 { id: 6, type: 'word', content: 'مُهَنْدِس' },
                 { id: 6, type: 'emoji', content: '👷‍♂️' },
-                { id: 7, type: 'word', content: 'يُدَرِّسُ' },
+                { id: 7, type: 'word', content: 'مُعَلِّم' },
                 { id: 7, type: 'emoji', content: '👨‍🏫' },
-                { id: 8, type: 'word', content: 'أُسْرَة' }, // YENİ EKLENDİ (Hastane yerine)
-                { id: 8, type: 'emoji', content: '👨‍👩‍👧‍👦' } // YENİ EKLENDİ
+                { id: 8, type: 'word', content: 'أُسْرَة' }, 
+                { id: 8, type: 'emoji', content: '👨‍👩‍👧‍👦' }  
             ],
             // Seviye 2 (8 Çift)
             [
@@ -494,7 +494,7 @@
             const currentLevelData = levelsData[currentLevel];
             totalPairs = currentLevelData.length / 2;
             matchesFound = 0;
-            instructionText.textContent = "قِيَمي | جِد الأزْواج المُتَطابِقَة";
+            instructionText.textContent = "جِد الأزْواج المُتَطابِقَة";
             
             const shuffledData = shuffle([...currentLevelData]);
             
