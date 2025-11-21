@@ -203,6 +203,7 @@
             align-content: center; 
             flex-grow: 1; 
             transition: background-color 0.3s, border-color 0.3s; 
+            gap: 10px; /* Kelimeler arasına modern boşluk */
         }
         .drop-zone {
             border-style: solid;
@@ -238,6 +239,8 @@
             user-select: none;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transform-origin: center center;
+            line-height: 1.6; /* Harflerin üstü/altı için dikey boşluk */
+            display: inline-block; /* Satır içinde bütünlüğü korur */
         }
         .word-item[draggable="true"]:active { cursor: grabbing; }
         .word-item[draggable="false"] { cursor: default; }
@@ -538,21 +541,28 @@
             buildScramble(activityData);
         }
         
-        // --- BUTON DURUMUNU KONTROL ET ---
+        // --- BUTON DURUMUNU KONTROL ET (GÜNCELLENDİ) ---
         function updateButtonState() {
             const dragZone = document.getElementById('drag-zone');
+            const dropZone = document.getElementById('drop-zone'); // Burayı ekledik
             const checkBtn = document.getElementById('check-scramble-btn');
             const resetBtn = document.getElementById('reset-scramble-btn');
 
-            if (!dragZone || !checkBtn || !resetBtn) return;
+            if (!dragZone || !dropZone || !checkBtn || !resetBtn) return;
 
+            // 1. Kural: Doğrulama butonu sadece hepsi bitince açılsın
             const isAllMoved = dragZone.children.length === 0;
-
             if (isAllMoved) {
                 checkBtn.classList.remove('disabled-btn');
-                resetBtn.classList.remove('disabled-btn');
             } else {
                 checkBtn.classList.add('disabled-btn');
+            }
+
+            // 2. Kural: Yenile butonu en az 1 tane taşınınca açılsın
+            const isAnyMoved = dropZone.children.length > 0;
+            if (isAnyMoved) {
+                resetBtn.classList.remove('disabled-btn');
+            } else {
                 resetBtn.classList.add('disabled-btn');
             }
         }
