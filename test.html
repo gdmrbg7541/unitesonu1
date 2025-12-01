@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قيمي - تمرين الاختبار (5 شقوق)</title>
+    <title>قيمي - تمرين الاختبار</title>
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -14,6 +14,8 @@
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
             --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
+            --btn-bg: #f0f0f0;
+            --btn-hover: #e0e0e0;
         }
 
         body {
@@ -28,7 +30,7 @@
             font-weight: 400;
         }
 
-        /* --- Ana Etkinlik Alanı (16:9 ve 9:16) --- */
+        /* --- Ana Etkinlik Alanı --- */
         .activity-container {
             position: relative;
             background: #ffffff;
@@ -38,49 +40,57 @@
             display: flex;
             flex-direction: column;
             width: 90vw;
-            height: calc(90vw * 9 / 16); /* 16:9 */
+            height: calc(90vw * 9 / 16);
             max-height: 90vh;
-            max-width: calc(90vh * 16 / 9); /* 16:9 */
+            max-width: calc(90vh * 16 / 9);
         }
         
-        /* --- Geri Tuşu --- */
-        .back-button-container {
-            grid-area: back;
+        /* --- Üst Menü (Header) --- */
+        .header {
+            padding: 10px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: grid;
+            grid-template-areas: "progress instruction buttons";
+            grid-template-columns: 200px 1fr auto; 
+            align-items: center;
+            gap: 20px;
+            background: #fff;
+            z-index: 10;
+        }
+
+        .top-buttons {
+            grid-area: buttons;
             display: flex;
+            gap: 10px; 
             justify-content: flex-end;
         }
-        .back-button {
-            background: #f0f0f0;
+
+        .icon-btn {
+            background: var(--btn-bg);
             color: #555;
             border: 1px solid #ccc;
             border-radius: 1.5vmin;
             cursor: pointer;
-            width: clamp(40px, 8vmin, 55px);
-            height: clamp(40px, 8vmin, 55px);
+            width: clamp(35px, 7vmin, 50px);
+            height: clamp(35px, 7vmin, 50px);
             padding: 0;
-            text-decoration: none;
+            text-decoration: none; 
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s, transform 0.1s;
+            flex-shrink: 0;
         }
-        .back-button:hover {
-            background: #e0e0e0;
+        .icon-btn:hover {
+            background: var(--btn-hover);
         }
-        .back-button svg {
-            width: clamp(24px, 5vmin, 30px);
-            height: clamp(24px, 5vmin, 30px);
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+        .icon-btn svg {
+            width: clamp(20px, 4vmin, 28px);
+            height: clamp(20px, 4vmin, 28px);
             fill: currentColor;
-        }
-
-        /* --- Başlık ve İlerleme Çubuğu --- */
-        .header {
-            padding: 15px 25px;
-            border-bottom: 1px solid #dee2e6;
-            display: grid;
-            grid-template-areas: "progress instruction back";
-            grid-template-columns: 200px 1fr 200px;
-            align-items: center;
-            gap: 20px;
         }
         
         #instruction-text { 
@@ -129,11 +139,58 @@
             flex-direction: column;
             justify-content: center;
             overflow-y: auto;
+            position: relative;
         }
-        
+
+        /* --- ALT MENÜ (Footer) --- */
+        .footer-nav {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            direction: ltr; 
+        }
+
+        .nav-btn {
+            background: #fff;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            cursor: pointer;
+            width: clamp(50px, 10vmin, 65px);
+            height: clamp(40px, 8vmin, 50px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-btn:hover {
+            background: var(--accent-color);
+            color: #fff;
+        }
+        /* Disabled (Pasif) Durum */
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: #ccc;
+            color: #999;
+            background: #e9e9e9;
+            box-shadow: none;
+        }
+        .nav-btn svg {
+            width: clamp(24px, 5vmin, 32px);
+            height: clamp(24px, 5vmin, 32px);
+            fill: currentColor;
+        }
+
         /* --- Soru Tipi: Test (Quiz) --- */
         .quiz-container {
             width: 100%;
+            padding-bottom: 10px;
         }
         .question {
             font-size: 4.2rem;
@@ -147,18 +204,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px; 
+            gap: 12px; 
         }
         .option {
             width: 500px;
             max-width: 100%;
             box-sizing: border-box;
-            padding: 8px 5px;
+            padding: 10px 15px;
             font-size: 2.8rem;
             font-family: var(--font-arabic);
             background-color: var(--bg-light);
             border: 2px solid #ced4da;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
@@ -167,31 +224,91 @@
             border-color: var(--accent-color);
             background-color: #eef5ff;
         }
+        
+        .option.correct-answer {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+        .option.wrong-answer {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+        .option.locked {
+            cursor: default;
+        }
 
-        /* --- Geri Bildirim Ekranı (✔ / ❌) --- */
-        .feedback-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* --- Ara Özet (Round Summary) --- */
+        .summary-container {
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.95);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            font-size: 15rem;
-            z-index: 200;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
-        .feedback-overlay.show {
-            visibility: visible;
-            opacity: 1;
+        .summary-title {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            text-align: center;
         }
-        .feedback-overlay .correct { color: var(--success-color); }
-        .feedback-overlay .incorrect { color: var(--danger-color); }
-        
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 90%;
+            max-width: 800px;
+            overflow-y: auto;
+            flex-grow: 1;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1.8rem;
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        .summary-item.is-correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .summary-item.is-wrong {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .summary-question-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+        .summary-icon {
+            font-weight: bold;
+            font-size: 2rem;
+        }
+        .summary-btn {
+            margin-top: 20px;
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 10px 40px;
+            font-size: 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-arabic);
+        }
+        .summary-btn:hover {
+            background-color: #0056b3;
+        }
+
         /* --- Bitiş Ekranı --- */
         #finish-screen {
             text-align: center;
@@ -218,12 +335,8 @@
         .score-item {
             font-weight: 700;
         }
-        .score-correct {
-            color: var(--success-color);
-        }
-        .score-incorrect {
-            color: var(--danger-color);
-        }
+        .score-correct { color: var(--success-color); }
+        .score-incorrect { color: var(--danger-color); }
 
         #replay-button {
             font-size: 4.5rem;
@@ -242,103 +355,60 @@
         /* --- Mobil Düzen --- */
         @media (orientation: portrait) {
             .activity-container {
-                width: 95vw;
-                height: calc(95vw * 16 / 9); /* 9:16 */
+                width: 98vw;
+                height: calc(98vw * 16 / 9); /* 9:16 */
                 max-height: 95vh;
-                max-width: calc(95vh * 9 / 16); /* 9:16 */
+                max-width: calc(95vh * 9 / 16);
             }
 
             .header {
                 grid-template-areas: 
-                    "progress back"
+                    "progress buttons"
                     "instruction instruction";
-                grid-template-columns: 1fr 1fr; 
-                gap: 10px;
-                padding: 10px 15px;
+                grid-template-columns: 1fr auto; 
+                gap: 8px;
+                padding: 10px;
             }
 
-            .progress-container {
-                width: auto;
-                justify-content: flex-start;
-            }
+            .progress-container { width: auto; }
+            #instruction-text { font-size: 1.4rem; }
+            #progress-display { font-size: 1.2rem; }
+
+            .options { gap: 8px; }
+            .option { font-size: 1.8rem; padding: 10px; }
+            .question { font-size: 2.2rem; margin-bottom: 20px; }
             
-            .back-button-container {
-                justify-content: flex-end;
-            }
-            
-            #instruction-text {
-                font-size: 1.4rem;
-                min-width: unset;
-                justify-self: center;
-            }
-
-            #progress-display {
-                font-size: 1.2rem;
-            }
-
-            .options {
-                gap: 5px;
-            }
-            .option {
-                font-size: 1.5rem;
-                padding: 8px;
-            }
-            .question {
-                font-size: 2rem;
-                margin-bottom: 15px;
-            }
+            .footer-nav { padding: 8px 15px; }
+            .summary-question-text { font-size: 1.4rem; }
         }
-/* --- YENİ EKLENEN CSS: TAM EKRAN --- */
-#fullscreen-btn {
-    background: #f0f0f0;
-    color: #555;
-    border: 1px solid #ccc;
-    border-radius: 1.5vmin;
-    cursor: pointer;
-    width: clamp(40px, 8vmin, 55px);
-    height: clamp(40px, 8vmin, 55px);
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px; /* RTL olduğu için sol tarafa boşluk veriyoruz */
-    flex-shrink: 0;
-    transition: background 0.2s;
-}
-#fullscreen-btn:hover {
-    background: #e0e0e0;
-}
-#fullscreen-btn svg {
-    width: clamp(24px, 5vmin, 30px);
-    height: clamp(24px, 5vmin, 30px);
-    fill: currentColor;
-}
 
-/* İkonları Gizle/Göster Mantığı */
-#fullscreen-btn .icon-open { display: block; }
-#fullscreen-btn .icon-close { display: none; }
-body.fullscreen #fullscreen-btn .icon-open { display: none; }
-body.fullscreen #fullscreen-btn .icon-close { display: block; }
+        /* --- Tam Ekran --- */
+        #fullscreen-btn .icon-open { display: block; }
+        #fullscreen-btn .icon-close { display: none; }
+        body.fullscreen #fullscreen-btn .icon-open { display: none; }
+        body.fullscreen #fullscreen-btn .icon-close { display: block; }
 
-/* Tam Ekran Olduğunda Konteynır Ayarları */
-body.fullscreen .activity-container {
-    width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
-    max-width: 100vw;
-    border-radius: 0;
-    box-shadow: none;
-}
+        body.fullscreen .activity-container {
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            max-width: 100vw;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
 
-/* Tam ekranda mobil ayarı */
-@media (orientation: portrait) {
-    body.fullscreen .activity-container {
-        width: 100vw;
-        height: 100vh;
-        max-height: 100vh;
-        max-width: 100vw;
-    }
-}
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
     </style>
 </head>
 <body>
@@ -351,88 +421,96 @@ body.fullscreen .activity-container {
                     <div id="progress-bar"></div>
                 </div>
             </div>
-            <div id="instruction-text">........</div>
-     <div class="back-button-container">
-    
-    <button id="fullscreen-btn">
-        <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
-        </svg>
-        <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
-        </svg>
-    </button>
-    <a href="index.html" class="back-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-        </svg>
-    </a>
-</div>
-</div> <div class="activity-area" id="activity-area"></div>
-
-    <div id="feedback-overlay" class="feedback-overlay">
-        <div id="feedback-icon"></div>
-    </div>
-    <script>
-        // --- ETKİNLİK VERİLERİ (10. SINIF - 1. ÜNİTE: DEĞERLERİM) ---
-        const activitiesData = [
-            /* Index 0: Ünite 1 (20 Soru) */
-            {
-                title: "Ünite 1: Akrabalar ve İyi Davranışlar",
-                quiz: [
-                    /* 1 */ { q: "أَيْن يَعْمَلُ العامِل؟", o: ["يَعْمَلُ في المَصْنَع.", "يَعْمَلُ في المَدْرَسَة.", "يَعْمَلُ في المُسْتَشْفى.", "هُو لا يَعْمَلُ.", "أَنا طَبيب."], a: 0 },
-                    /* 2 */ { q: "أَيْن تَعْمَلُ المُمَرِّضَة؟", o: ["تَعْمَلُ في المُسْتَشْفى.", "تَعْمَلُ في المَصْنَع.", "تَعْمَلُ في الحَقْل.", "هِي رَبَّة بَيْت.", "أَنا مُهَنْدِس."], a: 0 },
-                    /* 3 */ { q: "هَل يَعْمَلُ المُتَقاعِدان؟", o: ["لا، المُتَقاعِدان لا يَعْمَلان.", "لا، هُما يَعْمَلان.", "هُو يَعْمَلُ.", "نَحْنُ نَعْمَلُ.", "أَنْتُما تَعْمَلان."], a: 0 },
-                    /* 4 */ { q: "السّائِق ........ .", o: ["يَسوقُ سَيّارَة", "يُدَرِّسُ الدُّروس", "يَفْحَصُ المَرْضى", "يَبْني البُيوت", "يَكْتُبُ الواجِب"], a: 0 },
-                    /* 5 */ { q: "ماذا يَفْعَلُ المُدَرِّس؟", o: ["يُدَرِّسُ الدُّروس.", "يَسوقُ سَيّارَة.", "يُعالِجُ المَرْضى.", "يَعْمَلُ في المَصْنَع.", "هُو شُرْطِيّ."], a: 0 },
-                    /* 6 */ { q: "أُمّي تَعْمَلُ في البَيْت، هِي ........ .", o: ["رَبَّة بَيْت", "طَبيبَة", "مُهَنْدِسَة", "مُديرَة", "شُرْطِيَّة"], a: 0 },
-                    /* 7 */ { q: "........ مُهَنْدِسان.", o: ["هَذانِ", "هَذا", "هَذِهِ", "هَؤُلاءِ", "تِلْك"], a: 0 },
-                    /* 8 */ { q: "........ مُعَلِّمون.", o: ["هَؤُلاءِ", "هَذانِ", "هَذا", "هَذِهِ", "أَنْتَ"], a: 0 },
-                    /* 9 */ { q: "أَخو الأَب هُو ........ .", o: ["العَمّ", "الخال", "الجَدّ", "الأَخ", "الاِبْن"], a: 0 },
-                    /* 10 */ { q: "هَل الشُّرْطِيّ يُدَرِّس الدُّروس؟", o: ["لا، الشُّرْطِيّ لا يُدَرِّس.", "نَعَم، هُو يُدَرِّس.", "هُو يَعْمَلُ في المَدْرَسَة.", "أَنا مُدَرِّس.", "نَحْنُ طُلّاب."], a: 0 },
-                    /* 11 */ { q: "المُسْلِمونَ يُساعِدونَ ........ .", o: ["جيرانَهُم", "أَنْفُسَهُم", "بُيوتَهُم", "أَمْوالَهُم", "سَيّاراتِهِم"], a: 0 },
-                    /* 12 */ { q: "المُسْلِمُ ........ الضَّيْف.", o: ["يُكْرِمُ", "يَطْرُدُ", "لا يُحِبُّ", "لا يَعْرِفُ", "يَضْرِبُ"], a: 0 },
-                    /* 13 */ { q: "نَحْنُ نَحْتَرِمُ ........ .", o: ["الكِبار", "الصِّغار", "الأَطِبّاء", "المُهَنْدِسين", "الأَغْنِياء"], a: 0 },
-                    /* 14 */ { q: "نَحْنُ نَرْحَمُ ........ .", o: ["الصِّغار", "الكِبار", "الضُّيوف", "الجيران", "الأَقارِب"], a: 0 },
-                    /* 15 */ { q: "يَجِبُ أَنْ نُساعِدَ ........ .", o: ["المُحْتاج", "الغَنِيّ", "الكَذّاب", "الكَسول", "النّائِم"], a: 0 },
-                    /* 16 */ { q: "يَجِبُ أَنْ يَكونَ المُسْلِم ........ .", o: ["صَبورًا", "غَضْبان", "حَزينًا", "كَسولًا", "عَبوسًا"], a: 0 },
-                    /* 17 */ { q: "المُسْلِمُ لَيْسَ كاذِبًا، هُوَ ........ .", o: ["صادِق", "غَضْبان", "مَريض", "بَعيد", "صَغير"], a: 0 },
-                    /* 18 */ { q: "أَنا لَسْتُ عَبوسًا، أَنا ........ .", o: ["مُبْتَسِم", "حَزين", "غَضْبان", "مَريض", "خائِف"], a: 0 },
-                    /* 19 */ { q: "الطّالِبُ النّاجِح ........ .", o: ["مُجْتَهِد", "كَسول", "نائِم", "مُتَقاعِد", "مَريض"], a: 0 },
-                    /* 20 */ { q: "المُسْلِمُ ........ أَقارِبَهُ.", o: ["يزورُ", "يَنْسى", "يَتْرُكُ", "لا يَعْرِفُ", "يَكْرَهُ"], a: 0 }
-                ]
-            },
             
-            /* Index 1: Placeholder */
-            {
-                title: "Ünite 2",
-                quiz: []
-            }
-        ];
+            <div id="instruction-text">........</div>
+            
+            <div class="top-buttons">
+                <button id="fullscreen-btn" class="icon-btn" title="Tam Ekran">
+                    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
+                    </svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                    </svg>
+                </button>
 
+                <a href="index.html" class="icon-btn" title="Ana Sayfa">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                </a>
+            </div>
+        </div> 
+        
+        <div class="activity-area" id="activity-area"></div>
+        
+        <div class="footer-nav" id="footer-nav">
+            <button id="prev-btn" class="nav-btn" title="السابق">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </button>
+            
+            <button id="next-btn" class="nav-btn" title="التالي">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                     <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
-        // --- Gerekli Elementler ---
+    <script>
+        // --- ETKİNLİK VERİLERİ ---
+        const activitiesData = [
+    /* Index 0: Ünite 1 (20 Soru) */
+    {
+        title: "Ünite 1: Akrabalar ve İyi Davranışlar",
+        quiz: [
+            /* 1 */ { q: "أَيْن يَعْمَلُ العامِل؟", o: ["يَعْمَلُ في المَصْنَع.", "يَدْرُسُ في المَدْرَسَة.", "يَخْرُجُ مِن المُسْتَشْفى.", "هُو يَعْمَلُ.", "أَنا طَبيب."], a: 0 },
+            /* 2 */ { q: "أَيْن تَعْمَلُ المُمَرِّضَة؟", o: ["تَعْمَلُ في المُسْتَشْفى.", "تَقْرَأُ في المُسْتَشْفى.", "تَعْمَلُ في البَيْت.", "هِي رَبَّة البَيْت.", "أَنا مُهَنْدِس."], a: 0 },
+            /* 3 */ { q: "هَل يَعْمَلُ المُتَقاعِدان؟", o: ["لا، المُتَقاعِدان لا يَعْمَلان.", "لا، هُما يَعْمَلان.", "هُو يَعْمَلُ.", "لا، نَحْنُ نَعْمَل.", "أَنا عامِل، أَعْمَلُ في المُسْتَشْفى"], a: 0 },
+            /* 4 */ { q: "السّائِق ........ .", o: ["يَسوقُ السَّيّارَة.", "تُدافِعُ عَن العَدالَة.", "تَعْمَلُ في الشَّرِكَة.", "يُدَرِّسُ الدُّروس.", "يَكْتُبُ الواجِب"], a: 0 },
+            /* 5 */ { q: "ماذا يَفْعَلُ المُدَرِّس؟", o: ["يُدَرِّسُ الدُّروس.", "يَسوقُ السَيّارَة.", "تُحافِظينَ عَلى الوَطَن.", "يَعْمَلُ في المَصْنَع.", "هُو شُرْطِيّ"], a: 0 },
+            /* 6 */ { q: "خالَتي تَعْمَلُ في المَكْتَب، هِي ........ .", o: ["مُوَظَّفَة", "طَبيبَة", "مُهَنْدِسَة", "مُديرَة", "شُرْطِيَّة"], a: 0 },
+            /* 7 */ { q: "........ مُهَنْدِسان.", o: ["هَذانِ", "هَذا", "هَذِهِ", "هِي", "تِلْك"], a: 0 },
+            /* 8 */ { q: "........ مُعَلِّمون.", o: ["هَؤُلاءِ", "هَذانِ", "هَذا", "هَذِهِ", "أَنْتَ"], a: 0 },
+            /* 9 */ { q: "تَفْحَصُ المَرْضى أَنْت ........ .", o: ["طَبيب", "مُهَنْدِس", "سائِق", "مُدَرِّس", "طالِب"], a: 0 },
+            /* 10 */ { q: "هَل الشُّرْطِيّ يُدَرِّس الدُّروس؟", o: ["لا، الشُّرْطِيّ لا يُدَرِّس.", "نَعَم، هُو يُدَرِّس.", "هُو يَعْمَلُ في المَدْرَسَة.", "أَنا مُدَرِّس.", "نَحْنُ طُلّاب."], a: 0 },
+            /* 11 */ { q: "المُسْلِمون يُساعِدونَ ........ .", o: ["جيرانَهُم", "يُحِبُّ", "بُيوتَهُم", "مُبْتَسِمًا", "يُصَلّي"], a: 0 },
+            /* 12 */ { q: "المُسْلِم ........ الضَّيْف.", o: ["يُكْرِمُ", "يُدَرِّسُ", "لا يُحِبُّ", "لا يَعْرِفُ", "يَضْرِبُ"], a: 0 },
+            /* 13 */ { q: "المُسْلِمون ........ جيرانَهُم وَالمُحْتاجين.", o: ["يُساعِدونَ", "يُساعِدُ", "تُساعِدُ", "يُساعِدانِ", "يُساعِدْنَ"], a: 0 },
+            /* 14 */ { q: "نَحْنُ نَرْحَمُ ........ .", o: ["الصِّغار", "الكِبار", "الضُّيوف", "الجيران", "الأَقارِب"], a: 0 },
+            /* 15 */ { q: "يَجِبُ عَلى المُسْلِم أَنْ يَكونَ ........ .", o: ["صادِقًا", "عَجولًا", "غَضْبان", "كاذِبًا", "غاضِبًا"], a: 0 },
+            /* 16 */ { q: "يَجِبُ عَلى المُسْلِم أَلّا يَكونَ ........ .", o: ["غَضْبان", "مُبْتَسِمًا", "صادِقًا", "صَبورًا", "مَبْسوطًا"], a: 0 },
+            /* 17 */ { q: "المُسْلِمُ لَيْسَ كاذِبًا، هُوَ ........ .", o: ["صادِق", "غَضْبان", "مَريض", "عَجول", "مَبْسوط"], a: 0 },
+            /* 18 */ { q: "هُم ........ أَوْلادَهُم دائِمًا.", o: ["يَرْحَمونَ", "يَرْحَمُ", "يَرْحَمانِ", "تَرْحَمونَ", "يَرْحَمْنَ"], a: 0 },
+            /* 19 */ { q: "المُسْلِمون يُساعِدونَ المُحْتاجين وَالمُسِنّين ........ .", o: ["دائِمًا", "أَبَدًا", "سَنَةً", "غَدًا", "أَمْس"], a: 0 },
+            /* 20 */ { q: "يَجِبُ أَنْ يَكونَ الطّالِب ........ .", o: ["مُجْتَهِدًا", "كَسولًا", "جاهِلًا", "نَائِمًا", "مُتَأَخِّرًا"], a: 0 },
+        ]
+    },
+];
+
+        // --- Elementler ---
         const activityArea = document.getElementById('activity-area');
         const instructionText = document.getElementById('instruction-text');
         const progressDisplay = document.getElementById('progress-display');
         const progressBar = document.getElementById('progress-bar');
-        const feedbackOverlay = document.getElementById('feedback-overlay');
-        const feedbackIcon = document.getElementById('feedback-icon');
-        
-        // --- Ses Değişkenleri ---
+        const prevBtn = document.getElementById('prev-btn'); 
+        const nextBtn = document.getElementById('next-btn'); 
+        const footerNav = document.getElementById('footer-nav');
+
+        // --- Ses ---
         let audioCtx = null;
         
-        // --- Durum Değişkenleri ---
+        // --- Durum ---
         let activityQueue = [];
         let currentActivityIndex = 0;
         let grandTotalActivities = 0;
-        
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
         let allRounds = []; 
         let currentRoundIndex = 0; 
 
-        // --- SES FONKSİYONLARI ---
         function initAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -472,7 +550,6 @@ body.fullscreen .activity-container {
         
         document.body.addEventListener('click', initAudioContext, { once: true });
         
-        // --- Fisher-Yates Karıştırma Fonksiyonu ---
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -481,53 +558,50 @@ body.fullscreen .activity-container {
             return array;
         }
 
-        // --- Raundları Hazırla ---
         function prepareRounds() {
-            // Hata düzeltildi: Veriler Index 0'da toplu halde duruyor.
-            // 20 soruyu ikiye bölüyoruz (10 + 10)
             const allQuestions = activitiesData[0].quiz;
+            const preparedQuestions = allQuestions.map(q => ({
+                ...q,
+                isSolved: false,
+                selectedOptionText: null,
+                userIsCorrect: false 
+            }));
 
-            // 1. Raund: İlk 10 soru
-            const round1 = allQuestions.slice(0, 10);
-            
-            // 2. Raund: Sonraki 10 soru (veya kalanı)
-            const round2 = allQuestions.slice(10);
+            const round1 = preparedQuestions.slice(0, 10);
+            const round2 = preparedQuestions.slice(10);
 
-            // Raundları ana dizide sakla
             allRounds = [round1, round2];
             currentRoundIndex = 0;
         }
 
-        // --- Mevcut Raundu Yükle ---
         function loadCurrentRound() {
-            // Mevcut raundun sorularını al
             if (currentRoundIndex >= allRounds.length) return;
-
             const currentRoundQuestions = allRounds[currentRoundIndex];
-
-            // Soruları karıştır ve global kuyruğa ata
             activityQueue = shuffle([...currentRoundQuestions]); 
-
-            // Bu raunddaki toplam soru sayısını ayarla
             grandTotalActivities = activityQueue.length;
-
-            // Bu raund için soru sayacını sıfırla
             currentActivityIndex = 0;
         }
 
-        // --- ETKİNLİK YÜKLEYİCİ ---
         function loadActivity() {
             activityArea.innerHTML = '';
             updateProgress();
             
             const activityData = activityQueue[currentActivityIndex]; 
 
-            // Raund numarasını başlığa ekle
-            instructionText.textContent = " اِخْتَر الجَواب الصَّحيح‫.";
+            prevBtn.disabled = (currentActivityIndex === 0);
+            
+            // Eğer soru çözülmüşse, ileri butonu her zaman açık olsun (son soru olsa bile).
+            // Son soru ise özete gidecek, değilse sonraki soruya.
+            if (activityData.isSolved) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true; 
+            }
+
+            instructionText.textContent = "اختر الجواب الصحيح."; 
             buildQuiz(activityData);
         }
 
-        // --- Test Arayüzünü Oluştur ---
         function buildQuiz(data) {
             const quizContainer = document.createElement('div');
             quizContainer.className = 'quiz-container';
@@ -546,90 +620,180 @@ body.fullscreen .activity-container {
                     isCorrect: (index === data.a)
                 };
             });
+            
             const shuffledOptions = shuffle(optionsToShuffle);
             
             shuffledOptions.forEach(option => {
                 const optionButton = document.createElement('button');
                 optionButton.className = 'option';
                 optionButton.textContent = option.text;
-                optionButton.onclick = () => {
-                    playSound('touch');
-                    checkQuizAnswer(option.isCorrect); 
-                };
+                
+                if (data.isSolved) {
+                    optionButton.classList.add('locked');
+                    optionButton.disabled = true;
+
+                    if (option.isCorrect) {
+                        optionButton.classList.add('correct-answer');
+                    }
+
+                    if (data.selectedOptionText === option.text && !option.isCorrect) {
+                        optionButton.classList.add('wrong-answer');
+                    }
+                } else {
+                    optionButton.onclick = () => {
+                        playSound('touch');
+                        checkQuizAnswer(option.isCorrect, option.text, optionButton, shuffledOptions); 
+                    };
+                }
+
                 optionsContainer.appendChild(optionButton);
             });
             quizContainer.appendChild(optionsContainer);
             activityArea.appendChild(quizContainer);
         }
 
-        // --- Test Cevap Kontrolü ---
-        function checkQuizAnswer(isCorrect) {
-            showFeedback(isCorrect);
+        function checkQuizAnswer(isCorrect, selectedText, clickedBtn, allOptions) {
+            const currentQuestion = activityQueue[currentActivityIndex];
+            
+            if (currentQuestion.isSolved) return;
+
+            // Durumu Kaydet
+            currentQuestion.isSolved = true;
+            currentQuestion.selectedOptionText = selectedText;
+            currentQuestion.userIsCorrect = isCorrect; 
+
+            // Puanlama
             if (isCorrect) {
                 scoreCorrect++;
-                setTimeout(nextActivity, 1200);
             } else {
                 scoreIncorrect++;
             }
+
+            // --- Görsel Güncelleme ---
+            const allButtons = document.querySelectorAll('.option');
+            
+            allButtons.forEach(btn => {
+                btn.classList.add('locked');
+                btn.disabled = true; 
+
+                const isThisBtnCorrect = allOptions.find(opt => opt.text === btn.textContent).isCorrect;
+                
+                if (isThisBtnCorrect) {
+                    btn.classList.add('correct-answer');
+                }
+            });
+
+            if (!isCorrect) {
+                clickedBtn.classList.add('wrong-answer');
+                clickedBtn.classList.add('shake'); 
+            }
+
+            showFeedback(isCorrect);
+            
+            // Cevap verildiği anda ileri butonu aktif (son soru olsa bile).
+            nextBtn.disabled = false;
+
+            if (isCorrect) {
+                setTimeout(nextActivity, 1200);
+            }
         }
 
-        // --- Geri Bildirim (✔ / ❌) ---
         function showFeedback(isCorrect) {
             if (isCorrect) {
-                feedbackIcon.textContent = '✔';
-                feedbackIcon.className = 'correct';
                 playSound('correct');
             } else {
-                feedbackIcon.textContent = '❌';
-                feedbackIcon.className = 'incorrect';
                 playSound('incorrect');
-            }
-            feedbackOverlay.classList.add('show');
-            if (!isCorrect) {
-                setTimeout(() => {
-                    feedbackOverlay.classList.remove('show');
-                }, 1200);
             }
         }
 
-        // --- Sonraki Etkinliğe Geçiş (Raund Kontrollü) ---
         function nextActivity() {
-            feedbackOverlay.classList.remove('show');
-            currentActivityIndex++; 
-
-            if (currentActivityIndex === grandTotalActivities) {
-                // ---- RAUND BİTTİ ----
-                currentRoundIndex++; // Bir sonraki raunda geç
-                
-                if (currentRoundIndex < allRounds.length) {
-                    // ---- BİR SONRAKİ RAUND VAR ----
-                    loadCurrentRound(); // Yeni raundun sorularını hazırla
-                    
-                    // Raund bittiğinde ilerleme çubuğunu sıfırla
-                    progressBar.style.width = '0%'; 
-                    
-                    loadActivity();     // Yeni raundun ilk sorusunu yükle
-                } else {
-                    // ---- TÜM RAUNDLAR BİTTİ ----
-                    showFinishScreen();
-                }
+            if (currentActivityIndex === grandTotalActivities - 1) {
+                 finishCurrentRound();
             } else {
-                // ---- RAUND DEVAM EDİYOR ----
+                currentActivityIndex++;
                 loadActivity();
             }
         }
 
-        // --- Bitiş Ekranı ---
+        function finishCurrentRound() {
+            showRoundSummary();
+        }
+
+        function showRoundSummary() {
+            footerNav.style.display = 'none'; 
+            
+            const container = document.createElement('div');
+            container.className = 'summary-container';
+
+            const title = document.createElement('h2');
+            title.className = 'summary-title';
+            title.textContent = "نتائج هذه الجولة"; // "Bu turun sonuçları"
+            container.appendChild(title);
+
+            const list = document.createElement('ul');
+            list.className = 'summary-list';
+
+            activityQueue.forEach((q, idx) => {
+                const li = document.createElement('li');
+                li.className = `summary-item ${q.userIsCorrect ? 'is-correct' : 'is-wrong'}`;
+                
+                const qText = document.createElement('span');
+                qText.className = 'summary-question-text';
+                qText.textContent = `${idx + 1}. ${q.q}`;
+                
+                const icon = document.createElement('span');
+                icon.className = 'summary-icon';
+                icon.textContent = q.userIsCorrect ? '✔' : '❌';
+
+                li.appendChild(qText);
+                li.appendChild(icon);
+                list.appendChild(li);
+            });
+
+            container.appendChild(list);
+
+            const nextBtnSummary = document.createElement('button');
+            nextBtnSummary.className = 'summary-btn';
+            
+            if (currentRoundIndex + 1 >= allRounds.length) {
+                nextBtnSummary.textContent = "النهاية"; 
+            } else {
+                nextBtnSummary.textContent = "الجولة التالية"; 
+            }
+
+            nextBtnSummary.onclick = proceedToNextStep;
+            container.appendChild(nextBtnSummary);
+
+            activityArea.innerHTML = '';
+            activityArea.appendChild(container);
+            
+            instructionText.textContent = "النتائج"; 
+        }
+
+        function proceedToNextStep() {
+            playSound('touch');
+            currentRoundIndex++;
+            
+            if (currentRoundIndex < allRounds.length) {
+                footerNav.style.display = 'flex'; 
+                loadCurrentRound();
+                progressBar.style.width = '0%'; 
+                loadActivity();
+            } else {
+                showFinishScreen();
+            }
+        }
+
         function showFinishScreen() {
+            footerNav.style.display = 'none';
+
             activityArea.innerHTML = `
                 <div id="finish-screen">
-                    <p>أَحْسَنْت! لَقَد أَكْمَلْتَ جَميع الأَنْشِطَة‫.‬</p>
-                    
+                    <p>أَحْسَنْت! لَقَد أَكْمَلْتَ جَميع الأَنْشِطَة.</p>
                     <div class="score-display">
                         <span class="score-item score-correct">✔ ${scoreCorrect}</span>
                         <span class="score-item score-incorrect">❌ ${scoreIncorrect}</span>
                     </div>
-
                     <button id="replay-button" onclick="restartGame()">🔄</button>
                 </div>
             `;
@@ -639,30 +803,29 @@ body.fullscreen .activity-container {
             progressBar.style.backgroundColor = 'var(--success-color)';
         }
         
-        // --- Oyunu Yeniden Başlat Fonksiyonu ---
         function restartGame() {
             playSound('touch');
             scoreCorrect = 0;
             scoreIncorrect = 0;
-            
-            // Oyunu 0. raunda geri ayarla
             currentRoundIndex = 0; 
+            
+            footerNav.style.display = 'flex';
             
             progressBar.style.width = '0%';
             progressBar.style.backgroundColor = 'var(--accent-color)';
             
-            loadCurrentRound(); // 0. Raundu yükle
-            loadActivity();     // İlk soruyu göster
+            prepareRounds();
+            loadCurrentRound();
+            loadActivity();
         }
 
-        // --- İlerleme Güncelleme ---
         function updateProgress() {
             if (grandTotalActivities === 0) {
                  progressDisplay.textContent = `0 / 0`;
                 return;
             }
-            
             if (currentActivityIndex === grandTotalActivities) return;
+            
             const currentTotal = currentActivityIndex + 1;
             const percentage = (currentActivityIndex / grandTotalActivities) * 100;
             
@@ -670,9 +833,46 @@ body.fullscreen .activity-container {
             progressBar.style.width = `${percentage}%`;
         }
         
-        // --- Başlangıç ---
+        prevBtn.addEventListener('click', () => {
+            playSound('touch');
+            if (currentActivityIndex > 0) {
+                currentActivityIndex--;
+                loadActivity();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+             playSound('touch');
+             // Sadece soru çözülmüş mü ona bakar, son soru kontrolünü nextActivity yapar.
+             const currentQuestion = activityQueue[currentActivityIndex];
+             if (currentQuestion.isSolved) {
+                 nextActivity();
+             }
+        });
+
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        fullscreenBtn.addEventListener('click', () => {
+            playSound('touch');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Hata: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.body.classList.add('fullscreen');
+            } else {
+                document.body.classList.remove('fullscreen');
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Veri düzeltmeleri (varsa)
             if(activitiesData && activitiesData.length > 0) {
                 activitiesData.forEach(round => {
                     if(round.quiz) {
@@ -689,35 +889,10 @@ body.fullscreen .activity-container {
                 });
             }
             
-            prepareRounds();    // Raundları (10+10) grupla
-            loadCurrentRound(); // İlk raundu (0) yükle
-            loadActivity();     // İlk raundun ilk sorusunu yükle
+            prepareRounds();
+            loadCurrentRound();
+            loadActivity();
         });
-// --- YENİ EKLENEN JS: TAM EKRAN MANTIĞI ---
-const fullscreenBtn = document.getElementById('fullscreen-btn');
-
-fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-        // Tam ekrana geç
-        document.documentElement.requestFullscreen().catch(err => {
-            console.log(`Hata: ${err.message}`);
-        });
-    } else {
-        // Tam ekrandan çık
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
-});
-
-// Tarayıcı tam ekran durumunu dinle (ESC tuşuyla çıkılırsa ikonu düzeltmek için)
-document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-        document.body.classList.add('fullscreen');
-    } else {
-        document.body.classList.remove('fullscreen');
-    }
-});
     </script>
 </body>
 </html>
