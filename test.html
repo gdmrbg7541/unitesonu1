@@ -461,7 +461,7 @@
 
     <script>
         // --- ETKİNLİK VERİLERİ ---
-        const activitiesData = [
+      const activitiesData = [
     /* Index 0: Ünite 1 (20 Soru) */
     {
         title: "Ünite 1: Akrabalar ve İyi Davranışlar",
@@ -473,7 +473,7 @@
             /* 5 */ { q: "ماذا يَفْعَلُ المُدَرِّس؟", o: ["يُدَرِّسُ الدُّروس.", "يَسوقُ السَيّارَة.", "تُحافِظينَ عَلى الوَطَن.", "يَعْمَلُ في المَصْنَع.", "هُو شُرْطِيّ"], a: 0 },
             /* 6 */ { q: "خالَتي تَعْمَلُ في المَكْتَب، هِي ........ .", o: ["مُوَظَّفَة", "طَبيبَة", "مُهَنْدِسَة", "مُديرَة", "شُرْطِيَّة"], a: 0 },
             /* 7 */ { q: "........ مُهَنْدِسان.", o: ["هَذانِ", "هَذا", "هَذِهِ", "هِي", "تِلْك"], a: 0 },
-            /* 8 */ { q: "........ مُعَلِّمون.", o: ["هَؤُلاءِ", "هَذانِ", "هَذا", "هَذِهِ", "أَنْتَ"], a: 0 },
+            /* 8 */ { q: "........ مُعَلِّمون.", o: ["هَؤُلاء", "هَذانِ", "هَذا", "هَذِه", "أَنْتَ"], a: 0 },
             /* 9 */ { q: "تَفْحَصُ المَرْضى أَنْت ........ .", o: ["طَبيب", "مُهَنْدِس", "سائِق", "مُدَرِّس", "طالِب"], a: 0 },
             /* 10 */ { q: "هَل الشُّرْطِيّ يُدَرِّس الدُّروس؟", o: ["لا، الشُّرْطِيّ لا يُدَرِّس.", "نَعَم، هُو يُدَرِّس.", "هُو يَعْمَلُ في المَدْرَسَة.", "أَنا مُدَرِّس.", "نَحْنُ طُلّاب."], a: 0 },
             /* 11 */ { q: "المُسْلِمون يُساعِدونَ ........ .", o: ["جيرانَهُم", "يُحِبُّ", "بُيوتَهُم", "مُبْتَسِمًا", "يُصَلّي"], a: 0 },
@@ -509,7 +509,10 @@
         let scoreCorrect = 0;
         let scoreIncorrect = 0;
         let allRounds = []; 
-        let currentRoundIndex = 0; 
+        let currentRoundIndex = 0;
+        
+        // !!! YENİ EKLENEN DEĞİŞKEN (Hata Düzeltmesi İçin) !!!
+        let autoNextTimer = null; 
 
         function initAudioContext() {
             if (!audioCtx) {
@@ -583,6 +586,9 @@
         }
 
         function loadActivity() {
+            // !!! YENİ: Sayfa yüklenirken eski zamanlayıcıyı temizle !!!
+            clearTimeout(autoNextTimer);
+
             activityArea.innerHTML = '';
             updateProgress();
             
@@ -590,8 +596,6 @@
 
             prevBtn.disabled = (currentActivityIndex === 0);
             
-            // Eğer soru çözülmüşse, ileri butonu her zaman açık olsun (son soru olsa bile).
-            // Son soru ise özete gidecek, değilse sonraki soruya.
             if (activityData.isSolved) {
                 nextBtn.disabled = false;
             } else {
@@ -690,11 +694,12 @@
 
             showFeedback(isCorrect);
             
-            // Cevap verildiği anda ileri butonu aktif (son soru olsa bile).
             nextBtn.disabled = false;
 
+            // !!! YENİ: Önceki zamanlayıcıyı temizle, sonra yenisini kur !!!
+            clearTimeout(autoNextTimer);
             if (isCorrect) {
-                setTimeout(nextActivity, 1200);
+                autoNextTimer = setTimeout(nextActivity, 1200);
             }
         }
 
@@ -727,19 +732,26 @@
 
             const title = document.createElement('h2');
             title.className = 'summary-title';
-            title.textContent = "نَتائِج هَذِه الجَوْلَة"; // "Bu turun sonuçları"
+            title.textContent = "نَتائِج هَذِه الجَوْلَة"; 
             container.appendChild(title);
 
             const list = document.createElement('ul');
             list.className = 'summary-list';
 
-            activityQueue.forEach((q, idx) => {
+           activityQueue.forEach((q, idx) => {
                 const li = document.createElement('li');
                 li.className = `summary-item ${q.userIsCorrect ? 'is-correct' : 'is-wrong'}`;
                 
                 const qText = document.createElement('span');
                 qText.className = 'summary-question-text';
-                qText.textContent = `${idx + 1}. ${q.q}`;
+                
+                // --- DEĞİŞİKLİK BAŞLANGICI ---
+                // 1. Standart rakamı (1, 2, 10...) Arapça rakama (١, ٢, ١٠...) çeviriyoruz
+                const arabicNum = (idx + 1).toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+                
+                // 2. Metni bu yeni rakamla yazdırıyoruz
+                qText.textContent = `${arabicNum}. ${q.q}`;
+                // --- DEĞİŞİKLİK BİTİŞİ ---
                 
                 const icon = document.createElement('span');
                 icon.className = 'summary-icon';
@@ -767,7 +779,7 @@
             activityArea.innerHTML = '';
             activityArea.appendChild(container);
             
-            instructionText.textContent = "النتائج"; 
+            instructionText.textContent = "النَّتائِج"; 
         }
 
         function proceedToNextStep() {
@@ -835,6 +847,7 @@
         
         prevBtn.addEventListener('click', () => {
             playSound('touch');
+            clearTimeout(autoNextTimer); // !!! YENİ: Geri basılırsa otomatik geçişi iptal et
             if (currentActivityIndex > 0) {
                 currentActivityIndex--;
                 loadActivity();
@@ -843,7 +856,8 @@
 
         nextBtn.addEventListener('click', () => {
              playSound('touch');
-             // Sadece soru çözülmüş mü ona bakar, son soru kontrolünü nextActivity yapar.
+             clearTimeout(autoNextTimer); // !!! YENİ: İleri basılırsa otomatik geçişi iptal et (çift atlamayı önler)
+             
              const currentQuestion = activityQueue[currentActivityIndex];
              if (currentQuestion.isSolved) {
                  nextActivity();
