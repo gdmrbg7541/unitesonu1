@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> لعبة الذاكرة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لعبة الذاكرة</title>
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
@@ -14,7 +14,6 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            /* Markazi Text öncelikli font oldu */
             --font-arabic: 'Markazi Text', 'Noto+Naskh+Arabic', 'Tahoma', 'Arial', sans-serif;
         }
 
@@ -30,6 +29,96 @@
             font-weight: 400;
         }
 
+        /* --- Başlangıç Ekranı (Start Screen) --- */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6f42c1, #8e44ad);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000; /* En üstte */
+            transition: opacity 0.5s ease;
+        }
+
+        #start-screen h1 {
+            color: white;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        #start-btn {
+            font-family: var(--font-arabic);
+            font-size: 3rem;
+            padding: 15px 60px;
+            border: none;
+            border-radius: 50px;
+            background-color: #fff;
+            color: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        #start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* --- Cihazı Çevir Uyarısı (Rotate Warning) --- */
+        #rotate-warning {
+            display: none; /* Varsayılan gizli, media query ile açılacak */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
+            z-index: 9999; /* Her şeyin üzerinde */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .rotate-icon {
+            width: 100px;
+            height: 100px;
+            border: 4px solid white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: rotatePhone 2s infinite ease-in-out;
+            position: relative;
+        }
+        /* Telefon ekran çizgisi */
+        .rotate-icon::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 50%;
+            transform: translateX(-50%);
+            width: 80%; height: 5px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        @keyframes rotatePhone {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(90deg); }
+            100% { transform: rotate(90deg); }
+        }
+
+        #rotate-warning p {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
         /* --- Ana Etkinlik Alanı --- */
         .activity-container {
             position: relative;
@@ -37,12 +126,14 @@
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            display: flex;
+            display: flex; /* JS ile görünür yapılacak */
             flex-direction: column;
             width: 90vw;
             height: calc(90vw * 9 / 16); /* 16:9 */
             max-height: 90vh;
             max-width: calc(90vh * 16 / 9); /* 16:9 */
+            opacity: 0; /* Başlangıçta görünmez, start ile açılır */
+            transition: opacity 0.5s ease;
         }
         
         /* --- Header --- */
@@ -60,15 +151,15 @@
         #instruction-text {
             grid-area: instruction;
             text-align: center; 
-            font-size: 2.5rem; /* Font büyüdü */
+            font-size: 2.5rem; 
             font-weight: 700;
             color: #555;
         }
 
         .header-button-container {
             display: flex;
-            justify-content: center; /* Butonları ortala */
-            align-items: center; /* YENİ EKLENDİ - Butonları dikeyde hizala */
+            justify-content: center; 
+            align-items: center; 
         }
         .header-button-container.left { grid-area: replay; justify-content: flex-start; }
         .header-button-container.right { grid-area: back; justify-content: flex-end; }
@@ -86,8 +177,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem; /* Emoji boyutu için */
-            flex-shrink: 0; /* YENİ EKLENDİ - Küçülmeyi engelle */
+            font-size: 2.5rem; 
+            flex-shrink: 0; 
         }
         .icon-button:hover {
             background: #e0e0e0;
@@ -97,26 +188,27 @@
             height: clamp(24px, 5vmin, 30px);
             fill: currentColor;
         }
-
+        
+        #replay-button-header {
+            display: none; 
+        }
 
         /* --- Asıl Etkinlik Alanı --- */
         .activity-area {
             flex-grow: 1;
             padding: 15px;
-            overflow: auto; /* Düşük çözünürlükte kaydırma */
+            overflow: auto; 
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         /* --- Hafıza Oyunu Stilleri --- */
-        
         #game-board {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
             gap: 12px;
-            
             width: 100%; 
             height: 100%;
             margin: 0 auto;
@@ -125,7 +217,7 @@
         .card {
             background-color: transparent;
             cursor: pointer;
-            perspective: 1000px; /* 3D çevirme için */
+            perspective: 1000px; 
         }
 
         .card-inner {
@@ -145,11 +237,9 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* Arka yüzü gizle */
+            backface-visibility: hidden; 
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            
-            /* İçeriği ortala */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -170,23 +260,21 @@
         }
         
         .card-face[data-type="word"] {
-            font-size: 5vmin; /* Responsive kelime boyutu (fontla uyum için ayarlandı) */
+            font-size: 5vmin; 
             font-weight: 700;
             padding: 5px;
             text-align: center;
         }
         .card-face[data-type="emoji"] {
-            font-size: 7vmin; /* Responsive emoji boyutu */
+            font-size: 7vmin; 
         }
-
         
         .card.is-matched {
             opacity: 0.5;
             cursor: default;
         }
 
-
-        /* --- Geri Bildirim Ekranı (✔ / ❌) --- */
+        /* --- Geri Bildirim Ekranı --- */
         .feedback-overlay {
             position: absolute;
             top: 0;
@@ -210,9 +298,8 @@
         }
         .feedback-overlay .correct { color: var(--success-color); }
         
-        /* Yenileme Düğmesi (Bitiş ekranı için) */
         #replay-button-end {
-            display: none; /* Varsayılan olarak gizli */
+            display: none; 
             font-size: 4.5rem; 
             background: none;
             border: none;
@@ -227,11 +314,10 @@
             background-color: #f0f0f0;
         }
         
-        /* Sonraki Seviye Butonu Stili */
         #next-level-button {
-            display: none; /* Varsayılan olarak gizli */
+            display: none; 
             font-family: var(--font-arabic);
-            font-size: 3rem; /* Font büyüdü */
+            font-size: 3rem; 
             font-weight: 700;
             color: white;
             background-color: var(--success-color);
@@ -246,7 +332,9 @@
             background-color: #218838;
         }
 
-        /* --- YENİ EKLENDİ (Tam Ekran Düğmesi) --- */
+        /* --- Tam Ekran Butonu (Header içinde) --- */
+        /* Artık sadece manuel çıkış için kullanılabilir veya gizlenebilir, 
+           ancak Start tuşu zaten tam ekran yapacağı için burada kalabilir */
         #fullscreen-btn {
             background: #f0f0f0;
             color: #555;
@@ -259,9 +347,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px; /* Diğerlerinden ayır */
+            margin-right: 10px; 
             margin-left: 10px;
-            flex-shrink: 0; /* Küçülmesini engelle */
+            flex-shrink: 0; 
         }
         #fullscreen-btn:hover {
             background: #e0e0e0;
@@ -271,13 +359,11 @@
             height: clamp(24px, 5vmin, 30px);
             fill: currentColor;
         }
-        /* SVG Simgelerini gizle/göster */
         #fullscreen-btn .icon-open { display: block; }
         #fullscreen-btn .icon-close { display: none; }
         body.fullscreen #fullscreen-btn .icon-open { display: none; }
         body.fullscreen #fullscreen-btn .icon-close { display: block; }
 
-        /* --- Ana Konteynırın Tam Ekran Davranışı --- */
         body.fullscreen .activity-container {
             width: 100vw;
             height: calc(100vw * 9 / 16); 
@@ -286,48 +372,42 @@
             border-radius: 0;
             box-shadow: none;
         }
-        /* --- / YENİ EKLENDİ --- */
 
+        /* --- MEDYA SORGULARI: DİKEY EKRAN (PORTRAIT) KONTROLÜ --- */
+        
+        /* Sadece mobil ve tablet boyutunda (örn: 1024px altı) ve Dikey ise */
+        @media screen and (orientation: portrait) and (max-width: 1024px) {
+            /* Uyarı ekranını göster */
+            #rotate-warning {
+                display: flex;
+            }
+            /* Diğer her şeyi gizle */
+            .activity-container, #start-screen {
+                display: none !important;
+            }
+        }
 
-        /* --- Mobil Düzen --- */
+        /* Mobil Düzen (Sadece Yatay Modda Geçerli olacak) */
         @media (orientation: portrait) {
-            .activity-container {
-                width: 95vw;
-                height: calc(95vw * 16 / 9); /* 9:16 */
-                max-height: 95vh;
-                max-width: calc(95vh * 9 / 16); /* 9:16 */
-            }
-
-            .header {
-                grid-template-columns: 60px 1fr 60px;
-                gap: 10px;
-                padding: 10px 15px;
-            }
-            #instruction-text { font-size: 1.8rem; } /* Font büyüdü */
-            .icon-button { width: 45px; height: 45px; }
-            
-            /* YENİ EKLENDİ (Mobil için tam ekran butonu boyutu) */
-            #fullscreen-btn { width: 45px; height: 45px; }
-            
-            #game-board {
-                gap: 8px;
-            }
-            
-            #next-level-button { font-size: 2.2rem; }
-
-            /* --- YENİ EKLENDİ (Mobil Dikey Tam Ekran Davranışı) --- */
-            body.fullscreen .activity-container {
-                width: 100vw;
-                height: calc(100vw * 16 / 9);
-                max-height: 100vh;
-                max-width: calc(100vh * 9 / 16);
-            }
-            /* --- / YENİ EKLENDİ --- */
+            /* Buradaki eski ayarlar artık sadece PC'de ekran daraltılınca çalışır,
+               çünkü mobilde yukarıdaki kural her şeyi gizliyor. 
+               O yüzden burası kalabilir, zarar vermez. */
         }
 
     </style>
 </head>
 <body>
+
+    <div id="rotate-warning">
+        <div class="rotate-icon"></div>
+        <p>يُرْجى تَدْوير الجِهاز</p>
+        <p style="font-size: 1.5rem; opacity: 0.8;">(Lütfen ekranı yan çevirin)</p>
+    </div>
+
+    <div id="start-screen">
+        
+        <button id="start-btn"> اِبْــدَأْ</button>
+    </div>
 
     <div class="activity-container">
         
@@ -370,7 +450,7 @@
     </div>
 
     <script>
-        // --- DEĞİŞTİ: 2 Seviyeli Oyun Verisi (Toplam 16 Çift) ---
+        // --- 2 Seviyeli Oyun Verisi ---
         const levelsData = [
             // Seviye 1 (8 Çift - Hastane yerine Aile eklendi)
             [
@@ -413,16 +493,16 @@
          
         ];
 
-        // --- Gerekli Elementler ---
+        // --- Elementler ---
         const gameBoard = document.getElementById('game-board');
         const instructionText = document.getElementById('instruction-text');
         const feedbackOverlay = document.getElementById('feedback-overlay');
         const feedbackIcon = document.getElementById('feedback-icon');
+        const activityContainer = document.querySelector('.activity-container');
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
         
-        // --- Ses Değişkenleri ---
         let audioCtx = null;
-
-        // --- Durum Değişkenleri ---
         let hasFlippedCard = false;
         let lockBoard = false; 
         let firstCard, secondCard;
@@ -430,7 +510,27 @@
         let totalPairs = 0;
         let currentLevel = 0; 
 
-        // --- SES FONKSİYONLARI ---
+        // --- BAŞLANGIÇ BUTONU İŞLEVİ ---
+        startBtn.addEventListener('click', () => {
+            // 1. Tam ekrana geçmeye çalış
+            toggleFullScreen(true); 
+            
+            // 2. Ses bağlamını başlat
+            initAudioContext();
+
+            // 3. Başlangıç ekranını gizle
+            startScreen.style.opacity = '0';
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+            }, 500);
+
+            // 4. Oyun alanını göster
+            activityContainer.style.opacity = '1';
+
+            // 5. Oyunu kur
+            createBoard();
+        });
+
         function initAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -471,10 +571,7 @@
             }
         }
         
-        document.body.addEventListener('click', initAudioContext, { once: true });
-
-
-        // --- Fisher-Yates Karıştırma Fonksiyonu ---
+        // --- Fisher-Yates Shuffle ---
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -483,12 +580,8 @@
             return array;
         }
 
-        // --- Oyun Tahtasını Oluştur (DEĞİŞTİ) ---
         function createBoard() {
             gameBoard.innerHTML = ''; 
-            
-            // DEĞİŞTİ: Artık tüm seviyeler 16 kartlı (8 çift) olduğu için
-            // 14 kartlık özel durum kontrolü kaldırıldı.
             gameBoard.style.gridTemplateRows = 'repeat(4, 1fr)';
             
             const currentLevelData = levelsData[currentLevel];
@@ -517,11 +610,8 @@
                 card.addEventListener('click', flipCard);
                 gameBoard.appendChild(card);
             });
-            
-            // DEĞİŞTİ: 14 kart için boşluk ekleme kodu kaldırıldı.
         }
         
-        // --- Kart Çevirme Mantığı ---
         function flipCard() {
             if (lockBoard) return; 
             if (this === firstCard) return; 
@@ -539,18 +629,12 @@
             checkForMatch();
         }
 
-        // --- Eşleşme Kontrolü ---
         function checkForMatch() {
             let isMatch = firstCard.dataset.id === secondCard.dataset.id;
-
-            if (isMatch) {
-                disableCards();
-            } else {
-                unflipCards();
-            }
+            if (isMatch) disableCards();
+            else unflipCards();
         }
 
-        // --- Eşleşme Varsa ---
         function disableCards() {
             playSound('correct');
             firstCard.removeEventListener('click', flipCard);
@@ -564,23 +648,19 @@
             if (matchesFound === totalPairs) {
                 setTimeout(showWinScreen, 1000);
             }
-
             resetBoardState();
         }
         
-        // --- Eşleşme Yoksa ---
         function unflipCards() {
             lockBoard = true; 
             playSound('incorrect');
-
             setTimeout(() => {
                 firstCard.classList.remove('is-flipped');
                 secondCard.classList.remove('is-flipped');
                 resetBoardState();
-            }, 1500); // 1.5 saniye bekle
+            }, 1500); 
         }
         
-        // --- Oyun Durumunu Sıfırla ---
         function resetBoardState() {
             hasFlippedCard = false;
             lockBoard = false;
@@ -588,100 +668,71 @@
             secondCard = null;
         }
 
-        // --- Bitiş Ekranı (Seviye Geçişi için) ---
         function showWinScreen() {
             const nextLevelButton = document.getElementById('next-level-button');
             const replayButtonEnd = document.getElementById('replay-button-end');
+            const replayButtonHeader = document.getElementById('replay-button-header');
 
             if ((currentLevel + 1) < levelsData.length) {
-                // Seviye bitti, sonraki seviye var
-                instructionText.textContent = "رائع! (Harika!)";
+                instructionText.textContent = "";
                 feedbackIcon.textContent = '👍';
                 feedbackIcon.className = 'correct';
-                replayButtonEnd.style.display = 'none'; // Yeniden başlatı gizle
-                nextLevelButton.style.display = 'block'; // Sonrakini göster
+                replayButtonEnd.style.display = 'none'; 
+                nextLevelButton.style.display = 'block'; 
                 feedbackOverlay.classList.add('show');
+                replayButtonHeader.style.display = 'none';
             } else {
-                // Tüm seviyeler bittiyse
-                instructionText.textContent = "أَحْسَنْت! لَقَد أَكْمَلْتَ الجَمِيع"; // Hepsini tamamladın
+                instructionText.textContent = "أَحْسَنْت! لَقَد أَكْمَلْتَ الجَمِيع"; 
                 feedbackIcon.textContent = '✔';
                 feedbackIcon.className = 'correct';
-                replayButtonEnd.style.display = 'block'; // Yeniden başlatı göster
-                nextLevelButton.style.display = 'none'; // Sonrakini gizle
+                replayButtonEnd.style.display = 'block'; 
+                nextLevelButton.style.display = 'none'; 
                 feedbackOverlay.classList.add('show');
+                replayButtonHeader.style.display = 'flex';
             }
         }
 
-        // --- Sonraki Seviyeyi Başlat ---
         function startNextLevel() {
             playSound('pop');
             feedbackOverlay.classList.remove('show');
-            currentLevel++; // Seviyeyi şimdi artır
-            
-            // Butonları tekrar gizle (bir sonraki sefer için)
+            currentLevel++; 
             document.getElementById('next-level-button').style.display = 'none';
             document.getElementById('replay-button-end').style.display = 'none';
-
             resetBoardState();
             setTimeout(createBoard, 500);
         }
 
-        // --- Oyunu Yeniden Başlat ---
         function restartGame() {
             playSound('pop');
-            
             feedbackOverlay.classList.remove('show'); 
-            
-            // Butonları gizle
             document.getElementById('next-level-button').style.display = 'none';
             document.getElementById('replay-button-end').style.display = 'none';
+            document.getElementById('replay-button-header').style.display = 'none';
             
             if (firstCard) firstCard.classList.remove('is-flipped');
             if (secondCard) secondCard.classList.remove('is-flipped');
             
-            currentLevel = 0; // Seviyeyi 0'a sıfırla
-            
+            currentLevel = 0; 
             resetBoardState();
-            
             setTimeout(createBoard, 500);
         }
 
-        // --- YENİ EKLENDİ (Tam Ekran Mantığı) ---
-        
-        /**
-         * Tam ekran modunu açar veya kapatır.
-         */
-        function toggleFullScreen() {
+        // --- Tam Ekran Mantığı (Güncellendi: force parametresi eklendi) ---
+        function toggleFullScreen(forceOpen = false) {
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
-                // Tam ekrana gir
-                const el = document.documentElement; // Tüm sayfayı tam ekran yap
-                if (el.requestFullscreen) {
-                    el.requestFullscreen();
-                } else if (el.webkitRequestFullscreen) { // Safari
-                    el.webkitRequestFullscreen();
-                } else if (el.mozRequestFullScreen) { // Firefox
-                    el.mozRequestFullScreen();
-                } else if (el.msRequestFullscreen) { // IE/Edge
-                    el.msRequestFullscreen();
-                }
-            } else {
-                // Tam ekrandan çık
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
+                const el = document.documentElement; 
+                if (el.requestFullscreen) el.requestFullscreen().catch(e => console.log(e));
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+            } else if (!forceOpen) {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
             }
         }
 
-        /**
-         * Tam ekran durum değişikliğini dinler ve body'e class ekler/kaldırır.
-         * Bu, CSS'in tam ekran stilini uygulayabilmesi için gereklidir.
-         */
         function updateFullscreenClass() {
             if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
                 document.body.classList.add('fullscreen');
@@ -690,25 +741,17 @@
             }
         }
         
-        // Tam ekran durum değişiklikleri için olay dinleyicileri
         document.addEventListener('fullscreenchange', updateFullscreenClass);
         document.addEventListener('webkitfullscreenchange', updateFullscreenClass);
         document.addEventListener('mozfullscreenchange', updateFullscreenClass);
         document.addEventListener('MSFullscreenChange', updateFullscreenClass);
         
-        // --- / YENİ EKLENDİ ---
-
-        
-        // --- Başlangıç ---
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // YENİ EKLENDİ: Tam ekran butonunu bağla
             const fsBtn = document.getElementById('fullscreen-btn');
             if (fsBtn) {
-                fsBtn.addEventListener('click', toggleFullScreen);
+                fsBtn.addEventListener('click', () => toggleFullScreen());
             }
-            
-            createBoard();
+            // createBoard() artık burada çağrılmıyor, "Başla" butonuna taşındı.
         });
 
     </script>

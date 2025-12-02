@@ -229,7 +229,7 @@
         }
         
         .word-item {
-            padding: 12px 20px;
+            padding: 15px 25px; /* Dikey boşluk 12px'den 15px'e çıkarıldı */
             color: white;
             font-size: 2.8rem; 
             font-weight: 700;
@@ -239,17 +239,18 @@
             user-select: none;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transform-origin: center center;
-            line-height: 1.6; /* Harflerin üstü/altı için dikey boşluk */
-            display: inline-block; /* Satır içinde bütünlüğü korur */
+            line-height: 1.9; /* Satır yüksekliği 1.6'dan 1.9'a çıkarıldı (Hemzeler için) */
+            display: inline-block; 
+            vertical-align: middle; /* Hizalama sorunu olmaması için eklendi */
         }
         .word-item[draggable="true"]:active { cursor: grabbing; }
         .word-item[draggable="false"] { cursor: default; }
         .word-item:hover { filter: brightness(85%); }
         .word-item.dragging { opacity: 0.5; cursor: grabbing; }
         
-        /* --- Butonlar --- */
+       /* --- Butonlar (GÜNCELLENMİŞ) --- */
         #check-scramble-btn, #reset-scramble-btn, #next-activity-btn {
-            padding: 15px 30px;
+            /* Ortak özellikler */
             font-size: 2rem; 
             font-family: var(--font-arabic);
             font-weight: 700;
@@ -261,9 +262,23 @@
             display: flex; 
             align-items: center;
             justify-content: center;
+            
+            /* Dikey hizalama garantisi için satır yüksekliğini sıfırlıyoruz */
+            line-height: normal; 
         }
+
+        /* ONAY ve YENİLE Butonları için SABİT BOYUT AYARI */
+        #check-scramble-btn, #reset-scramble-btn {
+            width: 200px;  /* İkisi de aynı genişlik */
+            height: 70px;  /* İkisi de aynı yükseklik */
+            padding: 0;    /* İç boşluğu sıfırladık ki taşma yapmasın */
+        }
+
+        /* Renkler */
         #check-scramble-btn { background-color: var(--success-color); color: white; }
         #reset-scramble-btn { background-color: var(--danger-color); color: white; }
+
+        /* Sonraki Etkinlik Butonu (Yuvarlak kalmaya devam etsin) */
         #next-activity-btn {
             background-color: var(--accent-color);
             color: white;
@@ -272,12 +287,12 @@
             height: clamp(55px, 10vmin, 70px);
             border-radius: 50%; 
         }
+        
         #next-activity-btn svg {
             width: clamp(30px, 6vmin, 40px);
             height: clamp(30px, 6vmin, 40px);
             fill: currentColor;
         }
-
         /* Pasif Buton Stili */
         .disabled-btn {
             opacity: 0.4; 
@@ -370,6 +385,7 @@
         @media (orientation: portrait) {
             /* Dikeyde zaten gizli */
         }
+
     </style>
 </head>
 <body>
