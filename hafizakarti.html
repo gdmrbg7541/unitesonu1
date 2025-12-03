@@ -265,8 +265,11 @@
             padding: 5px;
             text-align: center;
         }
+        
+        /* --- GÜNCELLENEN KISIM: Emojiler ortalandı ve büyütüldü --- */
         .card-face[data-type="emoji"] {
-            font-size: 7vmin; 
+            font-size: 11vmin; 
+            /* line-height kaldırıldı, flexbox (align-items:center) ortalamayı yapacak */
         }
         
         .card.is-matched {
@@ -332,9 +335,7 @@
             background-color: #218838;
         }
 
-        /* --- Tam Ekran Butonu (Header içinde) --- */
-        /* Artık sadece manuel çıkış için kullanılabilir veya gizlenebilir, 
-           ancak Start tuşu zaten tam ekran yapacağı için burada kalabilir */
+        /* --- Tam Ekran Butonu --- */
         #fullscreen-btn {
             background: #f0f0f0;
             color: #555;
@@ -373,25 +374,14 @@
             box-shadow: none;
         }
 
-        /* --- MEDYA SORGULARI: DİKEY EKRAN (PORTRAIT) KONTROLÜ --- */
-        
-        /* Sadece mobil ve tablet boyutunda (örn: 1024px altı) ve Dikey ise */
+        /* --- MEDYA SORGULARI --- */
         @media screen and (orientation: portrait) and (max-width: 1024px) {
-            /* Uyarı ekranını göster */
             #rotate-warning {
                 display: flex;
             }
-            /* Diğer her şeyi gizle */
             .activity-container, #start-screen {
                 display: none !important;
             }
-        }
-
-        /* Mobil Düzen (Sadece Yatay Modda Geçerli olacak) */
-        @media (orientation: portrait) {
-            /* Buradaki eski ayarlar artık sadece PC'de ekran daraltılınca çalışır,
-               çünkü mobilde yukarıdaki kural her şeyi gizliyor. 
-               O yüzden burası kalabilir, zarar vermez. */
         }
 
     </style>
@@ -405,7 +395,6 @@
     </div>
 
     <div id="start-screen">
-        
         <button id="start-btn"> اِبْــدَأْ</button>
     </div>
 
@@ -419,7 +408,6 @@
             <div id="instruction-text">...</div>
             
             <div class="header-button-container right">
-                
                 <button id="fullscreen-btn">
                     <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
@@ -437,8 +425,7 @@
         </div>
 
         <div class="activity-area">
-            <div id="game-board">
-                </div>
+            <div id="game-board"></div>
         </div>
 
         <div class="feedback-overlay" id="feedback-overlay">
@@ -492,7 +479,6 @@
             ]
          
         ];
-
         // --- Elementler ---
         const gameBoard = document.getElementById('game-board');
         const instructionText = document.getElementById('instruction-text');
@@ -717,7 +703,7 @@
             setTimeout(createBoard, 500);
         }
 
-        // --- Tam Ekran Mantığı (Güncellendi: force parametresi eklendi) ---
+        // --- Tam Ekran Mantığı ---
         function toggleFullScreen(forceOpen = false) {
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
                 const el = document.documentElement; 
@@ -751,7 +737,6 @@
             if (fsBtn) {
                 fsBtn.addEventListener('click', () => toggleFullScreen());
             }
-            // createBoard() artık burada çağrılmıyor, "Başla" butonuna taşındı.
         });
 
     </script>
