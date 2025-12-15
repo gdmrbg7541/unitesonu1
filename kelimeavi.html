@@ -20,17 +20,44 @@
             --grid-size-rows: 8;
         }
 
-        body {
-            font-family: var(--font-arabic);
-            background-color: #e9ecef;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            font-weight: 400;
-        }
+        /* body etiketi etrafındaki boşlukları tamamen sıfırlamak için */
+    body {
+        font-family: var(--font-arabic);
+        background-color: #e9ecef;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        width: 100vw; /* Ekran genişliğinin tamamını kapla */
+        margin: 0;
+        padding: 0; /* Yeni Eklendi: Sayfa kenarında boşluk bırakma */
+        overflow: hidden;
+        font-size: 1.1rem; /* ... diğer font ayarları ... */
+    }
+
+    /* Ana Oyun Konteyneri (#game-container) */
+    #game-container {
+        /* Başlangıçta neredeyse tam ekran */
+        width: 98vw;  
+        height: 98vh; 
+        max-width: none; /* Yatay kısıtlamayı kaldır */
+        
+        /* Orijinal stil kurallarını koru */
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Tam Ekran Moduna Geçildiğinde Ekstra Boşlukları Kaldır */
+    body.fullscreen #game-container {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+    }
 
         /* --- Ana Etkinlik Alanı --- */
         .activity-container {
@@ -412,16 +439,16 @@
         // Dosya 1 (Meslekler/Akrabalar) ve Dosya 2 (Güzel Davranışlar) içeriğine göre düzenlenmiştir.
         const desktopLevels = [
             [   // 1. Seviye: Meslekler ve Çalışma (Dosya 1)
-                { word: 'مدرس', color: colors[0], emoji: '🧑🏻‍🏫' }, // Öğretmen
+                { word: 'مدرّس', color: colors[0], emoji: '🧑🏻‍🏫' }, // Öğretmen
                 { word: 'طبيب', color: colors[1], emoji: '🧑🏻‍⚕️' }, // Doktor
-                { word: 'شرطي', color: colors[2], emoji: '👮' },   // Polis
+                { word: 'شرطيّ', color: colors[2], emoji: '👮' },   // Polis
                 { word: 'سائق', color: colors[3], emoji: '🚕' },   // Şoför
-                { word: 'ممرضة', color: colors[4], emoji: '👩‍⚕️' }, // Hemşire
+                { word: 'ممرّضة', color: colors[4], emoji: '👩‍⚕️' }, // Hemşire
                 { word: 'مهندس', color: colors[5], emoji: '👷' }   // Mühendis
             ],
             [   // 2. Seviye: Aile ve Sosyal Çevre (Dosya 1 & 2)
                 { word: 'أقارب', color: colors[0], emoji: '👨‍👩‍👧‍👦' }, // Akrabalar
-                { word: 'جدة', color: colors[1], emoji: '👵' },     // Büyükanne
+                { word: 'جدّة', color: colors[1], emoji: '👵' },     // Büyükanne
                 { word: 'جيران', color: colors[2], emoji: '🏘️' },   // Komşular
                 { word: 'ضيوف', color: colors[3], emoji: '☕' },    // Misafirler
                 { word: 'كبار', color: colors[4], emoji: '👴' },    // Büyükler/Yaşlılar
@@ -431,8 +458,8 @@
                 { word: 'يساعد', color: colors[0], emoji: '🤝' },   // Yardım ediyor
                 { word: 'يحترم', color: colors[1], emoji: '🫡' },   // Saygı duyuyor
                 { word: 'يزور', color: colors[2], emoji: '🔔' },    // Ziyaret ediyor
-                { word: 'يصلي', color: colors[3], emoji: '🤲' },    // Dua ediyor/Namaz kılıyor
-                { word: 'يحب', color: colors[4], emoji: '❤️' },     // Seviyor
+                { word: 'يصلّي', color: colors[3], emoji: '🤲' },    // Dua ediyor/Namaz kılıyor
+                { word: 'ّيحب', color: colors[4], emoji: '❤️' },     // Seviyor
                 { word: 'يكرم', color: colors[5], emoji: '🍽️' }    // İkram ediyor
             ],
             [   // 4. Seviye: Sıfatlar ve Durumlar (Dosya 1 & 2)
@@ -449,13 +476,13 @@
         // Mobil kullanıcılar için kelimeler daha küçük gruplara bölünmüştür.
         const mobileLevels = [
             [   // Mobil 1: Temel Meslekler
-                { word: 'مدرس', color: colors[0], emoji: '🧑🏻‍🏫' },
+                { word: 'مدرّس', color: colors[0], emoji: '🧑🏻‍🏫' },
                 { word: 'طبيب', color: colors[1], emoji: '🧑🏻‍⚕️' },
                 { word: 'مهندس', color: colors[2], emoji: '👷' },
-                { word: 'ممرضة', color: colors[3], emoji: '👩‍⚕️' }
+                { word: 'ممرّضة', color: colors[3], emoji: '👩‍⚕️' }
             ],
             [   // Mobil 2: Diğer Meslekler ve Yerler
-                { word: 'شرطي', color: colors[4], emoji: '👮' },
+                { word: 'شرطيّ', color: colors[4], emoji: '👮' },
                 { word: 'سائق', color: colors[5], emoji: '🚕' },
                 { word: 'مصنع', color: colors[0], emoji: '🏭' }, // Fabrika (Metinde geçiyor)
                 { word: 'مستشفى', color: colors[1], emoji: '🏥' } // Hastane (Metinde geçiyor)
@@ -464,7 +491,7 @@
                 { word: 'جيران', color: colors[2], emoji: '🏘️' },
                 { word: 'ضيوف', color: colors[3], emoji: '☕' },
                 { word: 'أقارب', color: colors[4], emoji: '👨‍👩‍👧‍👦' },
-                { word: 'جدة', color: colors[5], emoji: '👵' }
+                { word: 'جدّة', color: colors[5], emoji: '👵' }
             ],
             [   // Mobil 4: İyi Davranış Fiilleri
                 { word: 'يساعد', color: colors[0], emoji: '🤝' },
@@ -479,8 +506,8 @@
                 { word: 'مجتهد', color: colors[1], emoji: '📚' }
             ],
             [   // Mobil 6: Duygular ve Eylemler
-                { word: 'يحب', color: colors[2], emoji: '❤️' },
-                { word: 'يصلي', color: colors[3], emoji: '🤲' },
+                { word: 'يحبّ', color: colors[2], emoji: '❤️' },
+                { word: 'يصلّي', color: colors[3], emoji: '🤲' },
                 { word: 'كبار', color: colors[4], emoji: '👴' },
                 { word: 'صغار', color: colors[0], emoji: '👶' }
             ]
@@ -498,6 +525,40 @@
         let activeGridCols;
         let activeGridRows;
         let activeLevelSet;
+        
+        // --- YENİ EKLENEN FONKSİYONLAR ---
+
+        // Şedde (ّ) işaretini iki harfe dönüştüren fonksiyon
+        // Örnek: 'مدرّس' -> 'مدررس' (2 harfe açar)
+        function unShedda(word) {
+            let newWord = '';
+            for (let i = 0; i < word.length; i++) {
+                const char = word[i];
+                if (char === 'ّ') { // Şedde karakteri
+                    // Bir önceki harfi tekrar ekle
+                    if (newWord.length > 0) {
+                        const prevChar = newWord[newWord.length - 1];
+                        newWord += prevChar;
+                    }
+                } else {
+                    newWord += char;
+                }
+            }
+            // Kelimenin başındaki şeddeyi (eğer varsa) ve kelimenin sonundaki şeddeyi temizler.
+            return newWord.replace('ّ', ''); 
+        }
+
+        // Şedde dönüşümünü tüm kelime setlerine uygulayan fonksiyon
+        function preprocessLevels(levels) {
+            return levels.map(level => 
+                level.map(data => ({
+                    ...data,
+                    // Orijinal kelimeyi (word) ve şeddesiz halini (processedWord) tut
+                    processedWord: unShedda(data.word) 
+                }))
+            );
+        }
+        // --- YENİ EKLENEN FONKSİYONLAR BİTİŞİ ---
 
         // --- Gerekli Elementler ---
         const gridContainer = document.getElementById('puzzle-grid-container');
@@ -572,8 +633,9 @@
         // --- OYUN KURULUMU ---
 
         function initializeGame() {
+            // wordData'nın artık processed kelimeleri içerdiğini varsayıyoruz
             wordData = activeLevelSet[currentLevel];
-            wordsToFind = wordData.map(data => data.word);
+            wordsToFind = wordData.map(data => data.word); // Bulunacak kelime listesi (Orijinal hali)
 
             foundWords = [];
             grid = [];
@@ -605,33 +667,44 @@
                 const li = document.createElement('li');
                 li.className = 'word-list-item';
                 li.id = `word-${data.word}`;
-                li.textContent = `${data.emoji} ${data.word}`;
+                li.textContent = `${data.emoji} ${data.word}`; // Orijinal kelimeyi göster
                 li.dataset.color = data.color; 
                 wordListElement.appendChild(li);
             });
         }
         
-        function placeWords() {
-            const directions = [
-                { dr: 0, dc: 1 },  // Yatay
-                { dr: 1, dc: 0 },  // Dikey
-                { dr: 1, dc: 1 }   // Çapraz
+       function placeWords() {
+            // SADECE MEVCUT İKİ YÖN KULLANILACAK
+            const twoDirections = [
+                { dr: 1, dc: 0 },   // Yukarıdan Aşağıya (Dikey)
+                { dr: 0, dc: 1 }    // Soldan Sağa (Yatay)
             ];
+            
+            // Yerleştirme verimliliğini artırmak için kelimeleri uzunluklarına göre sıralayabiliriz.
+            const sortedWordData = [...wordData].sort((a, b) => b.processedWord.length - a.processedWord.length);
 
-            for (const word of wordsToFind) {
+            for (const data of sortedWordData) {
+                const wordToPlace = data.processedWord; 
+                
                 let placed = false;
                 let attempts = 0;
                 
-                while (!placed && attempts < 100) {
+                // Her deneme seti için yönleri rastgele karıştır
+                const shuffledDirections = [...twoDirections].sort(() => 0.5 - Math.random());
+                
+                // 200 deneme yap
+                while (!placed && attempts < 200) { 
                     attempts++;
-                    const dir = directions[Math.floor(Math.random() * directions.length)];
-                    // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
+                    
                     const r = Math.floor(Math.random() * activeGridRows);
                     const c = Math.floor(Math.random() * activeGridCols);
 
-                    if (canPlaceWord(word, r, c, dir)) {
-                        for (let i = 0; i < word.length; i++) {
-                            grid[r + i * dir.dr][c + i * dir.dc] = word[i];
+                    // Her denemede, karıştırılmış iki yönden birini kullan
+                    const dir = shuffledDirections[attempts % shuffledDirections.length];
+
+                    if (canPlaceWord(wordToPlace, r, c, dir)) { 
+                        for (let j = 0; j < wordToPlace.length; j++) {
+                            grid[r + j * dir.dr][c + j * dir.dc] = wordToPlace[j];
                         }
                         placed = true;
                     }
@@ -649,7 +722,7 @@
                     return false;
                 }
                 const cell = grid[newRow][newCol];
-                if (cell !== null && cell !== word[i]) { 
+                if (cell !== null) { 
                     return false;
                 }
             }
@@ -801,21 +874,33 @@
             return line;
         }
         
-        // --- KONTROL MANTIĞI ---
+        // --- KONTROL MANTIĞI (GÜNCELLENDİ) ---
         
         function checkSelection() {
             if (currentSelection.length < 2) return;
             
-            const selectedWord = currentSelection.map(cell => cell.textContent).join('');
-            const selectedWordReversed = selectedWord.split('').reverse().join('');
+            // YENİ: Kullanıcının ızgaradan seçtiği kelime
+            const selectedWordRaw = currentSelection.map(cell => cell.textContent).join(''); 
             
             let found = false;
             
-            for (const word of wordsToFind) {
-                if (foundWords.includes(word)) continue; 
+            for (const data of wordData) {
+                const originalWord = data.word;         // Orijinal (şeddeli olabilen) kelime
+                const processedWord = data.processedWord; // Izgarada yer alan (şeddesiz) kelime
                 
-                if (word === selectedWord || word === selectedWordReversed) {
-                    markAsFound(word); 
+                if (foundWords.includes(originalWord)) continue; 
+                
+                // Seçilen ham kelimeyi şeddesiz kelimeyle karşılaştır
+                if (selectedWordRaw === processedWord) {
+                    markAsFound(originalWord); // Orijinal kelimeyi buldu olarak işaretle
+                    found = true;
+                    break;
+                }
+                
+                // Tersine döndürülmüş kelime kontrolü
+                const processedWordReversed = processedWord.split('').reverse().join('');
+                if (selectedWordRaw === processedWordReversed) {
+                    markAsFound(originalWord); // Orijinal kelimeyi buldu olarak işaretle
                     found = true;
                     break;
                 }
@@ -925,6 +1010,9 @@
                 activeGridRows = desktopGridRows;
             }
             
+            // Şedde dönüşümünü tüm seviyelere uygula
+            activeLevelSet = preprocessLevels(activeLevelSet); 
+
             // GÜNCELLEME: CSS değişkenlerini dinamik olarak ayarla
             const rootStyle = document.documentElement.style;
             rootStyle.setProperty('--grid-size-cols', activeGridCols);
@@ -935,7 +1023,7 @@
             setupFullscreen(); 
         });
 
-    </script>   
+    </script>
 
 </body>
 </html>

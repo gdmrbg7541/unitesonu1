@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Temel Sayfa Stilleri --- */
+        /* [MEVCUT CSS STİLLERİ BURAYA GELİR] */
         :root {
             --accent-color: #007bff;
             --success-color: #28a745;
@@ -28,7 +28,7 @@
             font-weight: 400;
         }
 
-        /* --- Ana Etkinlik Alanı --- */
+        /* --- Ana Etkinlik Alanı (MASAÜSTÜ BOYUTLARI KORUNDU) --- */
         .activity-container {
             position: relative;
             background: #ffffff;
@@ -37,6 +37,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            /* Yüklediğiniz dosyadan aynen alındı (MASAÜSTÜ) */
             width: 90vw;
             height: calc(90vw * 9 / 16);
             max-height: 90vh;
@@ -175,6 +176,7 @@
             padding-bottom: 20px; 
         }
         .question-text {
+            /* MASAÜSTÜ boyutu korundu */
             font-size: clamp(2.5rem, 5vw, 6rem);
             font-weight: 700;
             color: #212529;
@@ -188,6 +190,7 @@
             text-align: center;
         }
         .answer-input {
+            /* MASAÜSTÜ boyutu korundu */
             font-size: inherit; 
             font-weight: 700;
             font-family: var(--font-arabic);
@@ -224,6 +227,7 @@
         }
 
         .key-container {
+            /* MASAÜSTÜ boyutu korundu */
             position: relative;
             flex-grow: 1;
             flex-basis: 0;
@@ -232,6 +236,7 @@
         }
 
         .key {
+            /* MASAÜSTÜ boyutu korundu */
             font-family: var(--font-arabic);
             font-size: clamp(1.4rem, 2vw, 2.5rem);
             font-weight: 700;
@@ -272,6 +277,7 @@
         }
 
         .variant-key {
+            /* MASAÜSTÜ boyutu korundu */
             font-family: var(--font-arabic);
             font-size: clamp(1.4rem, 2vw, 2.5rem);
             font-weight: bold;
@@ -303,13 +309,12 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s, opacity 0.2s; /* Opacity geçişi eklendi */
+            transition: background-color 0.2s, opacity 0.2s;
             margin: 5px;
         }
         #check-scramble-btn { background-color: var(--success-color); color: white; }
         #reset-scramble-btn { background-color: var(--danger-color); color: white; }
         
-        /* BUTON PASİF DURUM STİLİ EKLENDİ */
         #check-scramble-btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
@@ -385,35 +390,114 @@
         }
         #replay-button:hover { transform: rotate(-90deg); background-color: #f0f0f0; }
         
-        /* --- Mobil --- */
-        @media (orientation: portrait) {
-            .activity-container {
-                width: 95vw; height: calc(95vw * 16 / 9);
-                max-height: 95vh; max-width: calc(95vh * 9 / 16);
-            }
-            body.fullscreen .activity-container {
-                width: 100vw; height: calc(100vw * 16 / 9);
-                max-height: 100vh; max-width: calc(100vh * 9 / 16);
-            }
+        /* ------------------------------------------------------------------ */
+        /* --- YATAY MOD UYARISI STİLLERİ --- */
+        /* ------------------------------------------------------------------ */
+        
+        #rotate-message {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #343a40; 
+            color: white;
+            display: none; /* Başlangıçta gizli */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            z-index: 5000;
+            font-family: var(--font-arabic);
+        }
+
+        #rotate-message p {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            margin: 15px 0;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+
+        .phone-animation {
+            background: var(--accent-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            animation: rotate-phone 2s infinite ease-in-out;
+        }
+
+        @keyframes rotate-phone {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(90deg); }
+        }
+
+        /* YALNIZCA DİKEY (PORTRAIT) MOD KONTROLÜ */
+        @media only screen and (orientation: portrait) {
+            #rotate-message { display: flex; } /* Dikeyde uyarıyı göster */
+            .activity-container { display: none; } /* Dikeyde aktiviteyi gizle */
+        }
+
+        /* ------------------------------------------------------------------ */
+        /* --- MOBİL YATAY (LANDSCAPE) MOD KÜÇÜLTME YAMASI --- */
+        /* (Ekran yüksekliği 900px ve altı olan yatay cihazlar için) */
+        /* ------------------------------------------------------------------ */
+        @media only screen and (max-height: 900px) and (orientation: landscape) {
+            
+            /* Başlık Alanı ve Elementleri */
             .header {
-                grid-template-areas: "progress back" "instruction instruction";
-                grid-template-columns: 1fr 1fr; 
-                gap: 10px; padding: 10px 15px;
+                padding: 8px 15px;
+                gap: 10px;
+                grid-template-columns: 250px 1fr 250px; /* Progress bar ve back butonu alanı daraltıldı */
             }
-            .progress-container { width: auto; justify-content: flex-start; }
-            .back-button-container { justify-content: flex-end; }
-            #instruction-text { min-width: unset; justify-self: center; }
+            #instruction-text {
+                font-size: clamp(1.5rem, 1.8vw, 2.5rem); 
+            }
+            .progress-container { width: 250px; }
             #progress-display { font-size: 1.2rem; }
-            .fill-in-blank-container { justify-content: flex-start; padding-top: 10px; }
-            .question-text { line-height: 1.5; margin-bottom: 10px; }
-            .answer-input { width: 200px; }
-            .keyboard-container { margin-top: 5px; }
-            .key-container { max-width: 60px; }
+            .back-button, #fullscreen-btn {
+                width: clamp(35px, 6vmin, 45px);
+                height: clamp(35px, 6vmin, 45px);
+            }
+            .back-button svg, #fullscreen-btn svg {
+                 width: clamp(20px, 4vmin, 25px);
+                 height: clamp(20px, 4vmin, 25px);
+            }
+
+
+            .answer-input {
+                width: 250px; /* Daha dar input */
+                min-height: clamp(50px, 8vh, 80px); /* Daha kısa input */
+                padding: 0 10px;
+                margin: 0 10px;
+            }
+            
+            /* Klavye Küçültme */
+            .keyboard-container {
+                padding: 0 5px;
+                margin-top: 5px;
+            }
+            .key-row {
+                gap: 0.5vw;
+                margin-bottom: 0.5vw;
+            }
+            .key-container {
+                max-width: 65px;
+                height: clamp(40px, 6vh, 60px); 
+            }
+            .key, .variant-key {
+                font-size: clamp(1.2rem, 1.7vw, 2.2rem); 
+            }
             .key.backspace { font-size: 1rem; }
-            .scramble-controls { margin-top: 5px; }
-            #check-scramble-btn, #reset-scramble-btn { font-size: 1.5rem; padding: 10px 20px; }
-            #feedback-correct-answer { font-size: 2.5rem; }
-            #feedback-ok-button { width: 50px; height: 50px; font-size: 1.8rem; margin-top: 10px; }
+
+            /* Kontrol Butonları */
+            #check-scramble-btn, #reset-scramble-btn {
+                padding: 10px 20px;
+                font-size: 1.5rem;
+            }
+            
+            /* Geri Bildirim */
+            #feedback-correct-answer { font-size: 3rem; }
+            #feedback-ok-button { width: 55px; height: 55px; font-size: 2rem; margin-top: 15px;}
         }
     </style>
 </head>
@@ -460,6 +544,15 @@
         </div>
 
     </div>
+    
+    <div id="rotate-message">
+        <div class="phone-animation">
+            <svg viewBox="0 0 24 24" fill="#ffffff" width="60" height="60">
+                <path d="M17 1H7C5.9 1 5 1.9 5 3v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-2 20H9v-1h6v1zm2-3H7V6h10v12z" />
+            </svg>
+        </div>
+        
+    </div>
 
     <script>
         // --- KLAVYE TASARIMI ---
@@ -477,6 +570,7 @@
             'ء':'#ffccbc','ؤ':'#ffccbc','ئ':'#ffccbc',
             'ا':'#e0e0e0','ل':'#e0e0e0',
             'ك':'#d1c4e9',
+            'm':'#f8bbd0', 
             'م':'#f8bbd0',
             'و':'#c5cae9'
         };
@@ -486,8 +580,7 @@
         // --- UZUN BASMA VERİSİ ---
         const longPressData = {
             'ا': ['أ', 'إ', 'آ'], 
-            'و': ['ؤ'],
-            'ي': ['ى', 'ئ']
+            'ي': ['ى', 'ئ'] // y harfi basılı tutulunca hala ى ve ئ çıkabilir, bu kullanıcı deneyimi için korundu.
         };
         
         function getDarkerColor(hex) {
@@ -523,7 +616,7 @@
             { pre: "", post: "تَعْمَلُ في المُسْتَشْفى", a: ["هِي", "أَنْتَ"], hint: "ضَمِير" }, 
             { pre: "", post: "تَحْتَرِمُ الكِبار", a: ["أَنْتَ", "هِيَ"], hint: "ضَمِير" }, 
             { pre: "", post: "أُحِبُّ أَقارِبي", a: "أَنا", hint: "ضَمير" },
-            { pre: "", post: "تَحْتَرِمونَ الكِبار", a: "أَنْتُم", hint: "ضَمِIR" },
+            { pre: "", post: "تَحْتَرِمونَ الكِبار", a: "أَنْتُم", hint: "ضَمِير" },
 
             // Fiil Çekimleri (10)
             { pre: "هُم", post: "إِلى المَسْجِد", a: ["ذَهَبوا" ,"يَذْهَبونَ"], hint: "فِعْل" },
@@ -534,16 +627,19 @@
             { pre: "السَّائِق", post: "السَّيّارَة", a: "يَسوقُ", hint: "فِعْل" },
             { pre: "المُمَرِّضَة", post: "بِالمَرْضى", a: "تَهْتَمُّ", hint: "فِعْل" },
             { pre: "المُدَرِّس", post: "الطُّلّاب", a: ["يُدَرِّسُ", "يُعَلِّمُ", "يُحِبُّ"], hint: "فِعْل" }, 
-            { pre: "الطَّبيب", post: "المَريض", a: "يَفْحَصُ", hint: "فِعْل" },
+            { pre: "الطَّبيب", post: "المَريض", a: ["يَفْحَصُ","فَحَصَ"], hint: "فِعْل" },
             { pre: "يَجِبُ أَنْ", post: "صادِقًا", a: ["تَكُونَ", "أَكُونَ"], hint: "فِعْل" }, 
         
             // Harfi Cerler (4)
             { pre: "الطَّبيب يَعْمَل", post: "المُسْتَشْفى", a: "في", hint: "حَرْف جَرّ" },
+            // NOT: Aşağıdaki örnekte `بِ` harfi var. Eğer kullanıcı `بي` yazarsa, cevap `بِ` olduğu için (hareke yok sayıldığı halde) doğru çıkar.
+            // Fakat harf farkı oluşmaz.
             { pre: "أَنا أَهْتَمُّ", post: "الموسيقى", a: "بِ", hint: "حَرْف جَرّ" },
             { pre: "الطّالِب يَذْهَبُ", post: "المَدْرَسَة", a: "إِلى", hint: "حَرْف جَرّ" },
             { pre: "رَبَّنَا اغْفِرْ", post: "وَلِوَالِدَيَّ", a: "لِي", hint: ["حَرْف جَرّ", "ضَمِير"] }, 
 
             // Mekanlar (İsim) (3)
+            // NOT: Cevapta ى var. Kullanıcı y yazarsa yanlış kabul edilir.
             { pre: "يَعْمَلُ الطَّبيب في", post: "", a: "المُسْتَشْفى", hint: "اِسْم مَكان" },
             { pre: "يَعْمَلُ المُهَنْدِس في", post: "", a: ["المَصْنَع", "الشَّرِكَة"], hint: "اِسْم مَكان" },
             { pre: "يُصَلّي المُسْلِمون في", post: "", a: ["المَسْجِد", "الجامِع"], hint: "اِسْم مَكان" }, 
@@ -641,12 +737,22 @@
             return array;
         }
         
+        // **********************************************
+        // *** GÜNCELLENEN NORMALİZASYON FONKSİYONU ***
+        // *** ARTIK Y VE MAKSURA ARASINDA SADELEŞTİRME YAPILMAYACAK ***
+        // **********************************************
         function normalizeForCheck(text) {
             if (!text) return "";
+            
+            // 1. Hareke ve Tanvinleri Kaldır
             let newText = text.replace(/[\u064B-\u065F]/g, ""); 
-            newText = newText.replace(/[أإآ]/g, "ا");
-            newText = newText.replace(/[ى]/g, "ي"); 
-            return newText;
+            
+            // 2. Maksura (ى) harfini (ي) ile değiştiren satır KALDIRILDI.
+            // newText = newText.replace(/[ى]/g, "ي"); 
+            
+            // 3. Elif varyantlarını sadeleştiren satır ZATEN ÖNCEKİ İSTEKTE KALDIRILMIŞTI.
+            
+            return newText.trim(); 
         }
 
         function adjustFontSize(element) {
@@ -722,7 +828,7 @@
             
             const resetButton = document.createElement('button');
             resetButton.id = 'reset-scramble-btn'; 
-            resetButton.textContent = '🔄 مَسْح'; 
+            resetButton.textContent = '🔄 اِمْسَحْ'; 
             resetButton.onclick = () => {
                 playSound('touch');
                 const input = document.getElementById('answer-input');
@@ -777,6 +883,7 @@
                         e.preventDefault(); 
                         isLongPress = false;
                         
+                        // Sadece 'ا' ve 'ي' için uzun basma pop-up'ını göster
                         if (longPressData[keyText]) {
                             pressTimer = setTimeout(() => {
                                 isLongPress = true;
@@ -789,7 +896,10 @@
                     const cancelPress = (e) => {
                         clearTimeout(pressTimer);
                         if (!isLongPress && e.type !== 'mouseleave') {
-                            handleKeyInput(keyText);
+                            // Eğer bir pop-up açıksa, tuşa normal basış kabul edilmez.
+                            if (!document.querySelector('.long-press-popup.show')) {
+                                handleKeyInput(keyText);
+                            }
                         }
                     };
                     
@@ -869,18 +979,27 @@
         function checkFillInBlankAnswer(correctAnswer) {
             const answerInput = document.getElementById('answer-input');
             const userAnswer = answerInput.textContent.trim();
+            
+            // Kullanıcı cevabını normalleştir (SADECE HAREKE KALDIRILIR)
             const normalizedUserAnswer = normalizeForCheck(userAnswer); 
 
             let isCorrect = false;
             const correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
-            const normalizedCorrectAnswers = correctAnswers.map(normalizeForCheck); 
 
-            for (const normCorrect of normalizedCorrectAnswers) { 
-                if (normalizedUserAnswer === normCorrect) { 
+            // Her bir doğru cevap için kontrol yap
+            for (const correct of correctAnswers) {
+                // Doğru cevabı normalleştir (SADECE HAREKE KALDIRILIR)
+                const normalizedCorrect = normalizeForCheck(correct); 
+                
+                // 1. Kesin (Harf farkları dahil) Eşleşme Kontrolü
+                if (normalizedUserAnswer === normalizedCorrect) { 
                     isCorrect = true; break;
                 }
-                if (normCorrect.startsWith("ال")) {
-                    const answerWithoutAl = normCorrect.substring(2); 
+                
+                // 2. Kelime başı Elif-Lam (ال) Sadeleştirmesi (ال'siz girişi kabul etmek için)
+                if (normalizedCorrect.startsWith("ال")) {
+                    // Elif-Lam'ı kaldırmadan önce doğru cevabın sadece harekelerden arındırılmış halini kullanırız.
+                    const answerWithoutAl = normalizedCorrect.substring(2); 
                     if (normalizedUserAnswer === answerWithoutAl) { 
                         isCorrect = true; break;
                     }
@@ -940,7 +1059,7 @@
                     <button id="replay-button" onclick="restartGame()">🔄</button>
                 </div>
             `;
-            instructionText.textContent = ""; // Başlık tekrarı önlendi
+            instructionText.textContent = ""; 
             progressDisplay.textContent = "";
             progressBar.style.width = '100%';
             progressBar.style.backgroundColor = 'var(--success-color)';
@@ -956,12 +1075,12 @@
                         <span class="score-item score-incorrect">❌ ${scoreIncorrect}</span>
                     </div>
                     <button id="check-scramble-btn" onclick="startNextRound()" style="font-size: 1.8rem; margin-top: 20px;">
-                        التَّالِي
+                        التّالي
                     </button>
                 </div>
             `;
-            instructionText.textContent = ""; // Başlık tekrarı önlendi
-            progressDisplay.textContent = ""; // İktemel yazısı kaldırıldı
+            instructionText.textContent = ""; 
+            progressDisplay.textContent = ""; 
             progressBar.style.width = '100%';
             progressBar.style.backgroundColor = 'var(--success-color)';
         }
