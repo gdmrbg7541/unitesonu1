@@ -48,9 +48,22 @@
             width: 100vw;
             height: calc(100vw * 9 / 16); 
             max-height: 100vh;
-            max-width: calc(100vh * 16 / 9);
+            max-width: calc(90vh * 16 / 9);
             border-radius: 0;
             box-shadow: none;
+        }
+
+        /* 🔥 OYUN BAŞLAMADAN ANA EKRAN ELEMENTLERİNİ GİZLEME */
+        .header, .activity-area {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+        }
+        /* 🔥 OYUN BAŞLAYINCA GÖSTERME */
+        body.game-started .header, body.game-started .activity-area {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s;
         }
 
         .back-button-container {
@@ -189,26 +202,29 @@
             white-space: normal; 
             text-align: center;
         }
-        .answer-input {
-            /* MASAÜSTÜ boyutu korundu */
-            font-size: inherit; 
-            font-weight: 700;
-            font-family: var(--font-arabic);
-            border: 2px solid var(--accent-color);
-            border-radius: 8px;
-            padding: 0 15px; 
-            width: 300px;
-            max-width: 80%;
-            text-align: center;
-            margin: 0 15px;
-            min-height: clamp(60px, 10vh, 100px); 
-            background: #f8f9fa;
-            direction: rtl; 
-            color: #333;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+      .answer-input {
+        font-family: var(--font-arabic);
+        border: 2px solid var(--accent-color);
+        border-radius: 8px;
+        padding: 15px 15px; 
+        width: 300px;
+        max-width: 80%;
+        text-align: center;
+        margin: 0 15px;
+        
+        /* 🔥 SABİT YÜKSEKLİK VE LINE-HEIGHT */
+        height: 110px; 
+        line-height: 1.6; 
+        
+        background: #f8f9fa;
+        direction: rtl; 
+        color: #333;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: inherit; 
+        font-weight: 700;
+    }
         
         /* --- Klavye Stilleri --- */
         .keyboard-container {
@@ -390,6 +406,35 @@
         }
         #replay-button:hover { transform: rotate(-90deg); background-color: #f0f0f0; }
         
+        /* 🔥 BAŞLANGIÇ EKRANI STİLİ */
+        #start-screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            border-radius: 12px;
+        }
+        
+        #start-button {
+            padding: 20px 40px; 
+            font-size: 3rem; 
+            font-weight: 700; 
+            background-color: var(--accent-color); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #start-button:hover {
+            background-color: #0056b3; 
+        }
+
         /* ------------------------------------------------------------------ */
         /* --- YATAY MOD UYARISI STİLLERİ --- */
         /* ------------------------------------------------------------------ */
@@ -466,8 +511,9 @@
 
             .answer-input {
                 width: 250px; /* Daha dar input */
-                min-height: clamp(50px, 8vh, 80px); /* Daha kısa input */
-                padding: 0 10px;
+                height: 110px; /* Sabit yükseklik korundu */
+                line-height: 1.6;
+                padding: 12px 12px;
                 margin: 0 10px;
             }
             
@@ -542,8 +588,13 @@
                 <button id="feedback-ok-button">✔</button>
             </div>
         </div>
-
-    </div>
+        
+        <div id="start-screen">
+            <button id="start-button">
+                اِبْدَأْ
+            </button>
+        </div>
+        </div>
     
     <div id="rotate-message">
         <div class="phone-animation">
@@ -551,7 +602,7 @@
                 <path d="M17 1H7C5.9 1 5 1.9 5 3v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-2 20H9v-1h6v1zm2-3H7V6h10v12z" />
             </svg>
         </div>
-        
+       <p>الرجاء تدوير الجهاز إلى الوضع الأفقي لبدء التمرين.</p>
     </div>
 
     <script>
@@ -580,7 +631,7 @@
         // --- UZUN BASMA VERİSİ ---
         const longPressData = {
             'ا': ['أ', 'إ', 'آ'], 
-            'ي': ['ى', 'ئ'] // y harfi basılı tutulunca hala ى ve ئ çıkabilir, bu kullanıcı deneyimi için korundu.
+            'ي': ['ى', 'ئ'] 
         };
         
         function getDarkerColor(hex) {
@@ -605,47 +656,44 @@
             ["Backspace", "ظ","ز","و","ة","ى","ر","ؤ","ء","ئ"] 
         ];
 
-        // --- Etkinlik Verileri ---
+       // --- Etkinlik Verileri ---
         const activitiesData = [
             // Zamirler (9)
-            { pre: "", post: "يَذْهَبونَ إِلى المَسْجِد", a: "هُم", hint: "ضَمير" },
-            { pre: "", post: "يُكْرِمْنَ الضُّيوف", a: "هُنَّ", hint: "ضَمير" },
-            { pre: "", post: "يَعْمَلانِ في المَصْنَع", a: "هُما", hint: "ضَمير" },
+            { pre: "", post: "يَذْهَبونَ إِلى المَسْجِد", a: ["المُسْلِمون","هُم"], hint: "ضَمير" },
+            { pre: "", post: "يُكْرِمْنَ الضُّيوف", a: "هُنَّ", hint: "ضَمير" },
+            { pre: "", post: "يَعْمَلانِ في المَصْنَع", a: ["العامِلان","هُما"], hint: "ضَمير" },
             { pre: "", post: "نَحْتَرِمُ الكِبار", a: "نَحْنُ", hint: "ضَمير" },
-            { pre: "", post: "يَعْمَلُ في المَصْنَع", a: ["هُو", "العامِل"], hint: "ضَمِير" },
-            { pre: "", post: "تَعْمَلُ في المُسْتَشْفى", a: ["هِي", "أَنْتَ"], hint: "ضَمِير" }, 
-            { pre: "", post: "تَحْتَرِمُ الكِبار", a: ["أَنْتَ", "هِيَ"], hint: "ضَمِير" }, 
-            { pre: "", post: "أُحِبُّ أَقارِبي", a: "أَنا", hint: "ضَمير" },
-            { pre: "", post: "تَحْتَرِمونَ الكِبار", a: "أَنْتُم", hint: "ضَمِير" },
+            { pre: "", post: "يَعْمَلُ في المَصْنَع", a: ["المُهَنْدِس","هُو", "العامِل"], hint: "ضَمِير" },
+            { pre: "", post: "تَعْمَلُ في المُسْتَشْفى", a: ["المُمَرِّضَة","هِي", "أَنْتَ", "انت"], hint: "ضَمِير" },
+            { pre: "", post: "تَحْتَرِمُ الكِبار", a: ["أَنْتَ","انت","هِي"], hint: "ضَمِير" },
+            { pre: "", post: "أُحِبُّ أَقارِبي", a: ["أَنا", "انا"], hint: "ضَمير" }, 
+            { pre: "", post: "تَحْتَرِمونَ الكِبار", a: ["أَنْتُم", "انتم"], hint: "ضَمِير" }, 
 
             // Fiil Çekimleri (10)
             { pre: "هُم", post: "إِلى المَسْجِد", a: ["ذَهَبوا" ,"يَذْهَبونَ"], hint: "فِعْل" },
-            { pre: "هُنَّ", post: "الضُّيوف", a: "يُكْرِمْنَ", hint: "فِعْل" },
-            { pre: "هُو", post: "أَقارِبَهُ", a: ["يَزورُ", "يُحِبُّ"], hint: "فِعْل" }, 
-            { pre: "هِي", post: "جَدَّتَها", a: ["تَزورُ", "تُحِبُّ"], hint: "فِعْل" },
-            { pre: "أَنا", post: "في المَسْجِد", a: ["صَلَّيْتُ" ,"أُصَلّي"], hint: "فِعْل" }, 
-            { pre: "السَّائِق", post: "السَّيّارَة", a: "يَسوقُ", hint: "فِعْل" },
-            { pre: "المُمَرِّضَة", post: "بِالمَرْضى", a: "تَهْتَمُّ", hint: "فِعْل" },
-            { pre: "المُدَرِّس", post: "الطُّلّاب", a: ["يُدَرِّسُ", "يُعَلِّمُ", "يُحِبُّ"], hint: "فِعْل" }, 
-            { pre: "الطَّبيب", post: "المَريض", a: ["يَفْحَصُ","فَحَصَ"], hint: "فِعْل" },
-            { pre: "يَجِبُ أَنْ", post: "صادِقًا", a: ["تَكُونَ", "أَكُونَ"], hint: "فِعْل" }, 
-        
+            { pre: "هُنَّ", post: "الضُّيوف", a: "يُكْرِمْنَ", hint: "فِعْل" },
+            { pre: "هُو", post: "أَقارِبَهُ", a: ["يَزورُ", "يُحِبُّ"], hint: "فِعْل" }, 
+            { pre: "هِي", post: "جَدَّتَها", a: ["تَزورُ", "تُحِبُّ"], hint: "فِعْل" },
+            { pre: "أَنا", post: "في المَسْجِد", a: ["صَلَّيْتُ" ,"أُصَلّي", "اصلي"], hint: "فِعْل" }, 
+            { pre: "السَّائِق", post: "السَّيّارَة", a: "يَسوقُ", hint: "فِعْل" },
+            { pre: "المُمَرِّضَة", post: "بِالمَرْضى", a: "تَهْتَمُّ", hint: "فِعْل" },
+            { pre: "المُدَرِّس", post: "الطُّلّاب", a: ["يُدَرِّسُ", "يُعَلِّمُ", "يُحِبُّ"], hint: "فِعْل" }, 
+            { pre: "الطَّبيب", post: "المَريض", a: ["يُعالِجُ","عالَجَ","يَفْحَصُ","فَحَصَ"], hint: "فِعْل" },
+            { pre: "يَجِبُ أَنْ", post: "صادِقًا", a: ["يَكونَ","تَكُونَ", "أَكُونَ", "اكون"], hint: "فِعْل" }, 
+            
             // Harfi Cerler (4)
-            { pre: "الطَّبيب يَعْمَل", post: "المُسْتَشْفى", a: "في", hint: "حَرْف جَرّ" },
-            // NOT: Aşağıdaki örnekte `بِ` harfi var. Eğer kullanıcı `بي` yazarsa, cevap `بِ` olduğu için (hareke yok sayıldığı halde) doğru çıkar.
-            // Fakat harf farkı oluşmaz.
-            { pre: "أَنا أَهْتَمُّ", post: "الموسيقى", a: "بِ", hint: "حَرْف جَرّ" },
-            { pre: "الطّالِب يَذْهَبُ", post: "المَدْرَسَة", a: "إِلى", hint: "حَرْف جَرّ" },
-            { pre: "رَبَّنَا اغْفِرْ", post: "وَلِوَالِدَيَّ", a: "لِي", hint: ["حَرْف جَرّ", "ضَمِير"] }, 
+            { pre: "الطَّبيب يَعْمَل", post: "المُسْتَشْفى", a: "في", hint: "حَرْف جَرّ" },
+            { pre: "أَنا أَهْتَمُّ", post: "الموسيقى", a: "بِ", hint: "حَرْف جَرّ" },
+            { pre: "الطّالِب يَذْهَبُ", post: "المَدْرَسَة", a: ["إِلى", "الى"], hint: "حَرْف جَرّ" }, 
+            { pre: "رَبَّنَا اغْفِرْ", post: "وَلِوَالِدَيَّ", a: "لِي", hint: ["حَرْف جَرّ", "ضَمِير"] }, 
 
             // Mekanlar (İsim) (3)
-            // NOT: Cevapta ى var. Kullanıcı y yazarsa yanlış kabul edilir.
-            { pre: "يَعْمَلُ الطَّبيب في", post: "", a: "المُسْتَشْفى", hint: "اِسْم مَكان" },
-            { pre: "يَعْمَلُ المُهَنْدِس في", post: "", a: ["المَصْنَع", "الشَّرِكَة"], hint: "اِسْم مَكان" },
-            { pre: "يُصَلّي المُسْلِمون في", post: "", a: ["المَسْجِد", "الجامِع"], hint: "اِسْم مَكان" }, 
+            { pre: "يَعْمَلُ الطَّبيب في", post: "", a: "المُسْتَشْفى", hint: "اِسْم مَكان" },
+            { pre: "يَعْمَلُ المُهَنْدِس في", post: "", a: ["المَصْنَع", "الشَّرِكَة"], hint: "اِسْم مَكان" },
+            { pre: "يُصَلّي المُسْلِمون في", post: "", a: ["البَيْت","المَسْجِد", "الجامِع"], hint: "اِسْم مَكان" }, 
 
             // İsimler (4)
-            { pre: "تَبَسُّمُكَ فِي", post: "أَخِيكَ صَدَقَة", a: "وَجْهِ", hint: "اِسْم" },
+            { pre: "تَبَسُّمُكَ فِي", post: "أَخِيكَ صَدَقَة", a: "وَجْهِ", hint: "اِسْم" },
             { pre: "جَزاك الله", post: "", a: "خَيْرًا", hint: "اِسْم" },
             { pre: "بارَكَ الله", post: "", a: "فيك", hint: ["حَرْف جَرّ", "ضَمِير"] }, 
             { pre: "كُلّ عام وَأَنْتُم", post: "", a: "بِخَيْر", hint: ["حَرْف جَرّ", "اِسْم"] }
@@ -662,6 +710,10 @@
         const feedbackCorrectAnswer = document.getElementById('feedback-correct-answer');
         const feedbackOkButton = document.getElementById('feedback-ok-button');
         const fullscreenButton = document.getElementById('fullscreen-btn');
+        // 🔥 YENİ ELEMENTLER
+        const startScreen = document.getElementById('start-screen');
+        const startButton = document.getElementById('start-button');
+
 
         // --- Ses ---
         let audioCtx = null;
@@ -738,19 +790,13 @@
         }
         
         // **********************************************
-        // *** GÜNCELLENEN NORMALİZASYON FONKSİYONU ***
-        // *** ARTIK Y VE MAKSURA ARASINDA SADELEŞTİRME YAPILMAYACAK ***
+        // *** NORMALİZASYON FONKSİYONU ***
         // **********************************************
         function normalizeForCheck(text) {
             if (!text) return "";
             
             // 1. Hareke ve Tanvinleri Kaldır
             let newText = text.replace(/[\u064B-\u065F]/g, ""); 
-            
-            // 2. Maksura (ى) harfini (ي) ile değiştiren satır KALDIRILDI.
-            // newText = newText.replace(/[ى]/g, "ي"); 
-            
-            // 3. Elif varyantlarını sadeleştiren satır ZATEN ÖNCEKİ İSTEKTE KALDIRILMIŞTI.
             
             return newText.trim(); 
         }
@@ -1012,6 +1058,9 @@
             else scoreIncorrect++;
         }
 
+        // --- Cevap Kontrolü ---
+// ... (checkFillInBlankAnswer fonksiyonu değişmedi)
+
         function showFeedback(isCorrect, correctAnswer) {
             feedbackOverlay.classList.add('show');
             if (isCorrect) {
@@ -1025,9 +1074,21 @@
                 feedbackIcon.className = 'incorrect';
                 playSound('incorrect');
                 
-                const answerToShow = (Array.isArray(correctAnswer) ? correctAnswer.join(' / ') : correctAnswer);
+                // 🔥 YAMA BAŞLANGICI: Geri bildirimde gizlenecek basitleştirilmiş kelimeler
+                // Bu kelimeler, asıl hemzeli/elifli formları kabul etmek için eklenmiş
+                // klavye dostu, basitleştirilmiş versiyonlardır ve geri bildirimde gösterilmeyecektir.
+                const variantsToExclude = ["انت", "انا", "الى", "اصلي", "اكون", "انتم"];
                 
-                feedbackCorrectAnswer.textContent = `الجَواب الصَّحيح: ${answerToShow}`;
+                // Cevap listesini filtrele: Sadece ana (canonical) kelimeleri bırakır.
+                const canonicalAnswers = Array.isArray(correctAnswer) 
+                    ? correctAnswer.filter(answer => !variantsToExclude.includes(answer))
+                    : [correctAnswer];
+
+                // Geri bildirimde gösterilecek cevabı hazırla (Ana kelimeleri birleştir)
+                const answerToShow = canonicalAnswers.join(' / ');
+                // 🔥 YAMA SONU
+                
+                feedbackCorrectAnswer.textContent = `الجَواب الصَّحيح: ${answerToShow}`;
                 feedbackDetails.style.display = 'flex'; 
                 feedbackOkButton.onclick = () => nextActivity(); 
             }
@@ -1126,14 +1187,28 @@
             progressBar.style.width = `${percentage}%`;
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
+        // 🔥 YENİ BAŞLANGIÇ FONKSİYONU
+        function startGame() {
+            playSound('touch');
+            startScreen.style.display = 'none'; // Başlangıç ekranını gizle
+            document.body.classList.add('game-started'); // Oyun içeriğini gösteren sınıfı ekle
+            
+            // Tam ekranı etkinleştir
+            toggleFullScreen(); 
+            
+            // Oyunu başlat
             allActivitiesData = shuffle([...activitiesData]);
             totalQuestionsInGame = allActivitiesData.length;
             totalRounds = Math.ceil(totalQuestionsInGame / questionsPerRound);
-            scoreCorrect = 0;
-            scoreIncorrect = 0;
             currentRound = 0; 
             startNextRound(); 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Başlangıç düğmesine tıklama olayını ekle
+            if (startButton) startButton.addEventListener('click', startGame);
+
+            // Başlangıçta tam ekran durumunu kontrol et (başlatma düğmesine rağmen)
             checkFullScreen();
         });
 
