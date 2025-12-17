@@ -327,7 +327,7 @@
             border-radius: 50%;
             width: clamp(55px, 10vmin, 70px); 
             height: clamp(55px, 10vmin, 70px);
-            font-size: 2.2rem; 
+            font-size: 1.1rem; 
             cursor: pointer;
             
             /* KESİN POZİSYONLAMA: Konteynerin SAĞ tarafına sabitle */
@@ -403,7 +403,94 @@
         @media (orientation: portrait) {
             /* Dikeyde zaten gizli */
         }
+/* --- MOBİL YATAY: SABİT ORAN KALDIRILMIŞ VE SIKIŞTIRILMIŞ DÜZEN --- */
+@media only screen and (max-height: 500px) and (orientation: landscape) {
+    
+    /* 1. Ana Konteyner: 16:9 oranını iptal edip tam ekran yapıyoruz */
+    .activity-container {
+        width: 100vw !important;  /* Ekran genişliğinin tamamı */
+        height: 100vh !important; /* Ekran yüksekliğinin tamamı */
+        max-width: none !important;
+        max-height: none !important;
+        aspect-ratio: auto !important; /* Varsa oran zorunluluğunu kaldırır */
+        border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
 
+    /* 2. Oyun Alanı: İçindeki boşlukları (flex-grow) yönetiyoruz */
+    #activity-area {
+        flex: 1 !important; /* Kalan tüm alanı doldur */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important; /* Kutuları dikeyde merkeze toplar */
+        gap: 5px !important; /* Kutular arası boşluk */
+        padding: 5px 10px !important;
+    }
+
+    /* 3. Kutular: Kesinlikle kelime yüksekliğinde olacak */
+    .drop-zone, .drag-zone {
+        flex: 0 0 auto !important;   /* Kendi başına büyümesini engelle */
+        height: 55px !important;     /* Sabit yükseklik (Kelime + 5-7px) */
+        min-height: 42px !important;
+        padding: 10px 5px !important;
+        margin: 10px 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+    }
+
+    /* 4. Kelimeler: Gereksiz boşluklar atıldı */
+    .word-item {
+        height: 34px !important;      /* Kelime butonunun net yüksekliği */
+        font-size: 2.0rem !important;
+        padding: 5px 5px !important;
+        margin: 5px !important;
+        line-height: 34px !important; /* Yazıyı dikey ortala */
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+
+    /* 5. Üst Bar (Header): İnce şerit hali */
+    .header {
+        height: 60px !important;
+        min-height: 35px !important;
+        padding: 0 15px !important;
+    }
+
+    #instruction-text {
+        font-size: 1.6rem !important;
+    }
+.answer-input {
+        width: 300px; /* Genişliği biraz daha artırdık */
+        height: 50px !important; /* Yüksekliği hemzenin sığacağı bir seviyeye çektik */
+        line-height: 1 !important; /* Harfin dikeyde kesilmesini önler */
+        padding: 5px 10px;
+        font-size: clamp(1.4rem, 2.8vw, 2.5rem); /* Fontu çok az küçülterek alandan kazandık */
+        display: inline-flex;
+        align-items: center; 
+        justify-content: center;
+        overflow: visible; /* Hemzenin kutu dışına taşsa bile görünmesini sağlar */
+       text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    padding-top: 10px;
+    }
+
+    /* 6. Alt Butonlar: Küçük ve kompakt */
+    .scramble-controls {
+        height: 40px !important;
+        min-height: 40px !important;
+        padding: 15px !important;
+        margin: 5px !important;
+    }
+
+    #check-scramble-btn, #reset-scramble-btn {
+        height: 40px !important;
+        width: 110px !important;
+        font-size: 1.5rem !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -473,7 +560,7 @@
                     transition: transform 0.2s;
                     font-family: inherit;
                 ">
-                    إِبْدَأ (Başla)
+                    إِبْدَأْ
                 </button>
             </div>
             </div>
@@ -482,19 +569,19 @@
     </div>
 
     <script>
-        // --- ETKİNLİK VERİLERİ ---
+         // --- ETKİNLİK VERİLERİ ---
 const activitiesData = [
-    { s: ["أَخي طَبيب هُو يَفْحَصُ المَرْضى"], w: ["أَخي", "طَبيب", "هُو", "يَفْحَصُ", "المَرْضى"] },
+    { s: ["أَخي يَفْحَصُ المَرْضى هُو طَبيب","أَخي طَبيب هُو يَفْحَصُ المَرْضى"], w: ["أَخي", "طَبيب", "هُو", "يَفْحَصُ", "المَرْضى"] },
     { s: ["يَجِبُ عَلَيْكِ أَنْ تَكوني صَبورَة"], w: ["يَجِبُ", "عَلَيْكِ", "أَنْ", "تَكوني", "صَبورَة"] },
     { s: ["يَحْتَفِلُ المُسْلِمون بِالأَعْياد بِفَرَح كَبير"], w: ["يَحْتَفِلُ", "المُسْلِمون", "بِالأَعْياد", "بِفَرَح", "كَبير"] },
-    { s: ["أَنا عامِل أَعْمَلُ في المَصْنَع"], w: ["أَنا", "عامِل", "أَعْمَلُ", "في", "المَصْنَع"] },
-    { s: ["والِدي مُحام يُدافِعُ عَن العَدالَة"], w: ["والِدي", "مُحام", "يُدافِعُ", "عَن", "العَدالَة"] },
+    { s: ["أَعْمَلُ في المَصْنَع أَنا عامِل","أَنا عامِل أَعْمَلُ في المَصْنَع"], w: ["أَنا", "عامِل", "أَعْمَلُ", "في", "المَصْنَع"] },
+    { s: ["دافِعُ عَن العَدالَة والِدي مُحام","والِدي مُحام يُدافِعُ عَن العَدالَة"], w: ["والِدي", "مُحام", "يُدافِعُ", "عَن", "العَدالَة"] },
     {
   s: ["السّائِق يَسوقُ سَيّارَة أُجْرَة", "يَسوقُ السّائِق سَيّارَة الأُجْرَة"],
   w: ["السّائِق", "يَسوقُ", "سَيّارَة أُجْرَة"]
 },
     { s: ["ماذا يَفْعَلُ الطَّبّاخ؟"], w: ["ماذا", "يَفْعَلُ", "الطَّبّاخ؟"] },
-    { s: ["هِي مُهَنْدِسَة تَعْمَلُ في الشَّرِكَة"], w: ["تَعْمَلُ", "هِي", "مُهَنْدِسَة", "في", "الشَّرِكَة"] },
+    { s: ["تَعْمَلُ في الشَّرِكَة هِي مُهَنْدِسَة","هِي مُهَنْدِسَة تَعْمَلُ في الشَّرِكَة"], w: ["تَعْمَلُ", "هِي", "مُهَنْدِسَة", "في", "الشَّرِكَة"] },
     { s: ["يَجِبُ عَلى المُسْلِم أَنْ يَكونَ صادِقًا"], w: ["يَجِبُ", "عَلى", "المُسْلِم", "أَنْ", "يَكونَ", "صادِقًا"] },
     { s: ["هِي تَحْتَرِمُ الكِبار"], w: ["هِي", "تَحْتَرِمُ", "الكِبار"] },
    { 
@@ -540,8 +627,8 @@ const activitiesData = [
 },
 { 
   s: [
-    "عَبْدُ القَدير يُحِبُّ الصِّغار وَيَحْتَرِمُ الكِبار", 
-    "يُحِبُّ عَبْدُ القَدير الصِّغار وَيَحْتَرِمُ الكِبار"
+    "هُوَ يُحِبُّ الصِّغار وَيَحْتَرِمُ الكِبار", 
+    "يُحِبُّ هُوَ الصِّغار وَيَحْتَرِمُ الكِبار"
   ], 
   w: ["الصِّغار", "وَيَحْتَرِمُ", "عَبْدُ القَدير", "يُحِبُّ", "الكِبار"] 
 },
