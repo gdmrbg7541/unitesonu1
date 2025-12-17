@@ -30,6 +30,7 @@
 
         /* --- Ana Etkinlik Alanı (MASAÜSTÜ BOYUTLARI KORUNDU) --- */
         .activity-container {
+            aspect-ratio: 16 / 9;
             position: relative;
             background: #ffffff;
             border-radius: 12px;
@@ -490,10 +491,10 @@
     
     /* Başlık Alanı ve Elementleri */
     .header {
-        padding: 8px 15px;
+        padding: 8px 8px;
         gap: 10px;
         /* YAMA: Progress bar ve back butonu alanını 150 piksele düşürdük */
-        grid-template-columns: 150px 1fr 150px; 
+        grid-template-columns: 200px 1fr 200px; 
     }
     
     #instruction-text {
@@ -502,7 +503,7 @@
     
     /* YAMA: Progress bar container genişliği 150px olarak ayarlandı */
     .progress-container { 
-        width: 150px; 
+        width: 200px; 
         gap: 8px; /* Boşluğu biraz daha daralttık */
     }
     #progress-display { font-size: 1.1rem; }
@@ -616,7 +617,7 @@
                 <path d="M17 1H7C5.9 1 5 1.9 5 3v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-2 20H9v-1h6v1zm2-3H7V6h10v12z" />
             </svg>
         </div>
-       <p>الرجاء تدوير الجهاز إلى الوضع الأفقي لبدء التمرين.</p>
+       
     </div>
 
     <script>
